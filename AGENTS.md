@@ -27,4 +27,5 @@
 
 - For plugin behavior or build changes, run `pnpm run build` or `pnpm run dev`.
 - For shared logic changes, run the relevant tests through `pnpm run test`.
+- Do not treat `test` and `lint` as sufficient validation for vault-facing behavior changes. When the change affects Obsidian commands, vault I/O, plugin registration, or other runtime behavior, also verify it against the development vault with `./bin/obsidian-dev obsidian ...` when feasible.
 - If the task changes versioning or release flow, verify `packages/plugin/manifest.json` and `packages/plugin/versions.json` together.
