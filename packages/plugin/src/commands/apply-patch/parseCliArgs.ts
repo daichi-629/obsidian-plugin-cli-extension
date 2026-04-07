@@ -4,16 +4,14 @@ import type { ApplyPatchCliInput } from "./types";
 
 function readFlag(params: CliData, hyphenated: string, camelCase: string): boolean {
 	const value = params[hyphenated] ?? params[camelCase];
-	return value === "true";
+	return value === true || value === "true";
 }
 
 function readValue(params: CliData, hyphenated: string, camelCase: string): string | undefined {
 	return params[hyphenated] ?? params[camelCase];
 }
 
-export function parseApplyPatchCliArgs(
-	params: CliData
-): PluginCliParseResult<ApplyPatchCliInput> {
+export function parseApplyPatchCliArgs(params: CliData): PluginCliParseResult<ApplyPatchCliInput> {
 	const patch = readValue(params, "patch", "patch");
 	const patchFile = readValue(params, "patch-file", "patchFile");
 

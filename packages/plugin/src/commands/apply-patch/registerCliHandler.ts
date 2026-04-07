@@ -6,32 +6,22 @@ import {
 	validateApplyPatchInput
 } from "@sample/core";
 import type { CliHandler, Plugin } from "obsidian";
+import {
+	buildCliFlags,
+	isManualRequest,
+	renderCommandReference
+} from "../../shared/cli/commandReference";
 import { applyVaultPatchPlan } from "./applyVaultPatchPlan";
 import { buildVaultPatchSource } from "./buildVaultPatchSource";
 import { parseApplyPatchCliArgs } from "./parseCliArgs";
-
-const CLI_FLAGS = {
-	patch: {
-		value: "<patch>",
-		description: "Patch text in Codex apply_patch format."
-	},
-	"patch-file": {
-		value: "<path>",
-		description: "Read patch text from a filesystem path or vault:path."
-	},
-	"dry-run": {
-		description: "Validate and preview changes without writing files."
-	},
-	"allow-create": {
-		description: "Allow Add File operations."
-	},
-	verbose: {
-		description: "Include detailed per-file output."
-	}
-};
+import { applyPatchCommandSpec } from "./spec";
 
 export function registerApplyPatchCliHandler(plugin: Plugin): void {
 	const handler: CliHandler = async (params) => {
+		if (isManualRequest(params)) {
+			return renderCommandReference(applyPatchCommandSpec);
+		}
+
 		const parsedArgs = parseApplyPatchCliArgs(params);
 		if (!parsedArgs.ok) {
 			return parsedArgs.message;
@@ -66,9 +56,9 @@ export function registerApplyPatchCliHandler(plugin: Plugin): void {
 	};
 
 	plugin.registerCliHandler(
-		"sample-monorepo-plugin-apply-patch",
-		"Apply a Codex-compatible patch to vault files.",
-		CLI_FLAGS,
+		applyPatchCommandSpec.name,
+		applyPatchCommandSpec.summary,
+		buildCliFlags(applyPatchCommandSpec),
 		handler
 	);
 }
