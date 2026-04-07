@@ -1,8 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { buildGreeting } from "../src/index";
+import { formatSearchResult, parseSearchOptions, searchDocuments } from "../src";
 
-describe("buildGreeting", () => {
-	it("returns a greeting with the provided name", () => {
-		expect(buildGreeting({ name: "Obsidian" })).toBe("Hello, Obsidian");
+describe("core public API", () => {
+	it("exports grep command helpers", async () => {
+		const options = parseSearchOptions({ pattern: "Obsidian" });
+		const result = await searchDocuments(
+			[{ path: "note.md", content: "Hello, Obsidian" }],
+			options
+		);
+
+		expect(formatSearchResult(result, options)).toBe("note.md:Hello, Obsidian");
 	});
 });

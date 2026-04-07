@@ -1,9 +1,11 @@
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
+import { globalIgnores } from "eslint/config";
 
 export default [
 	js.configs.recommended,
 	...tseslint.configs.recommended,
+	globalIgnores(["dist", "node_modules"]),
 	{
 		files: ["**/*.ts"],
 		rules: {
