@@ -18,6 +18,7 @@
 - Prefer the root scripts: `pnpm run dev`, `pnpm run build`, `pnpm run lint`, and `pnpm run test`.
 - When the containerized workflow matters, use `./bin/obsidian-dev ...` as described in [`docs/development-flow.md`](/home/daichi/ghq/github.com/daichi-629/obsidian-simple-plugin-monorepo/docs/development-flow.md).
 - Keep `packages/plugin/src/main.ts` focused on plugin lifecycle and registration. Move reusable or non-Obsidian logic into `packages/core` or focused modules under `packages/plugin/src/`.
+- For Obsidian CLI commands, keep the user-facing spec in `packages/plugin/src/commands/<command-name>/spec.ts` and use it as the shared source for CLI flag metadata and `man` output.
 - Do not add Obsidian API dependencies to `packages/core`.
 - Keep plugin IDs, command IDs, and persisted setting keys stable unless the user explicitly asks to change them.
 - When changing release metadata, keep `packages/plugin/manifest.json` and `packages/plugin/versions.json` aligned.
