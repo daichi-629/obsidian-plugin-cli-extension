@@ -11,7 +11,12 @@ export type SearchInput = {
 	lineNumber?: boolean;
 	filesWithMatches?: boolean;
 	count?: boolean;
+	beforeContext?: number;
+	afterContext?: number;
+	context?: number;
 	maxResults?: number;
+	stats?: boolean;
+	json?: boolean;
 };
 
 export type SearchOptions = {
@@ -22,13 +27,18 @@ export type SearchOptions = {
 	lineNumber: boolean;
 	filesWithMatches: boolean;
 	count: boolean;
+	beforeContext: number;
+	afterContext: number;
 	maxResults?: number;
+	stats: boolean;
+	json: boolean;
 };
 
 export type SearchMatch = {
 	path: string;
 	line?: number;
 	text: string;
+	kind?: "match" | "context";
 };
 
 export type SearchResult = {
@@ -37,6 +47,7 @@ export type SearchResult = {
 	matchedFiles: number;
 	skippedFiles: number;
 	stoppedEarly: boolean;
+	totalMatches: number;
 };
 
 export type CompiledSearchPattern = {

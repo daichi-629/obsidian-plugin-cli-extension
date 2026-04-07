@@ -2,6 +2,7 @@ export type GrepPermissionSettings = {
 	enabled: boolean;
 	denyPathPrefixes: string[];
 	allowPathPrefixes?: string[];
+	targetExtensions: string[];
 };
 
 export const HARD_CODED_DENY_PATH_PREFIXES = [".obsidian/"] as const;
@@ -9,7 +10,8 @@ export const HARD_CODED_DENY_PATH_PREFIXES = [".obsidian/"] as const;
 export const DEFAULT_GREP_PERMISSION_SETTINGS: GrepPermissionSettings = {
 	enabled: true,
 	denyPathPrefixes: [".obsidian/", "templates/private/"],
-	allowPathPrefixes: []
+	allowPathPrefixes: [],
+	targetExtensions: ["md", "txt"]
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -31,13 +33,26 @@ function normalizePathPrefixList(value: unknown): string[] {
 		.filter((entry): entry is string => entry !== undefined);
 }
 
+function normalizeExtension(input?: string): string | undefined {
+	const normalized = input?.trim().replace(/^\.+/, "").toLowerCase();
+	return normalized ? normalized : undefined;
+}
+
+function normalizeExtensionList(value: unknown): string[] {
+	if (!Array.isArray(value)) {
+		return [];
+	}
+
+	return value
+		.map((entry) => (typeof entry === "string" ? normalizeExtension(entry) : undefined))
+		.filter((entry): entry is string => entry !== undefined);
+}
+
 export function normalizeGrepPathPrefix(input?: string): string | undefined {
 	return normalizePathPrefix(input);
 }
 
-export function resolveGrepPermissionSettings(
-	value: unknown
-): GrepPermissionSettings {
+export function resolveGrepPermissionSettings(value: unknown): GrepPermissionSettings {
 	if (!isRecord(value)) {
 		return DEFAULT_GREP_PERMISSION_SETTINGS;
 	}
@@ -53,7 +68,13 @@ export function resolveGrepPermissionSettings(
 			denyPathPrefixes.length > 0
 				? denyPathPrefixes
 				: DEFAULT_GREP_PERMISSION_SETTINGS.denyPathPrefixes,
-		allowPathPrefixes: normalizePathPrefixList(value.allowPathPrefixes)
+		allowPathPrefixes: normalizePathPrefixList(value.allowPathPrefixes),
+		targetExtensions: (() => {
+			const targetExtensions = normalizeExtensionList(value.targetExtensions);
+			return targetExtensions.length > 0
+				? targetExtensions
+				: DEFAULT_GREP_PERMISSION_SETTINGS.targetExtensions;
+		})()
 	};
 }
 
@@ -69,10 +90,7 @@ function getEffectiveAllowPathPrefixes(settings: GrepPermissionSettings): string
 	return settings.enabled ? (settings.allowPathPrefixes ?? []) : [];
 }
 
-export function isPathAllowedByGrepPolicy(
-	path: string,
-	settings: GrepPermissionSettings
-): boolean {
+export function isPathAllowedByGrepPolicy(path: string, settings: GrepPermissionSettings): boolean {
 	if (getEffectiveDenyPathPrefixes(settings).some((prefix) => pathMatchesPrefix(path, prefix))) {
 		return false;
 	}
@@ -106,6 +124,20 @@ export function getGrepPathPolicyError(
 		!allowPathPrefixes.some((prefix) => pathMatchesPrefix(pathPrefix, prefix))
 	) {
 		return `Path "${pathPrefix}" is outside the allowed grep scope.`;
+	}
+
+	return undefined;
+}
+
+export function getGrepPathPolicyErrorForMany(
+	pathPrefixes: string[],
+	settings: GrepPermissionSettings
+): string | undefined {
+	for (const pathPrefix of pathPrefixes) {
+		const error = getGrepPathPolicyError(pathPrefix, settings);
+		if (error) {
+			return error;
+		}
 	}
 
 	return undefined;

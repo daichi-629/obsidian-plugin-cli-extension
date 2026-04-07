@@ -1,25 +1,51 @@
 import type { SearchOptions, SearchResult } from "./types";
 
+function hasContext(options: SearchOptions): boolean {
+	return options.beforeContext > 0 || options.afterContext > 0;
+}
+
+function formatStats(result: SearchResult): string {
+	return [
+		"Stats:",
+		`filesScanned=${result.filesScanned}`,
+		`matchedFiles=${result.matchedFiles}`,
+		`skippedFiles=${result.skippedFiles}`,
+		`totalMatches=${result.totalMatches}`,
+		`stoppedEarly=${result.stoppedEarly}`
+	].join("\n");
+}
+
 export function formatSearchResult(result: SearchResult, options: SearchOptions): string {
-	if (result.matches.length === 0) {
-		return "No matches found.";
+	if (options.json) {
+		return JSON.stringify(result, null, 2);
 	}
 
-	return result.matches
-		.map((match) => {
-			if (options.filesWithMatches) {
-				return match.path;
-			}
+	const body =
+		result.matches.length === 0
+			? "No matches found."
+			: result.matches
+					.map((match) => {
+						if (options.filesWithMatches) {
+							return match.path;
+						}
 
-			if (options.count) {
-				return `${match.path}:${match.text}`;
-			}
+						if (options.count) {
+							return `${match.path}:${match.text}`;
+						}
 
-			if (options.lineNumber && match.line !== undefined) {
-				return `${match.path}:${match.line}:${match.text}`;
-			}
+						const separator = match.kind === "context" ? "-" : ":";
+						const shouldShowLineNumber = options.lineNumber || hasContext(options);
+						if (shouldShowLineNumber && match.line !== undefined) {
+							return `${match.path}${separator}${match.line}${separator}${match.text}`;
+						}
 
-			return `${match.path}:${match.text}`;
-		})
-		.join("\n");
+						return `${match.path}${separator}${match.text}`;
+					})
+					.join("\n");
+
+	if (!options.stats) {
+		return body;
+	}
+
+	return `${body}\n${formatStats(result)}`;
 }

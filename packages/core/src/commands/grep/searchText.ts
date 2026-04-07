@@ -1,4 +1,9 @@
-import type { CompiledSearchPattern, SearchDocument, SearchMatch, SearchOptions } from "./types";
+import type { CompiledSearchPattern, SearchOptions } from "./types";
+
+export type SearchLine = {
+	line: number;
+	text: string;
+};
 
 export function compileSearchPattern(options: SearchOptions): CompiledSearchPattern {
 	if (options.fixedStrings) {
@@ -25,26 +30,16 @@ export function compileSearchPattern(options: SearchOptions): CompiledSearchPatt
 	};
 }
 
-export function searchText(
-	document: SearchDocument,
-	options: SearchOptions,
+export function splitDocumentLines(content: string): SearchLine[] {
+	return content.split(/\r?\n/).map((text, index) => ({
+		line: index + 1,
+		text
+	}));
+}
+
+export function findMatchingLines(
+	lines: SearchLine[],
 	pattern: CompiledSearchPattern
-): SearchMatch[] {
-	const lines = document.content.split(/\r?\n/);
-	const matches: SearchMatch[] = [];
-
-	for (let index = 0; index < lines.length; index += 1) {
-		const line = lines[index] ?? "";
-		if (!pattern.test(line)) {
-			continue;
-		}
-
-		matches.push({
-			path: document.path,
-			line: options.lineNumber ? index + 1 : undefined,
-			text: line
-		});
-	}
-
-	return matches;
+): SearchLine[] {
+	return lines.filter((line) => pattern.test(line.text));
 }

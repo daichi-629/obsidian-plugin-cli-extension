@@ -12,6 +12,12 @@ describe("parseSearchOptions", () => {
 		);
 	});
 
+	it("throws for invalid context values", () => {
+		expect(() => parseSearchOptions({ pattern: "TODO", context: -1 })).toThrow(
+			"The --context option must be a non-negative integer."
+		);
+	});
+
 	it("throws for conflicting output modes", () => {
 		expect(() =>
 			parseSearchOptions({
@@ -24,6 +30,15 @@ describe("parseSearchOptions", () => {
 
 	it("throws for invalid regex during execution setup", () => {
 		const options = parseSearchOptions({ pattern: "(" });
-		return expect(searchDocuments([], options)).rejects.toThrow("Invalid regular expression: (");
+		return expect(searchDocuments([], options)).rejects.toThrow(
+			"Invalid regular expression: ("
+		);
+	});
+
+	it("resolves directional context from the shared context option", () => {
+		expect(parseSearchOptions({ pattern: "TODO", context: 2 })).toMatchObject({
+			beforeContext: 2,
+			afterContext: 2
+		});
 	});
 });

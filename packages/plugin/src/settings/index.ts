@@ -25,10 +25,20 @@ export async function loadPluginSettings(plugin: Plugin): Promise<SamplePluginSe
 	};
 }
 
+export async function savePluginSettings(
+	plugin: Plugin,
+	settings: SamplePluginSettings
+): Promise<void> {
+	await plugin.saveData({
+		grepPermissionSettings: settings.grepPermissionSettings
+	} satisfies StoredPluginSettings);
+}
+
 export type { GrepPermissionSettings } from "./grepPolicy";
 export {
 	DEFAULT_GREP_PERMISSION_SETTINGS,
 	getGrepPathPolicyError,
+	getGrepPathPolicyErrorForMany,
 	isPathAllowedByGrepPolicy,
 	normalizeGrepPathPrefix,
 	pathMatchesPrefix,

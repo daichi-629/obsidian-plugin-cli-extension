@@ -16,7 +16,8 @@ describe("grepPolicy", () => {
 		const settings = resolveGrepPermissionSettings({
 			enabled: true,
 			denyPathPrefixes: ["private/"],
-			allowPathPrefixes: []
+			allowPathPrefixes: [],
+			targetExtensions: ["md", "txt"]
 		});
 
 		expect(isPathAllowedByGrepPolicy(".obsidian/workspace.json", settings)).toBe(false);
@@ -28,7 +29,8 @@ describe("grepPolicy", () => {
 		const settings = resolveGrepPermissionSettings({
 			enabled: true,
 			denyPathPrefixes: [],
-			allowPathPrefixes: ["notes/projects/"]
+			allowPathPrefixes: ["notes/projects/"],
+			targetExtensions: ["md", "txt"]
 		});
 
 		expect(getGrepPathPolicyError("drafts/", settings)).toBe(
@@ -40,11 +42,28 @@ describe("grepPolicy", () => {
 		const settings = resolveGrepPermissionSettings({
 			enabled: true,
 			denyPathPrefixes: ["private/"],
-			allowPathPrefixes: []
+			allowPathPrefixes: [],
+			targetExtensions: ["md", "txt"]
 		});
 
 		expect(getGrepPathPolicyError("private/", settings)).toBe(
 			'Access to path "private/" is denied by grep policy.'
 		);
+	});
+
+	it("normalizes target extensions and falls back to defaults", () => {
+		expect(
+			resolveGrepPermissionSettings({
+				enabled: true,
+				denyPathPrefixes: [],
+				allowPathPrefixes: [],
+				targetExtensions: [".MD", "txt", ""]
+			}).targetExtensions
+		).toEqual(["md", "txt"]);
+
+		expect(resolveGrepPermissionSettings({ targetExtensions: [] }).targetExtensions).toEqual([
+			"md",
+			"txt"
+		]);
 	});
 });

@@ -1,4 +1,4 @@
-import type { SearchDocument, SearchOptions } from "@sample/core";
+import type { SearchDocument } from "@sample/core";
 import type { Plugin } from "obsidian";
 import type { SamplePluginSettings } from "../../settings";
 import {
@@ -13,22 +13,28 @@ export type VaultSearchSource = {
 	getSkippedCount(): number;
 };
 
-type GrepPlugin = Plugin & { settings: SamplePluginSettings };
+export type VaultSourceOptions = {
+	pathPrefix?: string;
+	pathPrefixes?: string[];
+	excludePathPrefixes?: string[];
+};
 
-const SUPPORTED_EXTENSIONS = new Set(["md", "txt"]);
+type GrepPlugin = Plugin & { settings: SamplePluginSettings };
 
 export function isVaultSearchTarget(input: {
 	filePath: string;
 	extension: string;
 	configDir: string;
-	pathPrefix?: string;
+	pathPrefixes?: string[];
+	excludePathPrefixes?: string[];
+	targetExtensions: string[];
 	permissionSettings: GrepPermissionSettings;
 }): boolean {
 	if (input.filePath.startsWith(`${input.configDir}/`)) {
 		return false;
 	}
 
-	if (!SUPPORTED_EXTENSIONS.has(input.extension)) {
+	if (!input.targetExtensions.includes(input.extension.toLowerCase())) {
 		return false;
 	}
 
@@ -36,20 +42,36 @@ export function isVaultSearchTarget(input: {
 		return false;
 	}
 
-	if (!input.pathPrefix) {
+	if (
+		input.excludePathPrefixes?.some((pathPrefix) =>
+			pathMatchesPrefix(input.filePath, pathPrefix)
+		)
+	) {
+		return false;
+	}
+
+	if (!input.pathPrefixes || input.pathPrefixes.length === 0) {
 		return true;
 	}
 
-	return pathMatchesPrefix(input.filePath, input.pathPrefix);
+	return input.pathPrefixes.some((pathPrefix) => pathMatchesPrefix(input.filePath, pathPrefix));
 }
 
 export function buildVaultSource(
 	plugin: GrepPlugin,
-	options: Pick<SearchOptions, "pathPrefix">
+	options: VaultSourceOptions
 ): VaultSearchSource {
 	let skippedCount = 0;
-	const pathPrefix = normalizeGrepPathPrefix(options.pathPrefix);
 	const permissionSettings = plugin.settings.grepPermissionSettings;
+	const pathPrefixes =
+		options.pathPrefixes?.map((pathPrefix) => normalizeGrepPathPrefix(pathPrefix)).filter(
+			(pathPrefix): pathPrefix is string => pathPrefix !== undefined
+		) ??
+		(options.pathPrefix ? [normalizeGrepPathPrefix(options.pathPrefix)].filter(Boolean) : []);
+	const excludePathPrefixes =
+		options.excludePathPrefixes
+			?.map((pathPrefix) => normalizeGrepPathPrefix(pathPrefix))
+			.filter((pathPrefix): pathPrefix is string => pathPrefix !== undefined) ?? [];
 
 	return {
 		documents: {
@@ -60,7 +82,9 @@ export function buildVaultSource(
 							filePath: file.path,
 							extension: file.extension,
 							configDir: file.vault.configDir,
-							pathPrefix,
+							pathPrefixes,
+							excludePathPrefixes,
+							targetExtensions: permissionSettings.targetExtensions,
 							permissionSettings
 						})
 					) {

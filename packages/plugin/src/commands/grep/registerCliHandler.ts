@@ -1,39 +1,17 @@
 import { formatSearchResult, parseSearchOptions, searchDocuments } from "@sample/core";
 import type { CliHandler, Plugin } from "obsidian";
-import { getGrepPathPolicyError, type SamplePluginSettings } from "../../settings";
+import {
+	getGrepPathPolicyErrorForMany,
+	type SamplePluginSettings
+} from "../../settings";
+import {
+	buildCliFlags,
+	isManualRequest,
+	renderCommandReference
+} from "../../shared/cli/commandReference";
 import { buildVaultSource } from "./buildVaultSource";
 import { parseGrepCliArgs } from "./parseCliArgs";
-
-const CLI_FLAGS = {
-	pattern: {
-		value: "<pattern>",
-		description: "Search pattern.",
-		required: true
-	},
-	path: {
-		value: "<vault-path-prefix>",
-		description: "Limit the search to a vault-relative path prefix."
-	},
-	"fixed-strings": {
-		description: "Treat the pattern as a fixed substring."
-	},
-	"ignore-case": {
-		description: "Match case-insensitively."
-	},
-	"line-number": {
-		description: "Include 1-based line numbers in output."
-	},
-	"files-with-matches": {
-		description: "Only print paths with at least one match."
-	},
-	count: {
-		description: "Print the number of matches per file."
-	},
-	"max-results": {
-		value: "<number>",
-		description: "Stop after this many matches."
-	}
-};
+import { grepCommandSpec } from "./spec";
 
 function formatSkippedWarning(skippedFiles: number): string {
 	return skippedFiles === 1
@@ -45,13 +23,17 @@ type GrepPlugin = Plugin & { settings: SamplePluginSettings };
 
 export function registerGrepCliHandler(plugin: GrepPlugin): void {
 	const handler: CliHandler = async (params) => {
+		if (isManualRequest(params)) {
+			return renderCommandReference(grepCommandSpec);
+		}
+
 		const parsedArgs = parseGrepCliArgs(params);
 		if (!parsedArgs.ok) {
 			return parsedArgs.message;
 		}
 
-		const pathPolicyError = getGrepPathPolicyError(
-			parsedArgs.value.pathPrefix,
+		const pathPolicyError = getGrepPathPolicyErrorForMany(
+			parsedArgs.value.pathPrefixes ?? [],
 			plugin.settings.grepPermissionSettings
 		);
 		if (pathPolicyError) {
@@ -66,12 +48,12 @@ export function registerGrepCliHandler(plugin: GrepPlugin): void {
 		}
 
 		try {
-			const source = buildVaultSource(plugin, options);
+			const source = buildVaultSource(plugin, parsedArgs.value);
 			const result = await searchDocuments(source.documents, options);
 			result.skippedFiles = source.getSkippedCount();
 
 			const output = formatSearchResult(result, options);
-			if (result.skippedFiles === 0) {
+			if (result.skippedFiles === 0 || options.json) {
 				return output;
 			}
 
@@ -82,9 +64,9 @@ export function registerGrepCliHandler(plugin: GrepPlugin): void {
 	};
 
 	plugin.registerCliHandler(
-		"sample-monorepo-plugin-grep",
-		"Search markdown and text files in the current vault.",
-		CLI_FLAGS,
+		grepCommandSpec.name,
+		grepCommandSpec.summary,
+		buildCliFlags(grepCommandSpec),
 		handler
 	);
 }

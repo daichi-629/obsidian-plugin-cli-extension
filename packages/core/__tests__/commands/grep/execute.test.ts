@@ -16,11 +16,17 @@ describe("searchDocuments", () => {
 		);
 
 		expect(result.matches).toEqual([
-			{ path: "daily/2026-04-08.md", line: undefined, text: "TODO ship" },
-			{ path: "notes/ideas.md", line: undefined, text: "TODO test" }
+			{
+				path: "daily/2026-04-08.md",
+				line: undefined,
+				text: "TODO ship",
+				kind: "match"
+			},
+			{ path: "notes/ideas.md", line: undefined, text: "TODO test", kind: "match" }
 		]);
 		expect(result.matchedFiles).toBe(2);
 		expect(result.filesScanned).toBe(2);
+		expect(result.totalMatches).toBe(2);
 	});
 
 	it("supports regex and line numbers", async () => {
@@ -35,8 +41,8 @@ describe("searchDocuments", () => {
 		);
 
 		expect(result.matches).toEqual([
-			{ path: "notes/tasks.md", line: 2, text: "Todo later" },
-			{ path: "notes/tasks.md", line: 3, text: "TODO now" }
+			{ path: "notes/tasks.md", line: 2, text: "Todo later", kind: "match" },
+			{ path: "notes/tasks.md", line: 3, text: "TODO now", kind: "match" }
 		]);
 	});
 
@@ -56,6 +62,7 @@ describe("searchDocuments", () => {
 
 		expect(result.matches).toEqual([{ path: "a.md", text: "" }]);
 		expect(result.matchedFiles).toBe(1);
+		expect(result.totalMatches).toBe(2);
 	});
 
 	it("counts matches per file", async () => {
@@ -76,6 +83,7 @@ describe("searchDocuments", () => {
 			{ path: "a.md", text: "2" },
 			{ path: "b.md", text: "1" }
 		]);
+		expect(result.totalMatches).toBe(3);
 	});
 
 	it("stops early when maxResults is reached", async () => {
@@ -92,8 +100,63 @@ describe("searchDocuments", () => {
 			options
 		);
 
-		expect(result.matches).toEqual([{ path: "a.md", line: undefined, text: "TODO one" }]);
+		expect(result.matches).toEqual([
+			{ path: "a.md", line: undefined, text: "TODO one", kind: "match" }
+		]);
 		expect(result.stoppedEarly).toBe(true);
 		expect(result.filesScanned).toBe(1);
+		expect(result.totalMatches).toBe(1);
+	});
+
+	it("includes surrounding context lines without duplication", async () => {
+		const options = parseSearchOptions({
+			pattern: "TODO",
+			fixedStrings: true,
+			context: 1
+		});
+		const result = await searchDocuments(
+			[
+				{
+					path: "notes/context.md",
+					content: "first\nTODO alpha\nshared\nTODO beta\nlast"
+				}
+			],
+			options
+		);
+
+		expect(result.matches).toEqual([
+			{ path: "notes/context.md", line: 1, text: "first", kind: "context" },
+			{ path: "notes/context.md", line: 2, text: "TODO alpha", kind: "match" },
+			{ path: "notes/context.md", line: 3, text: "shared", kind: "context" },
+			{ path: "notes/context.md", line: 4, text: "TODO beta", kind: "match" },
+			{ path: "notes/context.md", line: 5, text: "last", kind: "context" }
+		]);
+		expect(result.totalMatches).toBe(2);
+	});
+
+	it("counts only matched lines toward maxResults when context is enabled", async () => {
+		const options = parseSearchOptions({
+			pattern: "TODO",
+			fixedStrings: true,
+			context: 1,
+			maxResults: 1
+		});
+		const result = await searchDocuments(
+			[
+				{
+					path: "notes/context.md",
+					content: "before\nTODO alpha\nafter\nTODO beta\nlast"
+				}
+			],
+			options
+		);
+
+		expect(result.matches).toEqual([
+			{ path: "notes/context.md", line: 1, text: "before", kind: "context" },
+			{ path: "notes/context.md", line: 2, text: "TODO alpha", kind: "match" },
+			{ path: "notes/context.md", line: 3, text: "after", kind: "context" }
+		]);
+		expect(result.totalMatches).toBe(1);
+		expect(result.stoppedEarly).toBe(true);
 	});
 });

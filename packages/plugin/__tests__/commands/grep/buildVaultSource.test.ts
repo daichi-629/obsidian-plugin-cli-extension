@@ -6,7 +6,8 @@ import type { GrepPermissionSettings } from "../../../src/settings";
 const defaultPermissionSettings: GrepPermissionSettings = {
 	enabled: true,
 	denyPathPrefixes: [".obsidian/", "templates/private/"],
-	allowPathPrefixes: []
+	allowPathPrefixes: [],
+	targetExtensions: ["md", "txt"]
 };
 
 describe("isVaultSearchTarget", () => {
@@ -16,7 +17,9 @@ describe("isVaultSearchTarget", () => {
 				filePath: ".obsidian/workspace.json",
 				extension: "json",
 				configDir: ".obsidian",
-				pathPrefix: undefined,
+				pathPrefixes: undefined,
+				excludePathPrefixes: undefined,
+				targetExtensions: defaultPermissionSettings.targetExtensions,
 				permissionSettings: defaultPermissionSettings
 			})
 		).toBe(false);
@@ -26,7 +29,9 @@ describe("isVaultSearchTarget", () => {
 				filePath: "templates/private/secret.md",
 				extension: "md",
 				configDir: ".obsidian",
-				pathPrefix: undefined,
+				pathPrefixes: undefined,
+				excludePathPrefixes: undefined,
+				targetExtensions: defaultPermissionSettings.targetExtensions,
 				permissionSettings: defaultPermissionSettings
 			})
 		).toBe(false);
@@ -38,7 +43,9 @@ describe("isVaultSearchTarget", () => {
 				filePath: "daily/2026-04-08.md",
 				extension: "md",
 				configDir: ".obsidian",
-				pathPrefix: "daily/",
+				pathPrefixes: ["daily/"],
+				excludePathPrefixes: undefined,
+				targetExtensions: defaultPermissionSettings.targetExtensions,
 				permissionSettings: defaultPermissionSettings
 			})
 		).toBe(true);
@@ -48,7 +55,35 @@ describe("isVaultSearchTarget", () => {
 				filePath: "notes/ideas.md",
 				extension: "md",
 				configDir: ".obsidian",
-				pathPrefix: "daily/",
+				pathPrefixes: ["daily/"],
+				excludePathPrefixes: undefined,
+				targetExtensions: defaultPermissionSettings.targetExtensions,
+				permissionSettings: defaultPermissionSettings
+			})
+		).toBe(false);
+	});
+
+	it("supports multiple include prefixes and exclude prefixes", () => {
+		expect(
+			isVaultSearchTarget({
+				filePath: "projects/active.md",
+				extension: "md",
+				configDir: ".obsidian",
+				pathPrefixes: ["projects/", "reference/"],
+				excludePathPrefixes: ["projects/archive/"],
+				targetExtensions: defaultPermissionSettings.targetExtensions,
+				permissionSettings: defaultPermissionSettings
+			})
+		).toBe(true);
+
+		expect(
+			isVaultSearchTarget({
+				filePath: "projects/archive/old.md",
+				extension: "md",
+				configDir: ".obsidian",
+				pathPrefixes: ["projects/", "reference/"],
+				excludePathPrefixes: ["projects/archive/"],
+				targetExtensions: defaultPermissionSettings.targetExtensions,
 				permissionSettings: defaultPermissionSettings
 			})
 		).toBe(false);
@@ -79,6 +114,11 @@ describe("buildVaultSource", () => {
 								path: "notes/ideas.txt",
 								extension: "txt",
 								vault: { configDir: ".obsidian" }
+							},
+							{
+								path: "notes/data.canvas",
+								extension: "canvas",
+								vault: { configDir: ".obsidian" }
 							}
 						];
 					},
@@ -101,5 +141,53 @@ describe("buildVaultSource", () => {
 
 		expect(documents).toEqual([{ path: "daily/2026-04-08.md", content: "TODO ship" }]);
 		expect(source.getSkippedCount()).toBe(1);
+	});
+
+	it("uses configured target extensions and path filters", async () => {
+		const plugin = {
+			settings: {
+				grepPermissionSettings: {
+					...defaultPermissionSettings,
+					targetExtensions: ["canvas"]
+				}
+			},
+			app: {
+				vault: {
+					getFiles() {
+						return [
+							{
+								path: "projects/board.canvas",
+								extension: "canvas",
+								vault: { configDir: ".obsidian" }
+							},
+							{
+								path: "projects/archive/old.canvas",
+								extension: "canvas",
+								vault: { configDir: ".obsidian" }
+							},
+							{
+								path: "notes/ideas.md",
+								extension: "md",
+								vault: { configDir: ".obsidian" }
+							}
+						];
+					},
+					async cachedRead() {
+						return "TODO ship";
+					}
+				}
+			}
+		} as unknown as SampleMonorepoPlugin;
+
+		const source = buildVaultSource(plugin, {
+			pathPrefixes: ["projects/"],
+			excludePathPrefixes: ["projects/archive/"]
+		});
+		const documents = [];
+		for await (const document of source.documents) {
+			documents.push(document);
+		}
+
+		expect(documents).toEqual([{ path: "projects/board.canvas", content: "TODO ship" }]);
 	});
 });
