@@ -40,3 +40,5 @@ styles.css
 vault/*
 !vault/.gitkeep
 home/
+
+.pnpm-store

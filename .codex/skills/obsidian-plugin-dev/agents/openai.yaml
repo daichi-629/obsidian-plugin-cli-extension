@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian Plugin Dev"
+  short_description: "Guidance for Obsidian plugin development"
+  default_prompt: "Use $obsidian-plugin-dev to work on this Obsidian plugin workspace."
