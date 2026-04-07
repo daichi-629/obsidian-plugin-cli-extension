@@ -8,6 +8,7 @@
 		"dev": "pnpm --filter plugin run dev",
 		"lint": "pnpm -r run lint",
 		"test": "pnpm -r run test",
+		"vault:generate": "node ./scripts/generate-test-vault.mjs",
 		"format": "prettier -w .",
 		"format:check": "prettier -c .",
 		"version:bump": "node ./scripts/version-bump.mjs",

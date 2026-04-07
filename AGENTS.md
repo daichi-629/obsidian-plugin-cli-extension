@@ -11,6 +11,7 @@
 - `packages/plugin`: Obsidian plugin package. Contains `src/main.ts`, `manifest.json`, `versions.json`, `styles.css`, `esbuild.config.mjs`, and the bundled `main.js`.
 - `packages/core`: Shared logic that should stay independent from the Obsidian API.
 - `vault/`: Local development vault. Watch builds copy the publishable plugin files into `vault/.obsidian/plugins/sample-monorepo-plugin/`.
+- The test vault's baseline data in `vault/` comes from `scripts/generate-test-vault.mjs` via `pnpm run vault:generate`; manual edits and command-driven changes during testing are fine, but regenerate when you need to restore the base fixture state.
 
 ## Working rules
 

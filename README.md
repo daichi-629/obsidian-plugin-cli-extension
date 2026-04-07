@@ -38,6 +38,12 @@ Install dependencies inside the container:
 ./bin/obsidian-dev pnpm install
 ```
 
+Generate or refresh the baseline test vault fixtures before vault-backed testing:
+
+```bash
+./bin/obsidian-dev pnpm run vault:generate
+```
+
 Start the plugin watcher:
 
 ```bash
@@ -71,6 +77,8 @@ for scripts and automation.
 ## Vault and ports
 
 The development vault is mounted at `/config/vault` inside the container and is backed by [`./vault`](/home/daichi/ghq/github.com/daichi-629/obsidian-simple-plugin-monorepo/vault) in this repository.
+
+Treat [`scripts/generate-test-vault.mjs`](/home/daichi/ghq/github.com/daichi-629/obsidian-plugin-cli-extension/scripts/generate-test-vault.mjs) as the source for the test vault's baseline data, and use `pnpm run vault:generate` when you want to reset or refresh that starting state. Tests may still edit the vault manually or through commands after generation.
 
 The default exposed ports are `3000` and `3001`. To change them, edit the `ports` section in [`compose.yml`](/home/daichi/ghq/github.com/daichi-629/obsidian-simple-plugin-monorepo/compose.yml).
 
