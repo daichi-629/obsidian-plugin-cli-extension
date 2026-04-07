@@ -21,16 +21,11 @@ function readPath(line: string, prefix: string): string {
 
 function isHeader(line: string): boolean {
 	return (
-		line.startsWith(ADD_FILE) ||
-		line.startsWith(DELETE_FILE) ||
-		line.startsWith(UPDATE_FILE)
+		line.startsWith(ADD_FILE) || line.startsWith(DELETE_FILE) || line.startsWith(UPDATE_FILE)
 	);
 }
 
-function finalizeChunk(
-	chunks: UpdateChunk[],
-	chunk: UpdateChunk | null
-): void {
+function finalizeChunk(chunks: UpdateChunk[], chunk: UpdateChunk | null): void {
 	if (!chunk) {
 		return;
 	}
@@ -47,7 +42,10 @@ function finalizeChunk(
 	chunks.push(chunk);
 }
 
-function parseUpdateChunks(lines: string[], startIndex: number): {
+function parseUpdateChunks(
+	lines: string[],
+	startIndex: number
+): {
 	chunks: UpdateChunk[];
 	nextIndex: number;
 } {
@@ -122,7 +120,10 @@ function parseUpdateChunks(lines: string[], startIndex: number): {
 	return { chunks, nextIndex: index };
 }
 
-function parseAddOperation(lines: string[], startIndex: number): {
+function parseAddOperation(
+	lines: string[],
+	startIndex: number
+): {
 	operation: ApplyPatchOperation;
 	nextIndex: number;
 } {
@@ -158,7 +159,10 @@ function parseAddOperation(lines: string[], startIndex: number): {
 	};
 }
 
-function parseDeleteOperation(lines: string[], startIndex: number): {
+function parseDeleteOperation(
+	lines: string[],
+	startIndex: number
+): {
 	operation: ApplyPatchOperation;
 	nextIndex: number;
 } {
@@ -171,7 +175,10 @@ function parseDeleteOperation(lines: string[], startIndex: number): {
 	};
 }
 
-function parseUpdateOperation(lines: string[], startIndex: number): {
+function parseUpdateOperation(
+	lines: string[],
+	startIndex: number
+): {
 	operation: ApplyPatchOperation;
 	nextIndex: number;
 } {

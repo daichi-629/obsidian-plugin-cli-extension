@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-	parseApplyPatch,
-	planApplyPatchChanges,
-	validateApplyPatchInput
-} from "../../../src";
+import { parseApplyPatch, planApplyPatchChanges, validateApplyPatchInput } from "../../../src";
 
 describe("parseApplyPatch", () => {
 	it("parses add, delete, update, and move operations", () => {

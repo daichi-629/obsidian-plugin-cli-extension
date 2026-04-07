@@ -18,11 +18,12 @@ function getNodeRequire(): ((specifier: string) => unknown) | undefined {
 	return typeof require === "function" ? require : undefined;
 }
 
-function isInsideRoot(pathModule: NodePathModule, candidatePath: string, rootPath: string): boolean {
-	return (
-		candidatePath === rootPath ||
-		candidatePath.startsWith(`${rootPath}${pathModule.sep}`)
-	);
+function isInsideRoot(
+	pathModule: NodePathModule,
+	candidatePath: string,
+	rootPath: string
+): boolean {
+	return candidatePath === rootPath || candidatePath.startsWith(`${rootPath}${pathModule.sep}`);
 }
 
 function getVaultBasePath(plugin: Plugin): string | undefined {
@@ -35,7 +36,10 @@ function getVaultBasePath(plugin: Plugin): string | undefined {
 }
 
 function validateVaultPatchFilePath(path: string): string {
-	const normalized = path.replace(/^vault:/, "").replace(/^\/+/, "").replace(/\\/g, "/");
+	const normalized = path
+		.replace(/^vault:/, "")
+		.replace(/^\/+/, "")
+		.replace(/\\/g, "/");
 	if (normalized.length === 0) {
 		throw new UserError("The --patch-file vault path must not be empty.");
 	}
@@ -72,7 +76,9 @@ export async function buildVaultPatchSource(
 
 	const runtimeRequire = getNodeRequire();
 	if (!runtimeRequire) {
-		throw new UserError("Filesystem patch files require a desktop runtime with Node.js access.");
+		throw new UserError(
+			"Filesystem patch files require a desktop runtime with Node.js access."
+		);
 	}
 
 	if (!process || typeof process.cwd !== "function") {
