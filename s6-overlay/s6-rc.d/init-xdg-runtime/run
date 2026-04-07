@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv bash
+set -euo pipefail
+
+runtime_dir="${XDG_RUNTIME_DIR:-/config/.XDG}"
+
+mkdir -p "$runtime_dir"
+chmod 700 "$runtime_dir"
+
+if getent passwd abc >/dev/null 2>&1; then
+  chown abc:abc "$runtime_dir"
+fi

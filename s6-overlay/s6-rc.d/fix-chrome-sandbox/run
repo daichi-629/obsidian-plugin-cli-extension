@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+set -euo pipefail
+
+if [ -e /opt/obsidian/chrome-sandbox ]; then
+  chown root:root /opt/obsidian/chrome-sandbox
+  chmod 4755 /opt/obsidian/chrome-sandbox
+fi

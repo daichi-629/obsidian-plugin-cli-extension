@@ -1,0 +1,22 @@
+---
+services:
+  obsidian:
+    build:
+      context: .
+      dockerfile: Dockerfile.obsidian
+    working_dir: /workspace
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Tokyo
+      - LC_ALL=ja_JP.UTF-8
+      - XDG_RUNTIME_DIR=/config/.XDG
+    volumes:
+      - .:/workspace
+      - ./home:/config
+      - ./vault:/config/vault
+    ports:
+      - 127.0.0.1:3000:3000
+      - 127.0.0.1:3001:3001
+    shm_size: "2gb"
+    restart: unless-stopped
