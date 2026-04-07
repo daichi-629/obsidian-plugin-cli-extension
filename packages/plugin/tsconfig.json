@@ -7,5 +7,5 @@
 			"@sample/core": ["../core/src"]
 		}
 	},
-	"include": ["src"]
+	"include": ["src", "__tests__", "vitest.config.mts"]
 }

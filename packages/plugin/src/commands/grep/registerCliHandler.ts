@@ -1,9 +1,6 @@
-import {
-	formatSearchResult,
-	parseSearchOptions,
-	searchDocuments
-} from "@sample/core";
+import { formatSearchResult, parseSearchOptions, searchDocuments } from "@sample/core";
 import type { CliHandler, Plugin } from "obsidian";
+import { getGrepPathPolicyError, type SamplePluginSettings } from "../../settings";
 import { buildVaultSource } from "./buildVaultSource";
 import { parseGrepCliArgs } from "./parseCliArgs";
 
@@ -44,11 +41,21 @@ function formatSkippedWarning(skippedFiles: number): string {
 		: `(${skippedFiles} files skipped due to read error)`;
 }
 
-export function registerGrepCliHandler(plugin: Plugin): void {
+type GrepPlugin = Plugin & { settings: SamplePluginSettings };
+
+export function registerGrepCliHandler(plugin: GrepPlugin): void {
 	const handler: CliHandler = async (params) => {
 		const parsedArgs = parseGrepCliArgs(params);
 		if (!parsedArgs.ok) {
 			return parsedArgs.message;
+		}
+
+		const pathPolicyError = getGrepPathPolicyError(
+			parsedArgs.value.pathPrefix,
+			plugin.settings.grepPermissionSettings
+		);
+		if (pathPolicyError) {
+			return pathPolicyError;
 		}
 
 		let options;

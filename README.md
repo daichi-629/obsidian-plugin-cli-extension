@@ -56,6 +56,18 @@ Example:
 ./bin/obsidian-dev obsidian help
 ```
 
+The sample plugin also registers a grep-oriented CLI handler:
+
+```bash
+./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=TODO
+./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=TODO path=daily/ line-number
+./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=TODO files-with-matches
+```
+
+Use Obsidian's built-in `search` for general-purpose searching. Use `sample-monorepo-plugin-grep`
+when you need grep-style output control such as `files-with-matches`, `count`, or `max-results`
+for scripts and automation.
+
 ## Vault and ports
 
 The development vault is mounted at `/config/vault` inside the container and is backed by [`./vault`](/home/daichi/ghq/github.com/daichi-629/obsidian-simple-plugin-monorepo/vault) in this repository.

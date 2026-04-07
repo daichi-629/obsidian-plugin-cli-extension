@@ -1,47 +1,69 @@
 import type { SearchDocument, SearchOptions } from "@sample/core";
-import { TFile, type Plugin } from "obsidian";
+import type { Plugin } from "obsidian";
+import type { SamplePluginSettings } from "../../settings";
+import {
+	isPathAllowedByGrepPolicy,
+	normalizeGrepPathPrefix,
+	pathMatchesPrefix,
+	type GrepPermissionSettings
+} from "../../settings";
 
 export type VaultSearchSource = {
 	documents: AsyncIterable<SearchDocument>;
 	getSkippedCount(): number;
 };
 
+type GrepPlugin = Plugin & { settings: SamplePluginSettings };
+
 const SUPPORTED_EXTENSIONS = new Set(["md", "txt"]);
 
-function normalizePathPrefix(pathPrefix?: string): string | undefined {
-	const normalized = pathPrefix?.replace(/^\/+|\/+$/g, "");
-	return normalized ? `${normalized}/` : undefined;
-}
-
-function isSearchTarget(file: TFile, pathPrefix?: string): boolean {
-	const configDirPrefix = `${file.vault.configDir}/`;
-	if (file.path.startsWith(configDirPrefix)) {
+export function isVaultSearchTarget(input: {
+	filePath: string;
+	extension: string;
+	configDir: string;
+	pathPrefix?: string;
+	permissionSettings: GrepPermissionSettings;
+}): boolean {
+	if (input.filePath.startsWith(`${input.configDir}/`)) {
 		return false;
 	}
 
-	if (!SUPPORTED_EXTENSIONS.has(file.extension)) {
+	if (!SUPPORTED_EXTENSIONS.has(input.extension)) {
 		return false;
 	}
 
-	if (!pathPrefix) {
+	if (!isPathAllowedByGrepPolicy(input.filePath, input.permissionSettings)) {
+		return false;
+	}
+
+	if (!input.pathPrefix) {
 		return true;
 	}
 
-	return file.path === pathPrefix.slice(0, -1) || file.path.startsWith(pathPrefix);
+	return pathMatchesPrefix(input.filePath, input.pathPrefix);
 }
 
 export function buildVaultSource(
-	plugin: Plugin,
+	plugin: GrepPlugin,
 	options: Pick<SearchOptions, "pathPrefix">
 ): VaultSearchSource {
 	let skippedCount = 0;
-	const pathPrefix = normalizePathPrefix(options.pathPrefix);
+	const pathPrefix = normalizeGrepPathPrefix(options.pathPrefix);
+	const permissionSettings = plugin.settings.grepPermissionSettings;
 
 	return {
 		documents: {
 			async *[Symbol.asyncIterator]() {
 				for (const file of plugin.app.vault.getFiles()) {
-					if (!isSearchTarget(file, pathPrefix)) {
+					if (
+						!isVaultSearchTarget({
+							filePath: file.path,
+							extension: file.extension,
+							configDir: file.vault.configDir,
+							pathPrefix,
+							permissionSettings
+						})
+					) {
 						continue;
 					}
 

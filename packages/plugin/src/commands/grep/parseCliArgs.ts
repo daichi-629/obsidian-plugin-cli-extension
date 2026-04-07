@@ -1,10 +1,11 @@
 import type { CliData } from "obsidian";
+import { normalizeGrepPathPrefix } from "../../settings";
 import type { PluginCliParseResult } from "../types";
 import type { GrepCliInput } from "./types";
 
 function readFlag(params: CliData, hyphenated: string, camelCase: string): boolean {
 	const value = params[hyphenated] ?? params[camelCase];
-	return value === "true";
+	return value === true || value === "true";
 }
 
 function readValue(params: CliData, hyphenated: string, camelCase: string): string | undefined {
@@ -13,13 +14,13 @@ function readValue(params: CliData, hyphenated: string, camelCase: string): stri
 
 export function parseGrepCliArgs(params: CliData): PluginCliParseResult<GrepCliInput> {
 	const pattern = readValue(params, "pattern", "pattern");
-	const pathPrefix = readValue(params, "path", "path");
+	const pathPrefix = normalizeGrepPathPrefix(readValue(params, "path", "path"));
 	const maxResultsValue = readValue(params, "max-results", "maxResults");
 
 	let maxResults: number | undefined;
 	if (maxResultsValue !== undefined) {
 		maxResults = Number.parseInt(maxResultsValue, 10);
-		if (Number.isNaN(maxResults)) {
+		if (!Number.isInteger(maxResults) || maxResults <= 0) {
 			return {
 				ok: false,
 				message: "The --max-results option must be a positive integer."

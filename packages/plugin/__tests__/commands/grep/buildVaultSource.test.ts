@@ -1,0 +1,105 @@
+import { describe, expect, it } from "vitest";
+import { buildVaultSource, isVaultSearchTarget } from "../../../src/commands/grep/buildVaultSource";
+import type SampleMonorepoPlugin from "../../../src/main";
+import type { GrepPermissionSettings } from "../../../src/settings";
+
+const defaultPermissionSettings: GrepPermissionSettings = {
+	enabled: true,
+	denyPathPrefixes: [".obsidian/", "templates/private/"],
+	allowPathPrefixes: []
+};
+
+describe("isVaultSearchTarget", () => {
+	it("filters unsupported extensions, config files, and denied paths", () => {
+		expect(
+			isVaultSearchTarget({
+				filePath: ".obsidian/workspace.json",
+				extension: "json",
+				configDir: ".obsidian",
+				pathPrefix: undefined,
+				permissionSettings: defaultPermissionSettings
+			})
+		).toBe(false);
+
+		expect(
+			isVaultSearchTarget({
+				filePath: "templates/private/secret.md",
+				extension: "md",
+				configDir: ".obsidian",
+				pathPrefix: undefined,
+				permissionSettings: defaultPermissionSettings
+			})
+		).toBe(false);
+	});
+
+	it("applies the requested path prefix after policy filtering", () => {
+		expect(
+			isVaultSearchTarget({
+				filePath: "daily/2026-04-08.md",
+				extension: "md",
+				configDir: ".obsidian",
+				pathPrefix: "daily/",
+				permissionSettings: defaultPermissionSettings
+			})
+		).toBe(true);
+
+		expect(
+			isVaultSearchTarget({
+				filePath: "notes/ideas.md",
+				extension: "md",
+				configDir: ".obsidian",
+				pathPrefix: "daily/",
+				permissionSettings: defaultPermissionSettings
+			})
+		).toBe(false);
+	});
+});
+
+describe("buildVaultSource", () => {
+	it("builds documents only from allowed vault files and tracks skipped reads", async () => {
+		const plugin = {
+			settings: {
+				grepPermissionSettings: defaultPermissionSettings
+			},
+			app: {
+				vault: {
+					getFiles() {
+						return [
+							{
+								path: "daily/2026-04-08.md",
+								extension: "md",
+								vault: { configDir: ".obsidian" }
+							},
+							{
+								path: "templates/private/secret.md",
+								extension: "md",
+								vault: { configDir: ".obsidian" }
+							},
+							{
+								path: "notes/ideas.txt",
+								extension: "txt",
+								vault: { configDir: ".obsidian" }
+							}
+						];
+					},
+					async cachedRead(file: { path: string }) {
+						if (file.path === "notes/ideas.txt") {
+							throw new Error("read failed");
+						}
+
+						return "TODO ship";
+					}
+				}
+			}
+		} as unknown as SampleMonorepoPlugin;
+
+		const source = buildVaultSource(plugin, { pathPrefix: undefined });
+		const documents = [];
+		for await (const document of source.documents) {
+			documents.push(document);
+		}
+
+		expect(documents).toEqual([{ path: "daily/2026-04-08.md", content: "TODO ship" }]);
+		expect(source.getSkippedCount()).toBe(1);
+	});
+});
