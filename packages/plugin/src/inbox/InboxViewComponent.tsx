@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { SuggestionCard } from "@sample/core";
-import { executeDelete, executeUpdate } from "@sample/core";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -13,122 +12,24 @@ import {
 	getSortedRowModel,
 	useReactTable
 } from "@tanstack/react-table";
-import { MarkdownRenderer, Menu } from "obsidian";
+import { executeDelete, executeUpdate } from "@sample/core";
+import { Menu } from "obsidian";
 import type { App, Component } from "obsidian";
 import type { InboxStoreManager } from "./InboxStoreManager";
 import type { InboxSettings } from "./inboxSettings";
-
-type FilterStatus = SuggestionCard["status"];
-type FeedbackState = { kind: "success" | "error" | "info"; message: string } | null;
-
-const PRIORITY_ORDER: Record<SuggestionCard["priority"], number> = { high: 0, medium: 1, low: 2 };
-const DEFAULT_FILTER_STATUS: FilterStatus[] = ["open", "snoozed", "done", "dismissed"];
-
-function filterAndSort(cards: SuggestionCard[], statuses: FilterStatus[]): SuggestionCard[] {
-	return [...cards]
-		.filter((card) => statuses.includes(card.status))
-		.sort((left, right) => {
-			const priorityDiff = PRIORITY_ORDER[left.priority] - PRIORITY_ORDER[right.priority];
-			return priorityDiff !== 0 ? priorityDiff : left.createdAt < right.createdAt ? -1 : 1;
-		});
-}
-
-function statusLabel(status: SuggestionCard["status"]): string {
-	switch (status) {
-		case "open":
-			return "Open";
-		case "snoozed":
-			return "Snoozed";
-		case "done":
-			return "Done";
-		case "dismissed":
-			return "Dismissed";
-	}
-}
-
-function formatDateTime(value: string | undefined): string | null {
-	if (!value) return null;
-
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) {
-		return value;
-	}
-
-	return new Intl.DateTimeFormat(undefined, {
-		dateStyle: "medium",
-		timeStyle: "short"
-	}).format(date);
-}
-
-function cardMatchesQuery(card: SuggestionCard, query: string): boolean {
-	const needle = query.trim().toLowerCase();
-	if (!needle) return true;
-
-	return [
-		card.title,
-		card.summary,
-		card.kind,
-		card.status,
-		card.priority,
-		card.relatedPaths.join(" "),
-		card.source.command
-	]
-		.join(" ")
-		.toLowerCase()
-		.includes(needle);
-}
-
-function MarkdownSummary({
-	app,
-	content,
-	component
-}: {
-	app: App;
-	content: string;
-	component: Component;
-}) {
-	const ref = useRef<HTMLDivElement>(null);
-	useEffect(() => {
-		const el = ref.current;
-		if (!el) return;
-		el.empty();
-		void MarkdownRenderer.render(app, content, el, "", component);
-	}, [app, content, component]);
-	return <div ref={ref} className="inbox-view-summary" />;
-}
-
-function PriorityBadge({ priority }: { priority: SuggestionCard["priority"] }) {
-	return (
-		<span className="inbox-view-priority-badge" data-priority={priority}>
-			{priority}
-		</span>
-	);
-}
-
-function StatusBadge({ status }: { status: SuggestionCard["status"] }) {
-	return (
-		<span className="inbox-view-status-badge" data-status={status}>
-			{statusLabel(status)}
-		</span>
-	);
-}
-
-function CardStateSummary({ card }: { card: SuggestionCard }) {
-	const snoozedUntil = formatDateTime(card.snoozedUntil);
-	const dismissedAt = formatDateTime(card.dismissedAt);
-	const updatedAt = formatDateTime(card.updatedAt);
-
-	return (
-		<div className="inbox-view-card-state">
-			<span>
-				Status: <strong>{statusLabel(card.status)}</strong>
-			</span>
-			{snoozedUntil && card.status === "snoozed" && <span>Until: {snoozedUntil}</span>}
-			{dismissedAt && card.status === "dismissed" && <span>Dismissed: {dismissedAt}</span>}
-			{updatedAt && <span>Updated: {updatedAt}</span>}
-		</div>
-	);
-}
+import {
+	cardMatchesQuery,
+	CardStateSummary,
+	DEFAULT_FILTER_STATUS,
+	filterAndSort,
+	formatDateTime,
+	MarkdownSummary,
+	PRIORITY_ORDER,
+	PriorityBadge,
+	StatusBadge,
+	statusLabel
+} from "./inboxViewShared";
+import { useInboxCardActions } from "./useInboxCardActions";
 
 export interface InboxViewComponentProps {
 	store: InboxStoreManager;
@@ -138,9 +39,6 @@ export interface InboxViewComponentProps {
 }
 
 export function InboxViewComponent({ store, app, component }: InboxViewComponentProps) {
-	const [cards, setCards] = useState<SuggestionCard[]>([]);
-	const [feedback, setFeedback] = useState<FeedbackState>(null);
-	const [pendingActionLabel, setPendingActionLabel] = useState<string | null>(null);
 	const [sorting, setSorting] = useState<SortingState>([{ id: "updatedAt", desc: true }]);
 	const [globalFilter, setGlobalFilter] = useState("");
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
@@ -151,152 +49,26 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 	const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
 	const [detailWidth, setDetailWidth] = useState(360);
-	const cardsRef = useRef<SuggestionCard[]>([]);
-
-	useEffect(() => {
-		cardsRef.current = cards;
-	}, [cards]);
+	const {
+		cards,
+		cardsRef,
+		feedback,
+		pendingActionLabel,
+		persistCards,
+		setFeedback,
+		handleSetStatus,
+		showDeleteMenu,
+		showSnoozeMenu
+	} = useInboxCardActions({
+		store,
+		onDeleteSelection: (deletedCardId) => {
+			setSelectedCardId((current) => (current === deletedCardId ? null : current));
+		}
+	});
 
 	useEffect(() => {
 		setColumnVisibility((current) => ({ ...current, select: selectionMode }));
 	}, [selectionMode]);
-
-	const reload = useCallback(async () => {
-		const loaded = await store.loadCards();
-		setCards(loaded);
-	}, [store]);
-
-	const wakeupSnoozed = useCallback(async () => {
-		const now = new Date();
-		const toWake = cardsRef.current.filter(
-			(card) => card.status === "snoozed" && card.snoozedUntil && new Date(card.snoozedUntil) <= now
-		);
-		if (toWake.length === 0) return;
-
-		let updated = cardsRef.current;
-		for (const card of toWake) {
-			const result = executeUpdate(updated, { id: card.id, status: "open", now });
-			updated = result.cards;
-		}
-
-		setCards(updated);
-		await store.saveCards(updated);
-	}, [store]);
-
-	useEffect(() => {
-		void reload();
-		const id = window.setInterval(() => void wakeupSnoozed(), 60_000);
-		return () => window.clearInterval(id);
-	}, [reload, wakeupSnoozed]);
-
-	const persistCards = useCallback(
-		async (nextCards: SuggestionCard[], pendingLabel: string, successMessage: string) => {
-			setPendingActionLabel(pendingLabel);
-			setFeedback(null);
-			try {
-				await store.saveCards(nextCards);
-				setCards(nextCards);
-				setFeedback({ kind: "success", message: successMessage });
-			} catch (error) {
-				setFeedback({
-					kind: "error",
-					message:
-						error instanceof Error
-							? `Failed to save inbox changes: ${error.message}`
-							: "Failed to save inbox changes."
-				});
-			} finally {
-				setPendingActionLabel(null);
-			}
-		},
-		[store]
-	);
-
-	const handleSetStatus = useCallback(
-		async (card: SuggestionCard, status: SuggestionCard["status"]) => {
-			const result = executeUpdate(cardsRef.current, { id: card.id, status, now: new Date() });
-			if (!result.updated) {
-				setFeedback({ kind: "error", message: `Card ${card.id} was not found.` });
-				return;
-			}
-
-			const message =
-				card.status === status
-					? `${card.title} is already ${statusLabel(status).toLowerCase()}.`
-					: `${card.title} marked ${statusLabel(status).toLowerCase()}.`;
-			await persistCards(result.cards, `Saving ${statusLabel(status).toLowerCase()} state...`, message);
-		},
-		[persistCards]
-	);
-
-	const handleSnoozeCard = useCallback(
-		async (card: SuggestionCard, until: Date) => {
-			const result = executeUpdate(cardsRef.current, {
-				id: card.id,
-				status: "snoozed",
-				snoozedUntil: until.toISOString(),
-				now: new Date()
-			});
-			if (!result.updated) {
-				setFeedback({ kind: "error", message: `Card ${card.id} was not found.` });
-				return;
-			}
-
-			const untilLabel = formatDateTime(until.toISOString()) ?? until.toISOString();
-			await persistCards(result.cards, "Saving snooze...", `${card.title} snoozed until ${untilLabel}.`);
-		},
-		[persistCards]
-	);
-
-	const handleSnoozeMenu = useCallback(
-		(e: React.MouseEvent, card: SuggestionCard) => {
-			const options: Array<{ label: string; getDate: () => Date }> = [
-				{ label: "1 hour", getDate: () => new Date(Date.now() + 60 * 60 * 1000) },
-				{ label: "3 hours", getDate: () => new Date(Date.now() + 3 * 60 * 60 * 1000) },
-				{
-					label: "Tomorrow",
-					getDate: () => {
-						const date = new Date();
-						date.setDate(date.getDate() + 1);
-						date.setHours(9, 0, 0, 0);
-						return date;
-					}
-				},
-				{ label: "1 week", getDate: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
-			];
-			const menu = new Menu();
-			for (const option of options) {
-				menu.addItem((item) => {
-					item.setTitle(option.label);
-					item.onClick(() => void handleSnoozeCard(card, option.getDate()));
-				});
-			}
-			menu.showAtMouseEvent(e.nativeEvent);
-		},
-		[handleSnoozeCard]
-	);
-
-	const handleDeleteCard = useCallback(
-		(e: React.MouseEvent, card: SuggestionCard) => {
-			const menu = new Menu();
-			menu.addItem((item) => {
-				item.setTitle(`Delete "${card.title}"`);
-				item.onClick(() => {
-					void (async () => {
-						const result = executeDelete(cardsRef.current, card.id);
-						if (!result.deleted) {
-							setFeedback({ kind: "error", message: `Card ${card.id} was not found.` });
-							return;
-						}
-						setSelectedCardId((current) => (current === card.id ? null : current));
-						await persistCards(result.cards, "Deleting card...", `${card.title} deleted.`);
-					})();
-				});
-			});
-			menu.showAtMouseEvent(e.nativeEvent);
-		},
-		[persistCards]
-	);
 
 	const handleBulkSetStatus = useCallback(
 		async (ids: string[], status: SuggestionCard["status"]) => {
@@ -601,34 +373,34 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 
 				{selectionMode && (
 					<div className="inbox-view-list-bulkbar">
-					<span>{selectedIds.length} selected</span>
-					<button
-						type="button"
-						disabled={selectedIds.length === 0 || pendingActionLabel !== null}
-						onClick={() => void handleBulkSetStatus(selectedIds, "done")}
-					>
-						Mark done
-					</button>
-					<button
-						type="button"
-						disabled={selectedIds.length === 0 || pendingActionLabel !== null}
-						onClick={() => void handleBulkSetStatus(selectedIds, "dismissed")}
-					>
-						Dismiss
-					</button>
-					<button
-						type="button"
-						disabled={selectedIds.length === 0 || pendingActionLabel !== null}
-						onClick={() => void handleBulkDelete(selectedIds)}
-						className="inbox-view-danger-button"
-					>
-						Delete
-					</button>
-					{selectedIds.length > 0 && (
-						<button type="button" onClick={() => setRowSelection({})}>
-							Clear
+						<span>{selectedIds.length} selected</span>
+						<button
+							type="button"
+							disabled={selectedIds.length === 0 || pendingActionLabel !== null}
+							onClick={() => void handleBulkSetStatus(selectedIds, "done")}
+						>
+							Mark done
 						</button>
-					)}
+						<button
+							type="button"
+							disabled={selectedIds.length === 0 || pendingActionLabel !== null}
+							onClick={() => void handleBulkSetStatus(selectedIds, "dismissed")}
+						>
+							Dismiss
+						</button>
+						<button
+							type="button"
+							disabled={selectedIds.length === 0 || pendingActionLabel !== null}
+							onClick={() => void handleBulkDelete(selectedIds)}
+							className="inbox-view-danger-button"
+						>
+							Delete
+						</button>
+						{selectedIds.length > 0 && (
+							<button type="button" onClick={() => setRowSelection({})}>
+								Clear
+							</button>
+						)}
 					</div>
 				)}
 
@@ -780,7 +552,7 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 							)}
 							<button
 								disabled={pendingActionLabel !== null}
-								onClick={(e) => handleSnoozeMenu(e, selectedCard)}
+								onClick={(e) => showSnoozeMenu(e, selectedCard)}
 							>
 								{selectedCard.status === "snoozed" ? "⏰ resnooze" : "⏰ snooze"}
 							</button>
@@ -795,7 +567,7 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 							<button
 								disabled={pendingActionLabel !== null}
 								className="inbox-view-danger-button"
-								onClick={(e) => handleDeleteCard(e, selectedCard)}
+								onClick={(e) => showDeleteMenu(e, selectedCard)}
 							>
 								Delete
 							</button>
