@@ -2,7 +2,6 @@
 
 `excli` is an Obsidian plugin for vault operations that work well from the Obsidian CLI and local automation.
 
-
 It adds script-friendly commands for searching notes, applying patches, rendering templates, inspecting frontmatter schema, traversing the link graph, and managing an inbox of suggestions. It also adds two Obsidian views for browsing inbox cards inside the app.
 
 Developer workflow notes from the previous README now live in [`docs/develop-docs/README.md`](docs/develop-docs/README.md).

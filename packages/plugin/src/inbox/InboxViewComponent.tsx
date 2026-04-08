@@ -121,7 +121,11 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 			setSelectedCardId((current) => (current && ids.includes(current) ? null : current));
 			setRowSelection({});
 			setSelectionMode(false);
-			await persistCards(nextCards, `Deleting ${deletedCount} cards...`, `${deletedCount} cards deleted.`);
+			await persistCards(
+				nextCards,
+				`Deleting ${deletedCount} cards...`,
+				`${deletedCount} cards deleted.`
+			);
 		},
 		[persistCards]
 	);
@@ -134,7 +138,7 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 				id: "select",
 				enableSorting: false,
 				enableHiding: false,
-				header: ({ table }) => (
+				header: ({ table }) =>
 					selectionMode ? (
 						<input
 							type="checkbox"
@@ -143,14 +147,14 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 							ref={(el) => {
 								if (el) {
 									el.indeterminate =
-										table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected();
+										table.getIsSomeRowsSelected() &&
+										!table.getIsAllRowsSelected();
 								}
 							}}
 							onChange={table.getToggleAllRowsSelectedHandler()}
 						/>
-					) : null
-				),
-				cell: ({ row }) => (
+					) : null,
+				cell: ({ row }) =>
 					selectionMode ? (
 						<input
 							type="checkbox"
@@ -160,21 +164,24 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 							onChange={row.getToggleSelectedHandler()}
 						/>
 					) : null
-				)
 			},
 			{
 				accessorKey: "status",
 				header: "Status",
 				filterFn: (row, columnId, filterValue) => {
 					const values = Array.isArray(filterValue) ? (filterValue as string[]) : [];
-					return values.length === 0 ? true : values.includes(String(row.getValue(columnId)));
+					return values.length === 0
+						? true
+						: values.includes(String(row.getValue(columnId)));
 				},
 				cell: ({ row }) => (
 					<span className="inbox-view-list-status-cell">
 						<span className="inbox-view-status-dot">
 							{row.original.status === "open" ? "●" : "○"}
 						</span>
-						<span className="inbox-view-list-status">{statusLabel(row.original.status)}</span>
+						<span className="inbox-view-list-status">
+							{statusLabel(row.original.status)}
+						</span>
 					</span>
 				)
 			},
@@ -183,24 +190,33 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 				header: "Priority",
 				filterFn: (row, columnId, filterValue) => {
 					const values = Array.isArray(filterValue) ? (filterValue as string[]) : [];
-					return values.length === 0 ? true : values.includes(String(row.getValue(columnId)));
+					return values.length === 0
+						? true
+						: values.includes(String(row.getValue(columnId)));
 				},
 				cell: ({ row }) => <PriorityBadge priority={row.original.priority} />,
-				sortingFn: (left, right) => PRIORITY_ORDER[left.original.priority] - PRIORITY_ORDER[right.original.priority]
+				sortingFn: (left, right) =>
+					PRIORITY_ORDER[left.original.priority] - PRIORITY_ORDER[right.original.priority]
 			},
 			{
 				accessorKey: "kind",
 				header: "Kind",
 				filterFn: (row, columnId, filterValue) => {
 					const values = Array.isArray(filterValue) ? (filterValue as string[]) : [];
-					return values.length === 0 ? true : values.includes(String(row.getValue(columnId)));
+					return values.length === 0
+						? true
+						: values.includes(String(row.getValue(columnId)));
 				},
-				cell: ({ row }) => <span className="inbox-view-kind-badge">{row.original.kind}</span>
+				cell: ({ row }) => (
+					<span className="inbox-view-kind-badge">{row.original.kind}</span>
+				)
 			},
 			{
 				accessorKey: "title",
 				header: "Title",
-				cell: ({ row }) => <span className="inbox-view-list-title">{row.original.title}</span>
+				cell: ({ row }) => (
+					<span className="inbox-view-list-title">{row.original.title}</span>
+				)
 			},
 			{
 				accessorKey: "updatedAt",
@@ -228,7 +244,8 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 		getFilteredRowModel: getFilteredRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		enableRowSelection: true,
-		globalFilterFn: (row, _columnId, filterValue) => cardMatchesQuery(row.original, String(filterValue))
+		globalFilterFn: (row, _columnId, filterValue) =>
+			cardMatchesQuery(row.original, String(filterValue))
 	});
 
 	const selectedIds = table.getFilteredSelectedRowModel().rows.map((row) => row.original.id);
@@ -237,10 +254,14 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 
 	const handleColumnMenu = (e: React.MouseEvent) => {
 		const menu = new Menu();
-		for (const column of table.getAllLeafColumns().filter((current) => current.id !== "select")) {
+		for (const column of table
+			.getAllLeafColumns()
+			.filter((current) => current.id !== "select")) {
 			menu.addItem((item) => {
 				item.setTitle(
-					typeof column.columnDef.header === "string" ? column.columnDef.header : column.id
+					typeof column.columnDef.header === "string"
+						? column.columnDef.header
+						: column.id
 				);
 				item.setChecked(column.getIsVisible());
 				item.onClick(() => column.toggleVisibility());
@@ -266,7 +287,9 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 			});
 			menu.addItem((item) => {
 				item.setTitle("Clear sorting");
-				item.onClick(() => setSorting((current) => current.filter((entry) => entry.id !== columnId)));
+				item.onClick(() =>
+					setSorting((current) => current.filter((entry) => entry.id !== columnId))
+				);
 			});
 			menu.addSeparator();
 		}
@@ -278,10 +301,16 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 					: columnId === "priority"
 						? ["high", "medium", "low"]
 						: ["issue", "question", "idea", "review"];
-			const current = Array.isArray(column.getFilterValue()) ? (column.getFilterValue() as string[]) : [];
+			const current = Array.isArray(column.getFilterValue())
+				? (column.getFilterValue() as string[])
+				: [];
 			for (const option of options) {
 				menu.addItem((item) => {
-					item.setTitle(columnId === "status" ? statusLabel(option as SuggestionCard["status"]) : option);
+					item.setTitle(
+						columnId === "status"
+							? statusLabel(option as SuggestionCard["status"])
+							: option
+					);
 					item.setChecked(current.includes(option));
 					item.onClick(() => {
 						const next = current.includes(option)
@@ -346,12 +375,20 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 						value={globalFilter}
 						onChange={(e) => setGlobalFilter(e.target.value)}
 					/>
-					<button type="button" className="inbox-view-filter-chip" onClick={handleColumnMenu}>
+					<button
+						type="button"
+						className="inbox-view-filter-chip"
+						onClick={handleColumnMenu}
+					>
 						Columns
 					</button>
 					<button
 						type="button"
-						className={selectionMode ? "inbox-view-filter-chip is-active" : "inbox-view-filter-chip"}
+						className={
+							selectionMode
+								? "inbox-view-filter-chip is-active"
+								: "inbox-view-filter-chip"
+						}
 						onClick={() => {
 							setSelectionMode((current) => {
 								const next = !current;
@@ -369,7 +406,9 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 						{feedback.message}
 					</div>
 				)}
-				{pendingActionLabel && <div className="inbox-view-pending">{pendingActionLabel}</div>}
+				{pendingActionLabel && (
+					<div className="inbox-view-pending">{pendingActionLabel}</div>
+				)}
 
 				{selectionMode && (
 					<div className="inbox-view-list-bulkbar">
@@ -406,7 +445,9 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 
 				<div className="inbox-view-list">
 					{visibleRows.length === 0 && (
-						<div style={{ padding: "8px 12px", color: "var(--text-faint)" }}>No cards.</div>
+						<div style={{ padding: "8px 12px", color: "var(--text-faint)" }}>
+							No cards.
+						</div>
 					)}
 					{visibleRows.length > 0 && (
 						<table className="inbox-view-table">
@@ -421,7 +462,9 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 														type="button"
 														className="inbox-view-table-sort"
 														data-sortable="true"
-														onClick={(e) => handleHeaderMenu(e, header.column.id)}
+														onClick={(e) =>
+															handleHeaderMenu(e, header.column.id)
+														}
 													>
 														{header.isPlaceholder
 															? null
@@ -458,7 +501,10 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 									>
 										{row.getVisibleCells().map((cell) => (
 											<td key={cell.id}>
-												{flexRender(cell.column.columnDef.cell, cell.getContext())}
+												{flexRender(
+													cell.column.columnDef.cell,
+													cell.getContext()
+												)}
 											</td>
 										))}
 									</tr>
@@ -499,7 +545,11 @@ export function InboxViewComponent({ store, app, component }: InboxViewComponent
 						</div>
 						<div className="inbox-view-card-title">{selectedCard.title}</div>
 						<CardStateSummary card={selectedCard} />
-						<MarkdownSummary app={app} content={selectedCard.summary} component={component} />
+						<MarkdownSummary
+							app={app}
+							content={selectedCard.summary}
+							component={component}
+						/>
 						{selectedCard.relatedPaths.length > 0 && (
 							<div className="inbox-view-related">
 								<span>Related: </span>

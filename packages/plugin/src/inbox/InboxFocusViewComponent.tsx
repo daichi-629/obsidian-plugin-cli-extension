@@ -22,25 +22,15 @@ export interface InboxFocusViewComponentProps {
 	component: Component;
 }
 
-export function InboxFocusViewComponent({
-	store,
-	app,
-	component
-}: InboxFocusViewComponentProps) {
+export function InboxFocusViewComponent({ store, app, component }: InboxFocusViewComponentProps) {
 	const [focusIndex, setFocusIndex] = useState(0);
-	const {
-		cards,
-		feedback,
-		pendingActionLabel,
-		handleSetStatus,
-		showDeleteMenu,
-		showSnoozeMenu
-	} = useInboxCardActions({
-		store,
-		onPersisted: async (nextCards, options) => {
-			applyPersistedFocusIndex(setFocusIndex, nextCards, options);
-		}
-	});
+	const { cards, feedback, pendingActionLabel, handleSetStatus, showDeleteMenu, showSnoozeMenu } =
+		useInboxCardActions({
+			store,
+			onPersisted: async (nextCards, options) => {
+				applyPersistedFocusIndex(setFocusIndex, nextCards, options);
+			}
+		});
 
 	const filtered = useMemo(() => actionableCards(cards), [cards]);
 	const card = filtered[Math.min(focusIndex, Math.max(filtered.length - 1, 0))] ?? null;
@@ -113,12 +103,17 @@ export function InboxFocusViewComponent({
 					<button
 						className="inbox-view-open-button"
 						disabled={pendingActionLabel !== null}
-						onClick={() => void app.workspace.openLinkText(card.relatedPaths[0] ?? "", "", false)}
+						onClick={() =>
+							void app.workspace.openLinkText(card.relatedPaths[0] ?? "", "", false)
+						}
 					>
 						Open
 					</button>
 				)}
-				<button disabled={pendingActionLabel !== null} onClick={() => void handleSetStatus(card, "done")}>
+				<button
+					disabled={pendingActionLabel !== null}
+					onClick={() => void handleSetStatus(card, "done")}
+				>
 					✓ done
 				</button>
 				<button

@@ -48,7 +48,8 @@ export function useInboxCardActions({
 	const wakeupSnoozed = useCallback(async () => {
 		const now = new Date();
 		const toWake = cardsRef.current.filter(
-			(card) => card.status === "snoozed" && card.snoozedUntil && new Date(card.snoozedUntil) <= now
+			(card) =>
+				card.status === "snoozed" && card.snoozedUntil && new Date(card.snoozedUntil) <= now
 		);
 		if (toWake.length === 0) return;
 
@@ -103,7 +104,11 @@ export function useInboxCardActions({
 			status: SuggestionCard["status"],
 			options?: PersistOptions
 		) => {
-			const result = executeUpdate(cardsRef.current, { id: card.id, status, now: new Date() });
+			const result = executeUpdate(cardsRef.current, {
+				id: card.id,
+				status,
+				now: new Date()
+			});
 			if (!result.updated) {
 				setFeedback({ kind: "error", message: `Card ${card.id} was not found.` });
 				return;
@@ -148,11 +153,7 @@ export function useInboxCardActions({
 	);
 
 	const showSnoozeMenu = useCallback(
-		(
-			event: React.MouseEvent,
-			card: SuggestionCard,
-			options?: PersistOptions
-		) => {
+		(event: React.MouseEvent, card: SuggestionCard, options?: PersistOptions) => {
 			const snoozeOptions: Array<{ label: string; getDate: () => Date }> = [
 				{ label: "1 hour", getDate: () => new Date(Date.now() + 60 * 60 * 1000) },
 				{ label: "3 hours", getDate: () => new Date(Date.now() + 3 * 60 * 60 * 1000) },
@@ -181,11 +182,7 @@ export function useInboxCardActions({
 	);
 
 	const showDeleteMenu = useCallback(
-		(
-			event: React.MouseEvent,
-			card: SuggestionCard,
-			options?: PersistOptions
-		) => {
+		(event: React.MouseEvent, card: SuggestionCard, options?: PersistOptions) => {
 			const menu = new Menu();
 			menu.addItem((item) => {
 				item.setTitle(`Delete "${card.title}"`);
@@ -193,7 +190,10 @@ export function useInboxCardActions({
 					void (async () => {
 						const result = executeDelete(cardsRef.current, card.id);
 						if (!result.deleted) {
-							setFeedback({ kind: "error", message: `Card ${card.id} was not found.` });
+							setFeedback({
+								kind: "error",
+								message: `Card ${card.id} was not found.`
+							});
 							return;
 						}
 
