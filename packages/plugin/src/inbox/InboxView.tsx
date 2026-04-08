@@ -1,16 +1,18 @@
 import { ItemView, type WorkspaceLeaf } from "obsidian";
 import { StrictMode } from "react";
 import { createRoot, type Root } from "react-dom/client";
+import { InboxFocusViewComponent } from "./InboxFocusViewComponent";
 import { InboxViewComponent } from "./InboxViewComponent";
 import type { InboxSettings } from "./inboxSettings";
 import type { InboxStoreManager } from "./InboxStoreManager";
 
-export const INBOX_VIEW_TYPE = "excli-inbox-view";
+export const INBOX_FOCUS_VIEW_TYPE = "excli-inbox-focus-view";
+export const INBOX_LIST_VIEW_TYPE = "excli-inbox-list-view";
 
-export class InboxView extends ItemView {
-	private readonly store: InboxStoreManager;
-	private readonly settings: InboxSettings;
-	private root: Root | null = null;
+class BaseInboxView extends ItemView {
+	protected readonly store: InboxStoreManager;
+	protected readonly settings: InboxSettings;
+	protected root: Root | null = null;
 
 	constructor(leaf: WorkspaceLeaf, store: InboxStoreManager, settings: InboxSettings) {
 		super(leaf);
@@ -18,16 +20,51 @@ export class InboxView extends ItemView {
 		this.settings = settings;
 	}
 
+	async onClose(): Promise<void> {
+		this.root?.unmount();
+		this.root = null;
+	}
+}
+
+export class InboxFocusView extends BaseInboxView {
 	getViewType(): string {
-		return INBOX_VIEW_TYPE;
+		return INBOX_FOCUS_VIEW_TYPE;
 	}
 
 	getDisplayText(): string {
-		return "Inbox";
+		return "Inbox focus";
 	}
 
 	getIcon(): string {
 		return "inbox";
+	}
+
+	async onOpen(): Promise<void> {
+		this.root = createRoot(this.contentEl);
+		this.root.render(
+			<StrictMode>
+				<InboxFocusViewComponent
+					store={this.store}
+					settings={this.settings}
+					app={this.app}
+					component={this}
+				/>
+			</StrictMode>
+		);
+	}
+}
+
+export class InboxListView extends BaseInboxView {
+	getViewType(): string {
+		return INBOX_LIST_VIEW_TYPE;
+	}
+
+	getDisplayText(): string {
+		return "Inbox list";
+	}
+
+	getIcon(): string {
+		return "table";
 	}
 
 	async onOpen(): Promise<void> {
@@ -42,10 +79,5 @@ export class InboxView extends ItemView {
 				/>
 			</StrictMode>
 		);
-	}
-
-	async onClose(): Promise<void> {
-		this.root?.unmount();
-		this.root = null;
 	}
 }
