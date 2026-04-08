@@ -97,6 +97,7 @@ const ctx = await esbuild.context({
 	outfile: "main.js",
 	external: ["obsidian"],
 	platform: "browser",
+	jsx: "automatic",
 	plugins: [
 		{
 			name: "copy-publish-files",

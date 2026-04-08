@@ -9,20 +9,29 @@ import {
 	resolveTemplateCommandSettings,
 	type TemplateCommandSettings
 } from "./templateCommand";
+import {
+	DEFAULT_INBOX_SETTINGS,
+	resolveInboxSettings,
+	type InboxSettings
+} from "../inbox/inboxSettings";
 
 type StoredPluginSettings = {
 	grepPermissionSettings?: unknown;
 	templateCommandSettings?: unknown;
+	inboxStore?: unknown;
+	inboxSettings?: unknown;
 };
 
 export type SamplePluginSettings = {
 	grepPermissionSettings: GrepPermissionSettings;
 	templateCommandSettings: TemplateCommandSettings;
+	inboxSettings: InboxSettings;
 };
 
 export const DEFAULT_PLUGIN_SETTINGS: SamplePluginSettings = {
 	grepPermissionSettings: DEFAULT_GREP_PERMISSION_SETTINGS,
-	templateCommandSettings: DEFAULT_TEMPLATE_COMMAND_SETTINGS
+	templateCommandSettings: DEFAULT_TEMPLATE_COMMAND_SETTINGS,
+	inboxSettings: DEFAULT_INBOX_SETTINGS
 };
 
 export async function loadPluginSettings(plugin: Plugin): Promise<SamplePluginSettings> {
@@ -30,7 +39,8 @@ export async function loadPluginSettings(plugin: Plugin): Promise<SamplePluginSe
 
 	return {
 		grepPermissionSettings: resolveGrepPermissionSettings(data?.grepPermissionSettings),
-		templateCommandSettings: resolveTemplateCommandSettings(data?.templateCommandSettings)
+		templateCommandSettings: resolveTemplateCommandSettings(data?.templateCommandSettings),
+		inboxSettings: resolveInboxSettings(data?.inboxSettings)
 	};
 }
 
@@ -38,9 +48,12 @@ export async function savePluginSettings(
 	plugin: Plugin,
 	settings: SamplePluginSettings
 ): Promise<void> {
+	const existing = ((await plugin.loadData()) as Record<string, unknown> | null) ?? {};
 	await plugin.saveData({
+		...existing,
 		grepPermissionSettings: settings.grepPermissionSettings,
-		templateCommandSettings: settings.templateCommandSettings
+		templateCommandSettings: settings.templateCommandSettings,
+		inboxSettings: settings.inboxSettings
 	} satisfies StoredPluginSettings);
 }
 
@@ -60,3 +73,5 @@ export {
 	getTemplateOutputPathPolicyError,
 	resolveTemplateCommandSettings
 } from "./templateCommand";
+export type { InboxSettings } from "../inbox/inboxSettings";
+export { DEFAULT_INBOX_SETTINGS, resolveInboxSettings } from "../inbox/inboxSettings";

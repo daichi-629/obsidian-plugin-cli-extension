@@ -49,7 +49,9 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 			.addTextArea((textArea) => {
 				textArea
 					.setValue(
-						formatPathPrefixLines(this.plugin.settings.grepPermissionSettings.denyPathPrefixes)
+						formatPathPrefixLines(
+							this.plugin.settings.grepPermissionSettings.denyPathPrefixes
+						)
 					)
 					.onChange(async (value) => {
 						this.plugin.settings.grepPermissionSettings.denyPathPrefixes =
@@ -91,7 +93,9 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 			.addTextArea((textArea) => {
 				textArea
 					.setValue(
-						formatExtensionLines(this.plugin.settings.grepPermissionSettings.targetExtensions)
+						formatExtensionLines(
+							this.plugin.settings.grepPermissionSettings.targetExtensions
+						)
 					)
 					.onChange(async (value) => {
 						this.plugin.settings.grepPermissionSettings.targetExtensions =
@@ -154,6 +158,29 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 						const parsed = Number.parseInt(value, 10);
 						if (Number.isInteger(parsed) && parsed > 0) {
 							this.plugin.settings.templateCommandSettings.maxRenderedFiles = parsed;
+							await this.plugin.saveSettings();
+						}
+					})
+			);
+
+		new Setting(containerEl).setName("Inbox").setHeading();
+		containerEl.createEl("p", {
+			text: "Configure inbox card management and deduplication behaviour."
+		});
+
+		new Setting(containerEl)
+			.setName("Dismiss cooldown (days)")
+			.setDesc(
+				"Number of days a dismissed card suppresses re-creation from the same fingerprint. 1–30. Default: 7."
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder("7")
+					.setValue(String(this.plugin.settings.inboxSettings.dismissCooldownDays))
+					.onChange(async (value) => {
+						const parsed = Number.parseInt(value, 10);
+						if (Number.isInteger(parsed) && parsed >= 1 && parsed <= 30) {
+							this.plugin.settings.inboxSettings.dismissCooldownDays = parsed;
 							await this.plugin.saveSettings();
 						}
 					})

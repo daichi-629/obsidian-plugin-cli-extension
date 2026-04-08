@@ -11,16 +11,20 @@
 	},
 	"dependencies": {
 		"@sample/core": "workspace:*",
-		"obsidian": "^1.12.2"
+		"obsidian": "^1.12.2",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
 		"@types/node": "^25.3.0",
+		"@types/react": "^19.2.14",
+		"@types/react-dom": "^19.2.3",
+		"@vitest/coverage-v8": "^4.0.18",
 		"eslint": "^10.0.0",
 		"eslint-plugin-obsidianmd": "^0.1.9",
 		"globals": "^17.3.0",
 		"jiti": "^2.6.1",
-		"@vitest/coverage-v8": "^4.0.18",
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.56.0",
 		"vitest": "^4.0.18"

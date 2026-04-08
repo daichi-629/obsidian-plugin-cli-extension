@@ -1,5 +1,10 @@
 {
 	"permissions": {
-		"allow": ["Bash(./bin/obsidian-dev obsidian:*)"]
+		"allow": [
+			"Bash(./bin/obsidian-dev obsidian:*)",
+			"Bash(pnpm run:*)",
+			"Bash(pnpm --filter plugin add react react-dom)",
+			"Bash(pnpm --filter plugin add -D @types/react @types/react-dom)"
+		]
 	}
 }

@@ -1,3 +1,11 @@
+---
+type: readme
+tags:
+  - docs
+  - fixture
+status: active
+---
+
 # Sample vault
 
 This vault is intentionally populated for local plugin development and command testing.
@@ -17,6 +25,12 @@ Run `pnpm run vault:generate` from the repository root to refresh the generated 
 - `templates/private/` keeps intentionally denied content for policy checks.
 - `attachments/bulk/` provides a noisier attachment set.
 - `.obsidian/` includes config fixtures that grep must continue to ignore.
+
+## Schema hints
+
+- Most operational notes now expose frontmatter such as `type`, `tags`, `status`, and `date`.
+- Some notes intentionally omit frontmatter so `excli-schema:missing` and validation flows still have realistic failures to report.
+- A few notes intentionally keep unusual or low-frequency properties such as `created` or `rogue_key`.
 
 ## Search hints
 
