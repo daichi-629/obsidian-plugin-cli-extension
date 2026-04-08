@@ -3,25 +3,25 @@ reviewed_at: 2026-04-08
 impact: high
 priority_rank: 2
 existing_overlap:
-  - "excli-apply-patch --dry-run: patch 成立性と file-level preview までは見えるが、semantic preflight には届かない"
-  - "move with automatic link update とは部分重複するが、孤立化や schema 退行までは見ない"
+    - "excli-apply-patch --dry-run: patch 成立性と file-level preview までは見えるが、semantic preflight には届かない"
+    - "move with automatic link update とは部分重複するが、孤立化や schema 退行までは見ない"
 proposal_overlap:
-  - "audit: broken link / embed / schema 系チェックを共有する"
-  - "schema: coverage regression 判定を共有する"
-  - "refactor / workset: destructive operation の preflight として必須"
+    - "audit: broken link / embed / schema 系チェックを共有する"
+    - "excli-schema:*: coverage regression 判定を共有する"
+    - "refactor / workset: destructive operation の preflight として必須"
 integration:
-  needed: true
-  decision: "独立 surface より、mutation 系コマンドから呼ばれる shared preflight layer として扱う"
-  cluster: analysis-foundation
-  shared_with:
-    - excli-apply-patch
-    - refactor
-    - workset
-    - audit
-    - schema
-  integrated_proposal: docs/feature-proposals/change-analysis.md
+    needed: true
+    decision: "独立 surface より、mutation 系コマンドから呼ばれる shared preflight layer として扱う"
+    cluster: analysis-foundation
+    shared_with:
+        - excli-apply-patch
+        - refactor
+        - workset
+        - audit
+        - schema
+    integrated_proposal: docs/feature-proposals/integrated/change-analysis.md
 builtin_diff_assessment: "妥当。現行 dry-run との差は明確で、semantic preflight という独自の価値がある。"
-recommendation: "高優先度。analysis-foundation を先に作り、mutation 系コマンドから順に接続する。"
+recommendation: "高優先度。既存の `excli-apply-patch` dry-run と `excli-schema:*` の分析を共有する preflight layer として接続する。"
 ---
 
 # Feature proposal: impact

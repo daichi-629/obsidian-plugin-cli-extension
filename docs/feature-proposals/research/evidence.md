@@ -1,24 +1,24 @@
 ---
 reviewed_at: 2026-04-08
 impact: medium
-priority_rank: 12
+priority_rank: 13
 existing_overlap:
-  - "excli-grep: 候補断片の取得には使えるが、supports / contradicts / related の分類はない"
-  - "apply-patch: 根拠収集とは無関係"
-  - "manual search-and-compare workflows とは部分重複する"
+    - "excli-grep: 候補断片の取得には使えるが、supports / contradicts / related の分類はない"
+    - "apply-patch: 根拠収集とは無関係"
+    - "manual search-and-compare workflows とは部分重複する"
 proposal_overlap:
-  - "tension: claim extraction と conflict 判定の前段を共有する"
-  - "narrative: citation 付き event 抽出の候補生成を共有できる"
-  - "context: 関連ノート収集を共有する"
+    - "tension: claim extraction と conflict 判定の前段を共有する"
+    - "narrative: citation 付き event 抽出の候補生成を共有できる"
+    - "context: 関連ノート収集を共有する"
 integration:
-  needed: true
-  decision: "単独コマンドは維持し、claim-analysis の前半 surface として実装する"
-  cluster: claim-analysis
-  shared_with:
-    - tension
-    - narrative
-    - context
-  integrated_proposal: docs/feature-proposals/claims.md
+    needed: true
+    decision: "単独コマンドは維持し、claim-analysis の前半 surface として実装する"
+    cluster: claim-analysis
+    shared_with:
+        - tension
+        - narrative
+        - context
+    integrated_proposal: docs/feature-proposals/research/claims.md
 builtin_diff_assessment: "概ね妥当。検索とグラウンディング束の生成は別レイヤである。"
 recommendation: "claim-analysis の前半フェーズ向け。block citation と retrieval 基盤の後に着手する。"
 ---

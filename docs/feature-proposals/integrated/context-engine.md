@@ -2,12 +2,12 @@
 reviewed_at: 2026-04-08
 scope: merged-proposal
 source_proposals:
-  - traverse
-  - embed-resolve
-  - context
-  - narrative
+    - traverse
+    - embed-resolve
+    - context
+    - narrative
 status: recommended
-summary: "Separates graph and content-resolution primitives from higher-level context and narrative packaging."
+summary: "Builds context and narrative packaging on top of the shipped traverse primitive plus a future embed/content resolver."
 ---
 
 # Integrated proposal: context-engine
@@ -15,6 +15,8 @@ summary: "Separates graph and content-resolution primitives from higher-level co
 ## 概要
 
 `traverse`, `embed-resolve`, `context`, `narrative` はすべて「どのノート断片を集め、どの順序で見せるか」という問題を扱っている。コマンドを 1 つにまとめる必要はないが、graph traversal と content resolution の実装は統合すべきである。
+
+`excli-traverse:*` は既に実装済みなので、本書では traverse を future work ではなく既存 graph primitive として扱う。
 
 ## なぜ統合するか
 
@@ -42,6 +44,7 @@ summary: "Separates graph and content-resolution primitives from higher-level co
 
 ## 推奨導入順
 
-1. `embed-resolve` と `traverse` を実装して共通基盤を固める
-2. `context` を追加して AI 向け bundle 生成を成立させる
-3. `narrative` を最後に載せて時系列再構成へ広げる
+1. 既存の `excli-traverse:*` を共通 graph primitive として固定する
+2. `embed-resolve` を追加して content resolution を揃える
+3. `context` を追加して AI 向け bundle 生成を成立させる
+4. `narrative` を最後に載せて時系列再構成へ広げる

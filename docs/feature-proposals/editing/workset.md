@@ -3,26 +3,26 @@ reviewed_at: 2026-04-08
 impact: medium
 priority_rank: 9
 existing_overlap:
-  - "excli-apply-patch: multi-file 書き戻しは可能だが、single-bundle editing と conflict policy は持たない"
-  - "grep: bundle 作成前の対象探索にしか使えない"
+    - "excli-apply-patch: multi-file 書き戻しは可能だが、single-bundle editing と conflict policy は持たない"
+    - "excli-grep: bundle 作成前の対象探索にしか使えない"
 proposal_overlap:
-  - "context: note bundle 収集を共有する"
-  - "impact / change-analysis: apply 前の safety check を共有する"
-  - "refactor: multi-file mutation backend を共有できる"
-  - "embed-resolve: create 時の read mode に取り込める"
+    - "context: note bundle 収集を共有する"
+    - "impact / change-analysis: apply 前の safety check を共有する"
+    - "refactor: multi-file mutation backend を共有できる"
+    - "embed-resolve: create 時の read mode に取り込める"
 integration:
-  needed: true
-  decision: "単独コマンドとして維持し、bundle 収集と書き戻し backend を editing-primitives 側で共有する"
-  cluster: editing-primitives
-  shared_with:
-    - context
-    - impact
-    - change-analysis
-    - refactor
-    - embed-resolve
-  integrated_proposal: null
+    needed: true
+    decision: "単独コマンドとして維持し、bundle 収集と書き戻し backend を editing-primitives 側で共有する"
+    cluster: editing-primitives
+    shared_with:
+        - context
+        - impact
+        - change-analysis
+        - refactor
+        - embed-resolve
+    integrated_proposal: null
 builtin_diff_assessment: "概ね妥当。read-only bundle と low-level patch の間にある round-trip 編集面として独自性がある。"
-recommendation: "中盤候補。AI workflow への適合は高いが、context と change-analysis の基盤が先。"
+recommendation: "中盤候補。既存の `excli-apply-patch` を書き戻し backend に使い、context と change-analysis の基盤が整ってから着手する。"
 ---
 
 # Feature proposal: workset
@@ -81,24 +81,28 @@ obsidian plugin-workset apply workset=tmp/project.workset.md conflict=reject dry
 workset: project-alpha
 created_at: 2026-04-08T10:00:00Z
 files:
-  - path: notes/project.md
-    mtime: 2026-04-08T09:55:00Z
-    hash: 4df7...
-  - path: notes/spec.md
-    mtime: 2026-04-08T09:30:00Z
-    hash: a91c...
+    - path: notes/project.md
+      mtime: 2026-04-08T09:55:00Z
+      hash: 4df7...
+    - path: notes/spec.md
+      mtime: 2026-04-08T09:30:00Z
+      hash: a91c...
 ---
 
 <!-- file: notes/project.md -->
+
 # Project
 
 ...
+
 <!-- end file -->
 
 <!-- file: notes/spec.md -->
+
 # Spec
 
 ...
+
 <!-- end file -->
 ```
 

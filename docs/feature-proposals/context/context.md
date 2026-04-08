@@ -1,28 +1,28 @@
 ---
 reviewed_at: 2026-04-08
 impact: high
-priority_rank: 5
+priority_rank: 7
 existing_overlap:
-  - "excli-grep: 候補ノート抽出には使えるが、リンク辿りや token budget 付き bundling はできない"
-  - "apply-patch: 読み取り用コンテキスト生成とは役割が別"
-  - "manual search/read workflows とは部分重複する"
+    - "excli-grep: 候補ノート抽出には使えるが、リンク辿りや token budget 付き bundling はできない"
+    - "excli-apply-patch: 読み取り用コンテキスト生成とは役割が別"
+    - "manual search/read workflows とは部分重複する"
 proposal_overlap:
-  - "traverse: 関連ノート収集のグラフ探索を共有する"
-  - "embed-resolve: 収集後コンテンツの flatten 処理を共有できる"
-  - "workset: note bundle 収集部分を共有できる"
-  - "narrative: 同じ収集基盤から時間軸だけ別整形する"
+    - "excli-traverse:*: 関連ノート収集の graph traversal を既存実装から再利用する"
+    - "embed-resolve: 収集後コンテンツの flatten 処理を共有できる"
+    - "workset: note bundle 収集部分を共有できる"
+    - "narrative: 同じ収集基盤から時間軸だけ別整形する"
 integration:
-  needed: true
-  decision: "単独コマンドは維持し、context-engine 上の高レベル bundle surface として実装する"
-  cluster: context-engine
-  shared_with:
-    - traverse
-    - embed-resolve
-    - workset
-    - narrative
-  integrated_proposal: docs/feature-proposals/integrated/context-engine.md
+    needed: true
+    decision: "単独コマンドは維持し、context-engine 上の高レベル bundle surface として実装する"
+    cluster: context-engine
+    shared_with:
+        - traverse
+        - embed-resolve
+        - workset
+        - narrative
+    integrated_proposal: docs/feature-proposals/integrated/context-engine.md
 builtin_diff_assessment: "妥当。read や search:context の延長ではなく、AI 向け bundle 生成という別目的になっている。"
-recommendation: "context-engine の第2段階候補。まず traverse と embed-resolve を先行させる。"
+recommendation: "context-engine の第2段階候補。既存の `excli-traverse:*` を土台にし、`embed-resolve` を先行させる。"
 ---
 
 # Feature proposal: context
@@ -81,8 +81,11 @@ obsidian plugin-context path=notes/moc.md resolve-embeds annotate-embeds format=
 # Project X
 
 <!-- embedded: notes/requirements.md -->
+
 ## 要件定義
+
 ...
+
 <!-- end embedded: notes/requirements.md -->
 
 ## notes/ml-basics.md (linked, hops=1)

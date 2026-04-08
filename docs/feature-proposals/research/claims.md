@@ -1,25 +1,25 @@
 ---
 status: merged-proposal
 origin:
-  - evidence.md
-  - tension.md
+    - evidence.md
+    - tension.md
 reviewed_at: 2026-04-08
 impact: medium
 priority_rank: 12
 existing_overlap:
-  repo:
-    - "excli-grep (partial: lexical recall only)"
-  built_in:
-    - "manual search-and-compare workflows (partial)"
+    repo:
+        - "excli-grep (partial: lexical recall only)"
+    built_in:
+        - "manual search-and-compare workflows (partial)"
 proposal_overlap:
-  - narrative
+    - narrative
 integration:
-  cluster: claim-analysis
-  target_modes:
-    - evidence-style
-    - tension-style
-  integrated_proposal: null
-  rationale: "根拠収集と衝突検出は同じ claim/evidence 抽出基盤に乗るため、mode で束ねる価値が高い。"
+    cluster: claim-analysis
+    target_modes:
+        - evidence-style
+        - tension-style
+    integrated_proposal: null
+    rationale: "根拠収集と衝突検出は同じ claim/evidence 抽出基盤に乗るため、mode で束ねる価値が高い。"
 recommendation: "evidence と tension を別 surface のまま維持するより、共通 mode command としてまとめる価値が高い。"
 ---
 

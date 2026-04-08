@@ -21,13 +21,13 @@ This does not make `docs/design/` unnecessary.
 The roles are simply separated.
 
 - `packages/plugin/src/commands/<command-name>/spec.ts`
-  - The specification that describes how the command is used
-  - Something updated alongside the implementation
-  - Content intended to be referenced from the CLI
+    - The specification that describes how the command is used
+    - Something updated alongside the implementation
+    - Content intended to be referenced from the CLI
 - `docs/design/<command-name>-design.md`
-  - The design background
-  - Why the specification was chosen
-  - Notes on future extensions and constraints
+    - The design background
+    - Why the specification was chosen
+    - Notes on future extensions and constraints
 
 If you are unsure, put anything about how users interact with the command in `spec.ts`, and put design discussion or background explanation in `docs/design/`.
 

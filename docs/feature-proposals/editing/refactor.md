@@ -3,24 +3,24 @@ reviewed_at: 2026-04-08
 impact: medium
 priority_rank: 10
 existing_overlap:
-  - "excli-apply-patch: multi-file 更新はできるが、section extract / backlink relink のような graph-aware operation は持たない"
-  - "move with automatic link update とは部分重複するが、graph restructuring までは扱えない"
+    - "excli-apply-patch: multi-file 更新はできるが、section extract / backlink relink のような graph-aware operation は持たない"
+    - "move with automatic link update とは部分重複するが、graph restructuring までは扱えない"
 proposal_overlap:
-  - "block: heading section 抽出を共有する"
-  - "impact / change-analysis: 実行前 preflight が必須"
-  - "workset: multi-file mutation backend を共有できる"
+    - "block: heading section 抽出を共有する"
+    - "impact / change-analysis: 実行前 preflight が必須"
+    - "workset: multi-file mutation backend を共有できる"
 integration:
-  needed: true
-  decision: "単独 command surface は維持し、実装は apply-patch backend + impact preflight に寄せる"
-  cluster: editing-primitives
-  shared_with:
-    - block
-    - impact
-    - change-analysis
-    - workset
-  integrated_proposal: null
+    needed: true
+    decision: "単独 command surface は維持し、実装は apply-patch backend + impact preflight に寄せる"
+    cluster: editing-primitives
+    shared_with:
+        - block
+        - impact
+        - change-analysis
+        - workset
+    integrated_proposal: null
 builtin_diff_assessment: "概ね妥当。move では graph restructuring までは扱えない。"
-recommendation: "中盤以降。value は大きいが destructive なので block と impact の後が安全。"
+recommendation: "中盤以降。既存の `excli-apply-patch` を低レベル backend に使いつつ、block と change-analysis/impact の後に載せる。"
 ---
 
 # Feature proposal: refactor

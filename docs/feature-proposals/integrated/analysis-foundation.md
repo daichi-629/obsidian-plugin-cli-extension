@@ -2,12 +2,12 @@
 reviewed_at: 2026-04-08
 scope: merged-proposal
 source_proposals:
-  - schema
-  - audit
-  - delta
-  - impact
+    - schema
+    - audit
+    - delta
+    - impact
 status: recommended
-summary: "Unifies deterministic vault analysis so schema, audit, delta, and impact share one snapshot and checker stack."
+summary: "Uses the shipped schema foundation as the first consumer of a shared deterministic analysis stack for audit, delta, and change analysis."
 ---
 
 # Integrated proposal: analysis-foundation
@@ -15,6 +15,8 @@ summary: "Unifies deterministic vault analysis so schema, audit, delta, and impa
 ## 概要
 
 `schema`, `audit`, `delta`, `impact` はいずれも vault の状態を解析するが、必要な下位機能は大半が共通している。コマンド面は分けたまま、設計と実装は 1 つの分析基盤に統合する。
+
+このうち `excli-schema:*` は既に実装済みなので、本書では schema を「先に作る proposal」ではなく、共通 analyzer を切り出す出発点として扱う。
 
 ## なぜ統合するか
 
@@ -42,7 +44,7 @@ summary: "Unifies deterministic vault analysis so schema, audit, delta, and impa
 
 ## 推奨導入順
 
-1. `schema` と共通 snapshot モデルを実装する
+1. `excli-schema:*` から共通 snapshot / schema analyzer を抽出する
 2. `audit` をその上に載せて現状診断を固める
 3. `delta` で前後比較を導入する
-4. `impact` で仮想変更シミュレーションまで拡張する
+4. `integrated/change-analysis.md` の形で mutation preflight へ拡張する

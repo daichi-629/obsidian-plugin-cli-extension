@@ -1,26 +1,26 @@
 ---
 reviewed_at: 2026-04-08
 impact: high
-priority_rank: 4
+priority_rank: 6
 existing_overlap:
-  - "excli-grep: lexical candidate recall はできるが、link target ranking と risk 付けはできない"
-  - "apply-patch: リンクを書き込めても、正しいリンク先の選定は支援しない"
-  - "manual search and alias lookup workflows とは部分重複する"
+    - "excli-grep: lexical candidate recall はできるが、link target ranking と risk 付けはできない"
+    - "excli-apply-patch: リンクを書き込めても、正しいリンク先の選定は支援しない"
+    - "manual search and alias lookup workflows とは部分重複する"
 proposal_overlap:
-  - "traverse: context-path からの距離計算を共有する"
-  - "block: heading / block target 候補の解決で共有する"
-  - "serendipity: candidate scoring 基盤の一部を共有する"
+    - "excli-traverse:*: context-path からの距離計算を既存 graph primitive から共有する"
+    - "block: heading / block target 候補の解決で共有する"
+    - "serendipity: candidate scoring 基盤の一部を共有する"
 integration:
-  needed: true
-  decision: "単独コマンドは維持し、link-intelligence 系の ranking surface として扱う"
-  cluster: link-intelligence
-  shared_with:
-    - traverse
-    - block
-    - serendipity
-  integrated_proposal: null
+    needed: true
+    decision: "単独コマンドは維持し、link-intelligence 系の ranking surface として扱う"
+    cluster: link-intelligence
+    shared_with:
+        - traverse
+        - block
+        - serendipity
+    integrated_proposal: null
 builtin_diff_assessment: "概ね妥当。検索結果の列挙と『どれにリンクすべきか』の意思決定支援は別物。"
-recommendation: "traverse の次に検討する。AI の誤リンク削減に直結し、ユーザー価値が分かりやすい。"
+recommendation: "既存の `excli-traverse:*` を前提に検討する。AI の誤リンク削減に直結し、ユーザー価値が分かりやすい。"
 ---
 
 # Feature proposal: disambiguate

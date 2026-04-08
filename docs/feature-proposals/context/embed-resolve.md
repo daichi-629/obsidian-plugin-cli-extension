@@ -1,23 +1,23 @@
 ---
 reviewed_at: 2026-04-08
 impact: high
-priority_rank: 7
+priority_rank: 4
 existing_overlap:
-  - "grep: 埋め込み参照文字列の検索はできるが、再帰展開はできない"
-  - "apply-patch: 内容変更はできても、表示相当の読み出しはできない"
+    - "grep: 埋め込み参照文字列の検索はできるが、再帰展開はできない"
+    - "apply-patch: 内容変更はできても、表示相当の読み出しはできない"
 proposal_overlap:
-  - "context: context bundle の 1 オプションとしても使える"
-  - "block: heading / block 抽出を共有する"
-  - "workset: bundle 作成時の read mode として再利用できる"
+    - "context: context bundle の 1 オプションとしても使える"
+    - "block: heading / block 抽出を共有する"
+    - "workset: bundle 作成時の read mode として再利用できる"
 integration:
-  needed: true
-  decision: "単独コマンドは残しつつ、context-engine の共通 resolver としても使う"
-  cluster: context-engine
-  shared_with:
-    - context
-    - block
-    - workset
-  integrated_proposal: docs/feature-proposals/integrated/context-engine.md
+    needed: true
+    decision: "単独コマンドは残しつつ、context-engine の共通 resolver としても使う"
+    cluster: context-engine
+    shared_with:
+        - context
+        - block
+        - workset
+    integrated_proposal: docs/feature-proposals/integrated/context-engine.md
 builtin_diff_assessment: "概ね妥当。生 Markdown と表示相当テキストの差は実運用上大きい。"
 recommendation: "context-engine の初期段階で実装する。単独でも有用で、shared extractor としても価値が高い。"
 ---

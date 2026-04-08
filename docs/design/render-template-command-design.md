@@ -246,9 +246,7 @@ Active: <%= it.script.activeFilePath %>
 inline script は次の export を持てる。
 
 ```ts
-export async function buildContext(
-	api: TemplateScriptApi
-): Promise<Record<string, unknown> | void>;
+export async function buildContext(api: TemplateScriptApi): Promise<Record<string, unknown> | void>;
 ```
 
 返り値は `it.script` に格納する。
@@ -260,23 +258,23 @@ bundle root の `template.json` は次を source of truth とする。
 
 ```json
 {
-  "version": 1,
-  "description": "Project scaffold",
-  "partialsDir": "partials",
-  "defaults": {
-    "status": "draft"
-  },
-  "defaultDataFiles": ["defaults/project.json"],
-  "outputs": [
-    {
-      "template": "README.md.eta",
-      "path": "README.md"
-    },
-    {
-      "template": "notes/index.md.eta",
-      "path": "notes/<%= it.path.slug(it.data.title) %>-<%= it.path.shortId() %>.md"
-    }
-  ]
+	"version": 1,
+	"description": "Project scaffold",
+	"partialsDir": "partials",
+	"defaults": {
+		"status": "draft"
+	},
+	"defaultDataFiles": ["defaults/project.json"],
+	"outputs": [
+		{
+			"template": "README.md.eta",
+			"path": "README.md"
+		},
+		{
+			"template": "notes/index.md.eta",
+			"path": "notes/<%= it.path.slug(it.data.title) %>-<%= it.path.shortId() %>.md"
+		}
+	]
 }
 ```
 

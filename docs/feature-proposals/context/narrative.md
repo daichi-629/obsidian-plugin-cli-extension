@@ -3,25 +3,25 @@ reviewed_at: 2026-04-08
 impact: medium
 priority_rank: 15
 existing_overlap:
-  - "grep: 時系列 reconstruction はできない"
-  - "apply-patch: 無関係"
-  - "manual timeline reconstruction workflows とは部分重複する"
+    - "grep: 時系列 reconstruction はできない"
+    - "apply-patch: 無関係"
+    - "manual timeline reconstruction workflows とは部分重複する"
 proposal_overlap:
-  - "delta: 時刻シグナルを共有できる"
-  - "evidence / claims: event citation の候補生成を共有する"
-  - "tension: 分岐や未解決論点の抽出を共有する"
-  - "context: ソースノート収集を共有する"
+    - "delta: 時刻シグナルを共有できる"
+    - "evidence / claims: event citation の候補生成を共有する"
+    - "tension: 分岐や未解決論点の抽出を共有する"
+    - "context: ソースノート収集を共有する"
 integration:
-  needed: true
-  decision: "単独コマンドとして維持し、context-engine と claim-analysis の上位整形層として扱う"
-  cluster: context-engine
-  shared_with:
-    - delta
-    - evidence
-    - claims
-    - tension
-    - context
-  integrated_proposal: docs/feature-proposals/integrated/context-engine.md
+    needed: true
+    decision: "単独コマンドとして維持し、context-engine と claim-analysis の上位整形層として扱う"
+    cluster: context-engine
+    shared_with:
+        - delta
+        - evidence
+        - claims
+        - tension
+        - context
+    integrated_proposal: docs/feature-proposals/integrated/context-engine.md
 builtin_diff_assessment: "妥当。検索結果や changed file list からは narrative は直接得られない。"
 recommendation: "優先度は低め。面白いが解釈依存が強く、他の structured analysis が揃ってからの方が品質を出しやすい。"
 ---

@@ -3,21 +3,21 @@ reviewed_at: 2026-04-08
 impact: low
 priority_rank: 16
 existing_overlap:
-  - "grep: 候補調査の材料にはなるが、新しい接続提案や novelty scoring はできない"
-  - "manual graph browsing workflows とは部分重複する"
+    - "excli-grep: 候補調査の材料にはなるが、新しい接続提案や novelty scoring はできない"
+    - "manual graph browsing workflows とは部分重複する"
 proposal_overlap:
-  - "disambiguate: ranking / keyword / graph-distance signals を共有する"
-  - "traverse: graph distance の計算を共有する"
-  - "inbox: suggestion card の有力な供給元"
+    - "disambiguate: ranking / keyword / graph-distance signals を共有する"
+    - "excli-traverse:*: graph distance の計算を既存 graph primitive から共有する"
+    - "inbox: suggestion card の有力な供給元"
 integration:
-  needed: true
-  decision: "単独コマンドとして維持し、link-intelligence の exploratory surface として後置する"
-  cluster: link-intelligence
-  shared_with:
-    - disambiguate
-    - traverse
-    - inbox
-  integrated_proposal: null
+    needed: true
+    decision: "単独コマンドとして維持し、link-intelligence の exploratory surface として後置する"
+    cluster: link-intelligence
+    shared_with:
+        - disambiguate
+        - traverse
+        - inbox
+    integrated_proposal: null
 builtin_diff_assessment: "妥当。既存探索系とは『存在しない辺を提案する』点で目的が異なる。"
 recommendation: "最後に回す。差別化要素ではあるが、主観性が高く deterministic core の後がよい。"
 ---
