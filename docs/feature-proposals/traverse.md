@@ -1,3 +1,29 @@
+---
+reviewed_at: 2026-04-08
+impact: high
+priority_rank: 2
+existing_overlap:
+  - "grep: ノート本文検索はできるが、link graph traversal や shortest path はできない"
+  - "adjacency-level links/backlinks workflows とは部分重複するが、複数 hop の探索はできない"
+proposal_overlap:
+  - "context: 関連ノート収集の基盤"
+  - "disambiguate: context-path からの距離計算を共有する"
+  - "serendipity: graph distance と cluster 情報を共有する"
+  - "audit: orphans / cluster-oriented checks の基盤になる"
+integration:
+  needed: true
+  decision: "単独の graph primitive として維持し、context-engine の下位基盤にする"
+  cluster: context-engine
+  shared_with:
+    - context
+    - disambiguate
+    - serendipity
+    - audit
+  integrated_proposal: docs/feature-proposals/integrated/context-engine.md
+builtin_diff_assessment: "妥当。1-hop の列挙とグラフ探索は別機能として十分に差別化できる。"
+recommendation: "最優先群。graph 系 proposal の再利用点が多く、仕様も比較的決定論的。"
+---
+
 # Feature proposal: traverse
 
 ## 概要

@@ -1,3 +1,30 @@
+---
+reviewed_at: 2026-04-08
+impact: medium
+priority_rank: 9
+existing_overlap:
+  - "excli-apply-patch: multi-file 書き戻しは可能だが、single-bundle editing と conflict policy は持たない"
+  - "grep: bundle 作成前の対象探索にしか使えない"
+proposal_overlap:
+  - "context: note bundle 収集を共有する"
+  - "impact / change-analysis: apply 前の safety check を共有する"
+  - "refactor: multi-file mutation backend を共有できる"
+  - "embed-resolve: create 時の read mode に取り込める"
+integration:
+  needed: true
+  decision: "単独コマンドとして維持し、bundle 収集と書き戻し backend を editing-primitives 側で共有する"
+  cluster: editing-primitives
+  shared_with:
+    - context
+    - impact
+    - change-analysis
+    - refactor
+    - embed-resolve
+  integrated_proposal: null
+builtin_diff_assessment: "概ね妥当。read-only bundle と low-level patch の間にある round-trip 編集面として独自性がある。"
+recommendation: "中盤候補。AI workflow への適合は高いが、context と change-analysis の基盤が先。"
+---
+
 # Feature proposal: workset
 
 ## 概要

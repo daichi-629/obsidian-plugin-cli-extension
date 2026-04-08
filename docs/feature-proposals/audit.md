@@ -1,3 +1,28 @@
+---
+reviewed_at: 2026-04-08
+impact: high
+priority_rank: 6
+existing_overlap:
+  - "grep: 空ノートや期限語の一部は近似検索できるが、網羅監査や severity 付けはできない"
+  - "apply-patch: 修正はできるが監査機能はない"
+  - "Obsidian の orphan/dead-end/unresolved 系チェックとは部分重複する"
+proposal_overlap:
+  - "schema: high-coverage property 欠落チェックを内包する"
+  - "impact: broken link / embed / schema 系チェック実装を共有できる"
+  - "inbox: issue card の主要生成元になる"
+integration:
+  needed: true
+  decision: "単独レポート surface は維持し、check engine だけ shared analysis foundation に寄せる"
+  cluster: analysis-foundation
+  shared_with:
+    - schema
+    - impact
+    - inbox
+  integrated_proposal: docs/feature-proposals/integrated/analysis-foundation.md
+builtin_diff_assessment: "概ね妥当。個別コマンドの束を優先度付きレポートへ統合する価値はある。"
+recommendation: "schema と impact の共通 analyzer を整えた後に段階導入する。"
+---
+
 # Feature proposal: audit
 
 ## 概要
@@ -139,5 +164,4 @@ Total: 75 issues across 7 checks
 ## ビルトインとの差分
 
 `orphans`, `deadends`, `unresolved` はそれぞれ1種類の問題だけを返す独立したコマンドである。`audit` はこれらに加え、スキーマ整合性・空ノート・期限切れタスク・重複エイリアスといったビルトインがカバーしない問題も検出し、優先度付きで統合されたレポートを返す。
-
 AI がアクションを起こす前の「vault の現状把握」を1コマンドで完了させることが `audit` の核心的な役割である。

@@ -1,3 +1,27 @@
+---
+reviewed_at: 2026-04-08
+impact: medium
+priority_rank: 10
+existing_overlap:
+  - "grep: 差分ではなく現時点の文字列検索しかできない"
+  - "apply-patch: patch 操作の結果は作れるが、vault 全体の時系列変化は追えない"
+proposal_overlap:
+  - "narrative: 時刻シグナルを共有できる"
+  - "inbox: change review card の生成元になれる"
+  - "audit: modified files を監査対象へ絞る最適化に使える"
+integration:
+  needed: true
+  decision: "単独コマンドは維持しつつ、snapshot diff と graph diff は analysis-foundation に寄せる"
+  cluster: analysis-foundation
+  shared_with:
+    - narrative
+    - inbox
+    - audit
+  integrated_proposal: docs/feature-proposals/integrated/analysis-foundation.md
+builtin_diff_assessment: "modified file 列挙の差分は明確だが、delete 検出が session buffer 前提なので唯一の履歴源にはしない方がよい。"
+recommendation: "analysis-foundation 後の中盤候補。継続セッション向けに絞って導入する。"
+---
+
 # Feature proposal: delta
 
 ## 概要

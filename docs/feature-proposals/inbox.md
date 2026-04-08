@@ -1,3 +1,30 @@
+---
+reviewed_at: 2026-04-08
+impact: medium
+priority_rank: 14
+existing_overlap:
+  - "grep / apply-patch: persistent review queue や GUI inbox は提供していない"
+proposal_overlap:
+  - "audit: issue card の主要な供給元"
+  - "tension / claims: question card の主要な供給元"
+  - "serendipity: idea card の主要な供給元"
+  - "impact / delta: review card の供給元"
+integration:
+  needed: true
+  decision: "単独導入は避け、少なくとも 1 つ以上の分析コマンドに enqueue を追加する形で導入する"
+  cluster: review-queue
+  shared_with:
+    - audit
+    - tension
+    - claims
+    - serendipity
+    - impact
+    - delta
+  integrated_proposal: null
+builtin_diff_assessment: "妥当。既存のその場限りの結果表示とは別に、非同期 review queue という明確な差がある。"
+recommendation: "後半に回す。producer が揃うまで単体価値が薄く、UI 実装コストも高い。"
+---
+
 # Feature proposal: inbox
 
 ## 概要

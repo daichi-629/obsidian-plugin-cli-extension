@@ -1,91 +1,136 @@
+---
+reviewed_at: 2026-04-08
+impact: high
+priority_rank: 5
+existing_overlap:
+  - "excli-grep: 候補ノート抽出には使えるが、リンク辿りや token budget 付き bundling はできない"
+  - "apply-patch: 読み取り用コンテキスト生成とは役割が別"
+  - "manual search/read workflows とは部分重複する"
+proposal_overlap:
+  - "traverse: 関連ノート収集のグラフ探索を共有する"
+  - "embed-resolve: 収集後コンテンツの flatten 処理を共有できる"
+  - "workset: note bundle 収集部分を共有できる"
+  - "narrative: 同じ収集基盤から時間軸だけ別整形する"
+integration:
+  needed: true
+  decision: "単独コマンドは維持し、context-engine 上の高レベル bundle surface として実装する"
+  cluster: context-engine
+  shared_with:
+    - traverse
+    - embed-resolve
+    - workset
+    - narrative
+  integrated_proposal: docs/feature-proposals/integrated/context-engine.md
+builtin_diff_assessment: "妥当。read や search:context の延長ではなく、AI 向け bundle 生成という別目的になっている。"
+recommendation: "context-engine の第2段階候補。まず traverse と embed-resolve を先行させる。"
+---
+
 # Feature proposal: context
 
 ## 概要
 
-AI に渡すためのコンテキストパケットを vault から自動組み立てするコマンド。シードノートとそこからリンクされた関連ノートを収集し、LLM のコンテキストウィンドウに直接流し込める形式で返す。
+AI に渡すためのコンテキストパケットを vault から自動組み立てするコマンド。シードノート周辺の関連ノートを収集し、必要なら `![[...]]` トランスクルージョンも再帰的に展開して、LLM にそのまま渡せる束として返す。
+
+この提案は旧 `context` と `embed-resolve` を統合し、「どのノートを読むか」と「ノートが実際に何を表示しているか」を 1 コマンドで扱う。
 
 ## 動機
 
-AI が vault を参照するとき、現状は `read` を個別に繰り返すしかない。しかしノートはリンクで意味的につながっており、関連ノートを手動で辿るのは非効率である。`context` は「どのノートを読むか」の判断を vault 側に移譲し、AI は取得した束を読むことに集中できる。
+AI が vault を参照するとき、現状は `read` を個別に繰り返すか、`grep` で候補を拾ってから手動で辿るしかない。しかし実際の Obsidian ノートはリンクとトランスクルージョンで意味的に構成されており、関連ノートの選定と埋め込み展開を別々にやるのは不自然である。
 
-ファイル操作コマンドではなく「AI の入力を構築するコマンド」という発想の逆転がある。
+`context` は「AI の入力を組み立てるコマンド」として、関連ノートの収集、トークン予算による打ち切り、埋め込み展開、出典注釈までまとめて担当する。
 
 ## コマンド形状
 
 ```bash
-# あるノートと深さ 1 の被リンクノートをまとめて返す
+# あるノートと深さ 1 の関連ノートをまとめて返す
 obsidian plugin-context path=notes/project.md depth=1 format=xml
 
-# テキストクエリで関連ノートをスコアリングして収集する
-obsidian plugin-context query="機械学習 実装" top=5 format=markdown
+# 関連ノートを集めつつ、各ノート内の埋め込みも展開する
+obsidian plugin-context path=notes/moc.md depth=1 resolve-embeds embed-depth=2 format=markdown
 
-# タグで絞り込んでコンテキストを組む
-obsidian plugin-context tag=project depth=1 max-tokens=8000
+# テキストクエリでシードを選び、上位ノートだけを収集する
+obsidian plugin-context query="機械学習 実装" top=5 max-tokens=8000 format=markdown
+
+# 埋め込み元をコメントで残す
+obsidian plugin-context path=notes/moc.md resolve-embeds annotate-embeds format=json
 ```
 
 ## オプション設計
 
 - `path=<path>` — シードノート（`path` か `query` のどちらか必須）
-- `query=<text>` — テキストクエリ（vault 内検索でシードを選ぶ）
-- `depth=<n>` — リンクを辿る深さ（デフォルト: 1）
+- `query=<text>` — テキストクエリ（vault 内検索でシード候補を選ぶ）
+- `depth=<n>` — 関連ノート探索の深さ（デフォルト: `1`）
 - `direction=out|in|both` — リンクの向き（デフォルト: `both`）
 - `tag=<tag>` — 収集対象をタグで絞る
 - `top=<n>` — 収集するノート数の上限
-- `max-tokens=<n>` — 概算トークン数でコンテキストを打ち切る
+- `max-tokens=<n>` — 概算トークン数でパケットを打ち切る
+- `resolve-embeds` — 各ノート内の `![[...]]` を展開する
+- `embed-depth=<n>` — 埋め込み展開の最大深さ（デフォルト: `2`）
+- `annotate-embeds` — 展開した埋め込みの前後に出典コメントを付ける
 - `format=xml|markdown|json` — 出力形式
 
 ## 出力例
-
-### `format=xml`
-
-```xml
-<context query="機械学習 実装" collected="3" truncated="false">
-  <note path="notes/project.md" relation="seed" hops="0">
-# プロジェクトX
-
-機械学習を使った...
-  </note>
-  <note path="notes/ml-basics.md" relation="linked" hops="1">
-# 機械学習基礎
-
-線形回帰は...
-  </note>
-  <note path="daily/2026-04-07.md" relation="backlink" hops="1">
-## 作業ログ
-
-プロジェクトXの実装を...
-  </note>
-</context>
-```
 
 ### `format=markdown`
 
 ```markdown
 <!-- context: notes/project.md + 2 related notes -->
 
-## notes/project.md (seed)
+## notes/project.md (seed, hops=0)
 
+# Project X
+
+<!-- embedded: notes/requirements.md -->
+## 要件定義
 ...
+<!-- end embedded: notes/requirements.md -->
 
 ## notes/ml-basics.md (linked, hops=1)
 
 ...
 ```
 
-## `max-tokens` の打ち切り戦略
+### `format=json`
 
-1. シードノートは必ず含める
-2. 関連度スコアの高い順に追加
-3. 推定トークン数が上限を超えた時点で停止
-4. 打ち切りが発生した場合は末尾に `truncated=true` を付記する
+```json
+{
+	"seed": "notes/moc.md",
+	"collected": 3,
+	"truncated": false,
+	"notes": [
+		{
+			"path": "notes/moc.md",
+			"relation": "seed",
+			"hops": 0,
+			"resolved_embeds": [
+				{
+					"ref": "requirements",
+					"resolved_path": "notes/requirements.md"
+				}
+			],
+			"content": "# プロジェクト概要\n\n..."
+		}
+	]
+}
+```
+
+## パケット組み立て戦略
+
+1. `path` または `query` からシードノートを決める
+2. リンク距離、タグ、検索一致度で関連ノートをスコアリングする
+3. `resolve-embeds` 指定時は各ノート内の埋め込みを再帰展開する
+4. 循環埋め込みは検出して停止し、注釈またはフラグで返す
+5. シードノートを必ず残しつつ、`max-tokens` を超えた時点で打ち切る
 
 トークン数の推定は文字数ベースの近似（4 文字 ≈ 1 token）とし、正確なカウントは行わない。
 
 ## 責務分離
 
-- `packages/core` — コンテキストパケットの型定義、ノードのスコアリング、トークン推定、出力整形
-- `packages/plugin` — vault からのノード収集、リンク解決、`TFile` の読み出し、CLI adapter
+- `packages/core` — コンテキストパケットの型定義、ノードのスコアリング、トークン推定、埋め込み展開、循環検出、出力整形
+- `packages/plugin` — vault からのノード収集、リンク解決、`TFile` の読み出し、埋め込み参照の解決、CLI adapter
+
+`core` は「どの情報をどの順で AI に渡すか」を担当し、`plugin` は vault から素材を集める。
 
 ## ビルトインとの差分
 
-`read` は単一ファイルの内容取得。`search:context` は検索結果の前後行表示。`context` は「AI の入力として意味的にまとまったノート群を返す」という目的が根本的に異なる。
+`read` は単一ファイルの生テキストしか返さない。検索系ワークフローは関連ノートの束や埋め込み展開を自動で作ってくれない。`context` は「AI が読むべきまとまり」を返すことに特化したコマンドであり、旧 `embed-resolve` の責務をその中に取り込む。

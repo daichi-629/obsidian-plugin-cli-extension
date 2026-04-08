@@ -1,3 +1,30 @@
+---
+reviewed_at: 2026-04-08
+impact: high
+priority_rank: 3
+existing_overlap:
+  - "grep: 対象ブロック探索の補助にはなるが、block-id addressability や refs 解決はできない"
+  - "excli-apply-patch: 狙ったブロック更新はできるが、位置特定と安全な置換を毎回手で組む必要がある"
+  - "editor-side block reference workflows とは部分重複するが、CLI からは直接扱えない"
+proposal_overlap:
+  - "embed-resolve: block / heading 抽出ロジックを共有する"
+  - "refactor: extract の実装基盤になる"
+  - "evidence / tension / narrative: block-level citation の基盤になる"
+integration:
+  needed: true
+  decision: "単独コマンドとして維持し、editing/claims 両系統の下位 primitive にする"
+  cluster: editing-primitives
+  shared_with:
+    - embed-resolve
+    - refactor
+    - evidence
+    - tension
+    - narrative
+  integrated_proposal: null
+builtin_diff_assessment: "概ね妥当。read / replace / search:context では block-id を第一級のアドレスとして扱えない。"
+recommendation: "早めに実装する。編集精度と後続分析の両方を底上げする。"
+---
+
 # Feature proposal: block
 
 ## 概要

@@ -45,13 +45,13 @@ The development vault is mounted at `/config/vault` inside the container and is 
 During watch runs, the built plugin files are copied to:
 
 ```text
-vault/.obsidian/plugins/sample-monorepo-plugin/
+vault/.obsidian/plugins/excli/
 ```
 
 Watch runs also update:
 
 ```text
-vault/.obsidian/plugins/sample-monorepo-plugin/.hotreload
+vault/.obsidian/plugins/excli/.hotreload
 ```
 
 ## Workspace layout

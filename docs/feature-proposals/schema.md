@@ -1,3 +1,27 @@
+---
+reviewed_at: 2026-04-08
+impact: high
+priority_rank: 1
+existing_overlap:
+  - "grep: frontmatter text は拾えるが、型推論・coverage 集計・validate はできない"
+  - "apply-patch: 変更実行のみで、スキーマ判断材料は提供しない"
+  - "per-note Properties inspection とは部分重複するが、vault-wide inference は提供しない"
+proposal_overlap:
+  - "audit: schema check の基盤として再利用される"
+  - "impact / change-analysis: schema regression 判定に再利用される"
+integration:
+  needed: true
+  decision: "単独コマンドとして維持し、集計ロジックだけ analysis-foundation に共有する"
+  cluster: analysis-foundation
+  shared_with:
+    - audit
+    - impact
+    - change-analysis
+  integrated_proposal: docs/feature-proposals/integrated/analysis-foundation.md
+builtin_diff_assessment: "妥当。proposal 本文の properties / tags との差分説明は十分に成立している。"
+recommendation: "最優先で実装する。決定論的で再利用範囲が広く、後続 proposal の土台になる。"
+---
+
 # Feature proposal: schema
 
 ## 概要
@@ -134,6 +158,20 @@ daily/2026-04-03.md
 2. 各プロパティの型は Obsidian の `PropertyInfo.type` をそのまま使う（`text` / `tags` / `date` / `datetime` / `number` / `checkbox` / `aliases`）
 3. `enum_candidates` は `text` 型プロパティの値が 10 種類以下のときに提示する
 4. カバレッジが低いプロパティ同士で名前が類似している場合は `possible_duplicate_of` 警告を出す
+
+## 将来拡張: segmented schema
+
+単一の vault-wide schema だけでなく、「note type ごと」「tag ごと」に別の schema が存在するケースは多い。これに対する拡張は 2 段階で考える。
+
+まず近い拡張としては、決定論的な `group-by` を導入して、既知の軸ごとに schema を比較できるようにする。例えば `type` property ごとの差を見る、tag ごとの差を見る、といった用途である。詳細な command surface は設計書側で扱う。
+
+その先の高度な拡張としては、「どの tag / property 値が schema の分岐を最もよく説明するか」を自動検出するモードが考えられる。これは次のようなスコアリングで実現できる。
+
+- ある tag を持つ集合と持たない集合で property coverage がどれだけ乖離するか
+- ある property 値ごとに enum 候補や value shape がどれだけ安定して分かれるか
+- 分割後の schema が分割前よりどれだけ説明力を持つか
+
+さらに遠い将来には、note を property presence ベクトルとして扱い、教師なしで schema cluster を作ることも可能である。ただしこれは結果の説明可能性と安定性が下がりやすいので、少なくとも初期段階では「tag や property 値を説明変数として返す」方式を優先する。
 
 ## 責務分離
 

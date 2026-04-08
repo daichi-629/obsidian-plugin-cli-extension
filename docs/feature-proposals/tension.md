@@ -1,3 +1,28 @@
+---
+reviewed_at: 2026-04-08
+impact: medium
+priority_rank: 13
+existing_overlap:
+  - "grep: 衝突候補の断片検索には使えるが、cluster 化と unresolved 判定はできない"
+  - "manual conflict review workflows とは部分重複する"
+proposal_overlap:
+  - "evidence / claims: claim extraction と contradiction signals を共有する"
+  - "narrative: branching / unresolved storyline を共有する"
+  - "audit: high-risk issue surfacing の出力先として近い"
+integration:
+  needed: true
+  decision: "単独コマンドとしても残せるが、claims の scan mode に寄せる設計が最も自然"
+  cluster: claim-analysis
+  shared_with:
+    - evidence
+    - claims
+    - narrative
+    - audit
+  integrated_proposal: docs/feature-proposals/claims.md
+builtin_diff_assessment: "概ね妥当。構造監査と意味的衝突検出は別問題。"
+recommendation: "後半フェーズ。誤検出コストが高く、まず evidence 系の基盤を安定させたい。"
+---
+
 # Feature proposal: tension
 
 ## 概要
