@@ -9,7 +9,7 @@ import type {
 	TraverseClustersCommandInput,
 	TraverseOutputFormat,
 	TraversePathCommandInput,
-	TraverseReachCommandInput,
+	TraverseReachCommandInput
 } from "./types";
 
 function assertOutputFormat(format: string | undefined): TraverseOutputFormat {

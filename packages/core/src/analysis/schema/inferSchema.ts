@@ -90,15 +90,17 @@ function summarizeProperties(
 	return properties;
 }
 
-export function inferSchema(
-	input: InferSchemaInput
-): SchemaSummary | GroupedSchemaSummary {
+export function inferSchema(input: InferSchemaInput): SchemaSummary | GroupedSchemaSummary {
 	const minCoverage = (input.minCoverage ?? 10) / 100;
 
 	if (!input.groupBy) {
 		return {
 			scope: input.scope,
-			properties: summarizeProperties(input.snapshot.notes, input.snapshot.propertyCatalog, minCoverage)
+			properties: summarizeProperties(
+				input.snapshot.notes,
+				input.snapshot.propertyCatalog,
+				minCoverage
+			)
 		};
 	}
 
@@ -114,7 +116,11 @@ export function inferSchema(
 		groups: grouped.groups.map((group) => ({
 			value: group.value,
 			noteCount: group.notes.length,
-			properties: summarizeProperties(group.notes, input.snapshot.propertyCatalog, minCoverage)
+			properties: summarizeProperties(
+				group.notes,
+				input.snapshot.propertyCatalog,
+				minCoverage
+			)
 		}))
 	};
 }

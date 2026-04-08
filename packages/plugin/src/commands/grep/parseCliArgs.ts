@@ -51,11 +51,7 @@ function readNonNegativeIntegerOption(
 export function parseGrepCliArgs(params: CliData): PluginCliParseResult<GrepCliInput> {
 	const pattern = readValue(params, "pattern", "pattern");
 	const pathPrefixes = readPathPrefixList(params, "path", "path");
-	const excludePathPrefixes = readPathPrefixList(
-		params,
-		"exclude-path",
-		"excludePath"
-	);
+	const excludePathPrefixes = readPathPrefixList(params, "exclude-path", "excludePath");
 	const maxResultsValue = readValue(params, "max-results", "maxResults");
 	const beforeContext = readNonNegativeIntegerOption(params, "before-context", "beforeContext");
 	if (typeof beforeContext === "string") {

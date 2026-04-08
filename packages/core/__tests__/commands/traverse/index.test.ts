@@ -88,7 +88,9 @@ describe("traverse commands", () => {
 				displayedComponentCount: 1,
 				minSize: 2
 			},
-			clusters: [{ index: 0, size: 3, paths: ["projects/a.md", "projects/b.md", "reference/c.md"] }]
+			clusters: [
+				{ index: 0, size: 3, paths: ["projects/a.md", "projects/b.md", "reference/c.md"] }
+			]
 		});
 		expect(
 			runTraverseReachCommand({

@@ -1,10 +1,6 @@
 import type { CliData } from "obsidian";
 import type { PluginCliParseResult } from "../types";
-import type {
-	SchemaInferCliInput,
-	SchemaMissingCliInput,
-	SchemaValidateCliInput
-} from "./types";
+import type { SchemaInferCliInput, SchemaMissingCliInput, SchemaValidateCliInput } from "./types";
 
 function getParamValue(params: CliData, hyphenated: string, camelCase: string): unknown {
 	const record = params as Record<string, unknown>;
@@ -72,10 +68,20 @@ function hasAnyValue(params: CliData, keys: string[]): boolean {
 export function parseSchemaInferCliArgs(
 	params: CliData
 ): PluginCliParseResult<SchemaInferCliInput> {
-	if (hasAnyValue(params, ["key", "path", "missing-threshold", "missingThreshold", "fail-on", "failOn"])) {
+	if (
+		hasAnyValue(params, [
+			"key",
+			"path",
+			"missing-threshold",
+			"missingThreshold",
+			"fail-on",
+			"failOn"
+		])
+	) {
 		return {
 			ok: false,
-			message: "The infer command only accepts folder, tag, group-by, min-coverage, and format."
+			message:
+				"The infer command only accepts folder, tag, group-by, min-coverage, and format."
 		};
 	}
 
@@ -117,7 +123,19 @@ export function parseSchemaInferCliArgs(
 export function parseSchemaMissingCliArgs(
 	params: CliData
 ): PluginCliParseResult<SchemaMissingCliInput> {
-	if (hasAnyValue(params, ["path", "group-by", "groupBy", "min-coverage", "minCoverage", "missing-threshold", "missingThreshold", "fail-on", "failOn"])) {
+	if (
+		hasAnyValue(params, [
+			"path",
+			"group-by",
+			"groupBy",
+			"min-coverage",
+			"minCoverage",
+			"missing-threshold",
+			"missingThreshold",
+			"fail-on",
+			"failOn"
+		])
+	) {
 		return {
 			ok: false,
 			message: "The missing command only accepts key, folder, tag, and format."
@@ -158,12 +176,16 @@ export function parseSchemaValidateCliArgs(
 
 	const paths = readList(params, "path", "path");
 	const normalizedPaths =
-		paths.length === 1 ? parseJsonStringArray(paths[0] ?? "") ?? paths : paths;
+		paths.length === 1 ? (parseJsonStringArray(paths[0] ?? "") ?? paths) : paths;
 	if (normalizedPaths.length === 0) {
 		return { ok: false, message: "The validate command requires at least one path=<path>." };
 	}
 
-	if (paths.length === 1 && (paths[0] ?? "").trim().startsWith("[") && normalizedPaths.length === 0) {
+	if (
+		paths.length === 1 &&
+		(paths[0] ?? "").trim().startsWith("[") &&
+		normalizedPaths.length === 0
+	) {
 		return {
 			ok: false,
 			message: "The path option must be a string path or a JSON array of string paths."

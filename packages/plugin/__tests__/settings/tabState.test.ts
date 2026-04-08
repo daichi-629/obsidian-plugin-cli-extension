@@ -16,9 +16,7 @@ describe("tabState", () => {
 	});
 
 	it("formats prefixes for textarea editing", () => {
-		expect(formatPathPrefixLines(["projects/", "reference/"])).toBe(
-			"projects/\nreference/"
-		);
+		expect(formatPathPrefixLines(["projects/", "reference/"])).toBe("projects/\nreference/");
 	});
 
 	it("parses and formats extension lists", () => {

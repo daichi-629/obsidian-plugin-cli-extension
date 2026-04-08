@@ -51,7 +51,9 @@ export function filterVaultSchemaSnapshot(
 } {
 	const folder = normalizeFolder(input.folder);
 	const tag = normalizeSchemaTag(input.tag);
-	const notes = snapshot.notes.filter((note) => matchesFolder(note, folder) && matchesTag(note, tag));
+	const notes = snapshot.notes.filter(
+		(note) => matchesFolder(note, folder) && matchesTag(note, tag)
+	);
 	return {
 		scope: {
 			folder,

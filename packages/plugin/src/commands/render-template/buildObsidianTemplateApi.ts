@@ -38,7 +38,8 @@ export function buildObsidianTemplateApi(input: {
 
 				return input.plugin.app.vault.cachedRead(target);
 			},
-			exists: async (filePath: string) => Boolean(input.plugin.app.vault.getAbstractFileByPath(filePath)),
+			exists: async (filePath: string) =>
+				Boolean(input.plugin.app.vault.getAbstractFileByPath(filePath)),
 			list: async (prefix = "") =>
 				input.plugin.app.vault
 					.getFiles()

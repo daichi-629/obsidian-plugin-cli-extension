@@ -1,9 +1,6 @@
 import { formatSearchResult, parseSearchOptions, searchDocuments } from "@sample/core";
 import type { CliHandler, Plugin } from "obsidian";
-import {
-	getGrepPathPolicyErrorForMany,
-	type SamplePluginSettings
-} from "../../settings";
+import { getGrepPathPolicyErrorForMany, type SamplePluginSettings } from "../../settings";
 import {
 	buildCliFlags,
 	isManualRequest,

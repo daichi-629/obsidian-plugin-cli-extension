@@ -17,7 +17,12 @@ function getNeighborPaths(
 		return (snapshot.outgoing[path] ?? []).map((edge) => edge.to);
 	}
 
-	return [...new Set([...(snapshot.outgoing[path] ?? []).map((edge) => edge.to), ...(snapshot.incoming[path] ?? []).map((edge) => edge.from)])].sort(compareGraphPaths);
+	return [
+		...new Set([
+			...(snapshot.outgoing[path] ?? []).map((edge) => edge.to),
+			...(snapshot.incoming[path] ?? []).map((edge) => edge.from)
+		])
+	].sort(compareGraphPaths);
 }
 
 export function findShortestPath(input: ShortestPathInput): string[] | null {

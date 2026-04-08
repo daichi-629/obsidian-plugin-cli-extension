@@ -21,9 +21,11 @@ function basename(path: string): string {
 
 function formatAmbiguousOperand(operand: string, candidates: string[]): never {
 	throw new UserError(
-		[`Ambiguous note operand: "${operand}"`, "Candidates:", ...candidates.map((candidate) => `- ${candidate}`)].join(
-			"\n"
-		)
+		[
+			`Ambiguous note operand: "${operand}"`,
+			"Candidates:",
+			...candidates.map((candidate) => `- ${candidate}`)
+		].join("\n")
 	);
 }
 

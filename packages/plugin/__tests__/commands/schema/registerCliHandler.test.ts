@@ -12,7 +12,10 @@ function createPlugin() {
 		{ path: "inbox/c.md", extension: "md" },
 		{ path: `${CONFIG_DIR}/config.md`, extension: "md" }
 	];
-	const caches: Record<string, { frontmatter?: Record<string, unknown>; tags?: Array<{ tag: string }> }> = {
+	const caches: Record<
+		string,
+		{ frontmatter?: Record<string, unknown>; tags?: Array<{ tag: string }> }
+	> = {
 		"projects/a.md": {
 			frontmatter: { status: "todo", tags: ["project"], type: "project" },
 			tags: [{ tag: "#project" }]

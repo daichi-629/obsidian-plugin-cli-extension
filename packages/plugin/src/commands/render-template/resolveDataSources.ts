@@ -69,7 +69,7 @@ async function readJsonFile(plugin: Plugin, filePath: string): Promise<Record<st
 			(vaultBasePath ? isInsideRoot(pathModule, resolvedPath, vaultBasePath) : false);
 		if (!isAllowed) {
 			throw new UserError(
-				'Absolute --data-file paths must stay inside the current working directory or vault root.'
+				"Absolute --data-file paths must stay inside the current working directory or vault root."
 			);
 		}
 

@@ -1,12 +1,5 @@
 import { resolve } from "node:path";
-import {
-	listFiles,
-	parseArgs,
-	readJson,
-	resultsRoot,
-	writeJson,
-	writeText
-} from "./lib.mjs";
+import { listFiles, parseArgs, readJson, resultsRoot, writeJson, writeText } from "./lib.mjs";
 
 function median(values) {
 	if (values.length === 0) {
@@ -15,9 +8,7 @@ function median(values) {
 
 	const sorted = [...values].sort((left, right) => left - right);
 	const middle = Math.floor(sorted.length / 2);
-	return sorted.length % 2 === 0
-		? (sorted[middle - 1] + sorted[middle]) / 2
-		: sorted[middle];
+	return sorted.length % 2 === 0 ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle];
 }
 
 function groupKey(result) {

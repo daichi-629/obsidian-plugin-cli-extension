@@ -9,8 +9,7 @@ function writeVaultFile(relativePath, content, options = {}) {
 	const filePath = join(vaultRoot, relativePath);
 	mkdirSync(dirname(filePath), { recursive: true });
 	writeFileSync(filePath, content, {
-		encoding:
-			typeof content === "string" ? (options.encoding ?? "utf8") : options.encoding
+		encoding: typeof content === "string" ? (options.encoding ?? "utf8") : options.encoding
 	});
 	return {
 		path: relativePath,
@@ -110,7 +109,17 @@ function buildWorkspaceJson() {
 }
 
 function buildDataviewFixture() {
-	return `# Dataview Fixture
+	return `---
+type: query
+tags:
+  - query
+  - dataview
+status: active
+owners:
+  - alex
+---
+
+# Dataview Fixture
 
 \`\`\`dataview
 TABLE status, owners
@@ -127,7 +136,17 @@ dv.table(["File", "Status"], pages.map((page) => [page.file.link, page.status]))
 }
 
 function buildTasksFixture() {
-	return `# Tasks Fixture
+	return `---
+type: task-board
+tags:
+  - tasks
+  - operations
+status: in-progress
+owners:
+  - morgan
+---
+
+# Tasks Fixture
 
 \`\`\`tasks
 not done
@@ -188,7 +207,15 @@ function buildBinaryAttachment(index) {
 const files = [
 	writeVaultFile(
 		"README.md",
-		`# Sample vault
+		`---
+type: readme
+tags:
+  - docs
+  - fixture
+status: active
+---
+
+# Sample vault
 
 This vault is intentionally populated for local plugin development and command testing.
 
@@ -207,6 +234,12 @@ Run \`pnpm run vault:generate\` from the repository root to refresh the generate
 - \`templates/private/\` keeps intentionally denied content for policy checks.
 - \`attachments/bulk/\` provides a noisier attachment set.
 - \`.obsidian/\` includes config fixtures that grep must continue to ignore.
+
+## Schema hints
+
+- Most operational notes now expose frontmatter such as \`type\`, \`tags\`, \`status\`, and \`date\`.
+- Some notes intentionally omit frontmatter so \`excli-schema:missing\` and validation flows still have realistic failures to report.
+- A few notes intentionally keep unusual or low-frequency properties such as \`created\` or \`rogue_key\`.
 
 ## Search hints
 
@@ -227,6 +260,8 @@ aliases:
 tags:
   - moc
   - test-fixture
+type: moc
+status: active
 ---
 
 # Home
@@ -292,6 +327,9 @@ This note acts as a realistic map of content for the generated vault.
 tags:
   - daily
   - review
+type: daily
+date: 2026-04-07
+status: done
 ---
 
 # Daily Note 2026-04-07
@@ -312,6 +350,9 @@ Need to revisit [[reference/cli-examples]] and compare with [[stress/todo-matrix
 tags:
   - daily
   - shipping
+type: daily
+date: 2026-04-08
+status: in-progress
 ---
 
 # Daily Note 2026-04-08
@@ -348,6 +389,9 @@ Observed two classes of failures:
 	writeVaultFile(
 		"meeting-notes/2026-04-08 product sync.md",
 		`---
+type: meeting
+date: 2026-04-08
+status: done
 participants:
   - "[[people/alex-doe]]"
   - "[[people/morgan-lee]]"
@@ -378,6 +422,11 @@ tags:
 		`---
 aliases:
   - Alex
+type: person
+tags:
+  - people
+  - platform
+status: active
 team: Platform
 ---
 
@@ -390,7 +439,16 @@ team: Platform
 	),
 	writeVaultFile(
 		"people/morgan-lee.md",
-		`# Morgan Lee
+		`---
+type: person
+tags:
+  - people
+  - qa
+status: active
+team: QA
+---
+
+# Morgan Lee
 
 - Role: QA
 - TODO verify vault fixture realism
@@ -409,7 +467,15 @@ reference: projects/vault-grep.md
 	),
 	writeVaultFile(
 		"notes/weird file name [draft] #1.md",
-		`# Weird File Name
+		`---
+type: scratch
+tags:
+  - notes
+status: draft
+rogue_key: true
+---
+
+# Weird File Name
 
 This note exists to test spaces, brackets, and hash signs in vault-relative paths.
 
@@ -419,13 +485,31 @@ This note exists to test spaces, brackets, and hash signs in vault-relative path
 	),
 	writeVaultFile(
 		"notes/.hidden-note.md",
-		`# Hidden Note
+		`---
+type: scratch
+tags:
+  - notes
+  - hidden
+status: draft
+---
+
+# Hidden Note
 
 Hidden files can still exist in the vault.
 TODO hidden note visibility check
 `
 	),
-	writeVaultFile("notes/empty.md", ""),
+	writeVaultFile(
+		"notes/empty.md",
+		`---
+type: scratch
+tags:
+  - notes
+status: archived
+empty_body: true
+---
+`
+	),
 	writeVaultFile(
 		"notes/windows-crlf.txt",
 		[
@@ -436,7 +520,18 @@ TODO hidden note visibility check
 	),
 	writeVaultFile(
 		"projects/release-checklist.md",
-		`# Release Checklist
+		`---
+type: project
+tags:
+  - project
+  - release
+status: todo
+owners:
+  - alex
+stage: active
+---
+
+# Release Checklist
 
 - [ ] TODO bump manifest and versions.json together
 - [ ] TODO run pnpm run build
@@ -452,7 +547,19 @@ TODO hidden note visibility check
 	),
 	writeVaultFile(
 		"projects/vault-grep.md",
-		`# Vault Grep
+		`---
+type: project
+tags:
+  - project
+  - grep
+status: in-progress
+owners:
+  - alex
+stage: active
+created: 2026-04-01
+---
+
+# Vault Grep
 
 This note collects search-heavy examples for local Obsidian CLI testing.
 
@@ -474,7 +581,18 @@ This note collects search-heavy examples for local Obsidian CLI testing.
 	),
 	writeVaultFile(
 		"projects/active/alpha/overview.md",
-		`# Alpha Overview
+		`---
+type: project
+tags:
+  - project
+  - alpha
+status: in-progress
+owners:
+  - alex
+stage: active
+---
+
+# Alpha Overview
 
 ## Scope
 
@@ -492,7 +610,19 @@ Alpha tracks command-oriented vault operations.
 	),
 	writeVaultFile(
 		"projects/active/alpha/meeting-notes.md",
-		`# Alpha Meeting Notes
+		`---
+type: project
+tags:
+  - project
+  - alpha
+status: in-progress
+owners:
+  - alex
+stage: active
+created: 2026-04-02
+---
+
+# Alpha Meeting Notes
 
 ## 2026-04-08
 
@@ -509,7 +639,18 @@ Alpha tracks command-oriented vault operations.
 	),
 	writeVaultFile(
 		"projects/active/beta/spec.md",
-		`# Beta Spec
+		`---
+type: project
+tags:
+  - project
+  - beta
+status: todo
+owners:
+  - morgan
+stage: active
+---
+
+# Beta Spec
 
 ## Acceptance checks
 
@@ -525,7 +666,20 @@ Alpha tracks command-oriented vault operations.
 	),
 	writeVaultFile(
 		"projects/archive/2025-incident-retro.md",
-		`# 2025 Incident Retro
+		`---
+type: project
+tags:
+  - project
+  - archive
+  - incident
+status: archived
+owners:
+  - morgan
+stage: archive
+date: 2025-12-19
+---
+
+# 2025 Incident Retro
 
 Incident summary: grep output missed archived notes because the search scope was too narrow.
 
@@ -536,7 +690,15 @@ Incident summary: grep output missed archived notes because the search scope was
 	),
 	writeVaultFile(
 		"archive/old.md",
-		`# Old Note
+		`---
+type: archive-note
+tags:
+  - archive
+status: archived
+date: 2024-12-31
+---
+
+# Old Note
 
 This file is intentionally plain and small.
 TODO legacy note still searchable
@@ -544,7 +706,15 @@ TODO legacy note still searchable
 	),
 	writeVaultFile(
 		"reference/cli-examples.md",
-		`# CLI Examples
+		`---
+type: reference
+tags:
+  - reference
+  - cli
+status: active
+---
+
+# CLI Examples
 
 ## Basic
 
@@ -579,10 +749,31 @@ spaces in file names
 templates/private/secret-plan.md should stay denied
 `
 	),
-	writeVaultFile("reference/long-lines.md", `# Long Lines\n\n${buildLongSingleLine(24000)}`),
+	writeVaultFile(
+		"reference/long-lines.md",
+		`---
+type: reference
+tags:
+  - reference
+  - long-lines
+status: active
+---
+
+# Long Lines
+
+${buildLongSingleLine(24000)}`
+	),
 	writeVaultFile(
 		"reference/unicode-and-symbols.md",
-		`# Unicode And Symbols
+		`---
+type: reference
+tags:
+  - reference
+  - unicode
+status: active
+---
+
+# Unicode And Symbols
 
 Japanese: 検索テスト と 日本語の TODO 行
 Greek: alpha beta gamma delta
@@ -601,6 +792,7 @@ aliases:
 tags:
   - reference
   - metadata
+type: reference
 status: in-progress
 owners:
   - alex
@@ -622,10 +814,30 @@ This note exercises metadata-heavy markdown.
 > Metadata-rich notes often expose formatting bugs first.
 `
 	),
-	writeVaultFile("reference/code-fence-lab.md", buildCodeFenceFixture()),
+	writeVaultFile(
+		"reference/code-fence-lab.md",
+		`---
+type: reference
+tags:
+  - reference
+  - code
+status: active
+---
+
+${buildCodeFenceFixture()}`
+	),
 	writeVaultFile(
 		"collisions/team/overview.md",
-		`# Overview
+		`---
+type: reference
+tags:
+  - collisions
+  - team
+status: active
+scope: team
+---
+
+# Overview
 
 Folder-scoped collision fixture for the team namespace.
 
@@ -635,7 +847,16 @@ Folder-scoped collision fixture for the team namespace.
 	),
 	writeVaultFile(
 		"collisions/project/overview.md",
-		`# Overview
+		`---
+type: reference
+tags:
+  - collisions
+  - project
+status: active
+scope: project
+---
+
+# Overview
 
 Folder-scoped collision fixture for the project namespace.
 
@@ -645,7 +866,16 @@ Folder-scoped collision fixture for the project namespace.
 	),
 	writeVaultFile(
 		"deep/level-1/level-2/level-3/level-4/level-5/trace.md",
-		`# Deep Trace
+		`---
+type: reference
+tags:
+  - deep
+  - trace
+status: active
+depth: 5
+---
+
+# Deep Trace
 
 This note exists to test deeply nested traversal.
 
@@ -656,7 +886,16 @@ This note exists to test deeply nested traversal.
 	),
 	writeVaultFile(
 		"deep/level-1/level-2/level-3/level-4/level-5/snippet.md",
-		`# Deep Snippet
+		`---
+type: reference
+tags:
+  - deep
+  - snippet
+status: active
+depth: 5
+---
+
+# Deep Snippet
 
 \`\`\`md
 ![[deep/level-1/level-2/level-3/level-4/level-5/trace]]
@@ -665,21 +904,47 @@ This note exists to test deeply nested traversal.
 	),
 	writeVaultFile(
 		"paths/space dir/nested/file with spaces.md",
-		`# File With Spaces
+		`---
+type: reference
+tags:
+  - paths
+  - spaces
+status: active
+path_case: spaced
+---
+
+# File With Spaces
 
 TODO path normalization for nested directories with spaces
 `
 	),
 	writeVaultFile(
 		"paths/commas, semicolons/odd-name.md",
-		`# Odd Name
+		`---
+type: reference
+tags:
+  - paths
+  - punctuation
+status: active
+path_case: punctuated
+---
+
+# Odd Name
 
 TODO punctuation in path segments
 `
 	),
 	writeVaultFile(
 		"templates/daily-template.md",
-		`# Daily Template
+		`---
+type: template
+tags:
+  - template
+  - daily
+status: active
+---
+
+# Daily Template
 
 - Date:
 - Top goals:
@@ -689,7 +954,16 @@ TODO punctuation in path segments
 	),
 	writeVaultFile(
 		"templates/private/secret-plan.md",
-		`# Secret Plan
+		`---
+type: template
+tags:
+  - template
+  - private
+status: restricted
+visibility: private
+---
+
+# Secret Plan
 
 This file should be denied by default grep policy.
 TODO do not expose
@@ -697,7 +971,16 @@ TODO do not expose
 	),
 	writeVaultFile(
 		"templates/private/nested/credentials.md",
-		`# Credentials
+		`---
+type: template
+tags:
+  - template
+  - private
+status: restricted
+visibility: private
+---
+
+# Credentials
 
 This nested private note is another denied-path fixture.
 TODO remain unreadable to grep
@@ -727,7 +1010,15 @@ gamma,todo,31
 	),
 	writeVaultFile(
 		"attachments/bulk/index.md",
-		`# Bulk Attachments
+		`---
+type: reference
+tags:
+  - reference
+  - attachments
+status: active
+---
+
+# Bulk Attachments
 
 - TODO verify large attachment directories do not affect command behavior
 - Files:
@@ -736,11 +1027,41 @@ gamma,todo,31
 - [[attachments/bulk/file-24.bin]]
 `
 	),
-	writeVaultFile("stress/todo-matrix.md", buildTodoMatrix(80, 6)),
-	writeVaultFile("stress/large-note.md", buildLargeMarkdown("Large Note", 90, 12)),
+	writeVaultFile(
+		"stress/todo-matrix.md",
+		`---
+type: fixture
+tags:
+  - stress
+  - matrix
+status: active
+---
+
+${buildTodoMatrix(80, 6)}`
+	),
+	writeVaultFile(
+		"stress/large-note.md",
+		`---
+type: fixture
+tags:
+  - stress
+  - large
+status: active
+---
+
+${buildLargeMarkdown("Large Note", 90, 12)}`
+	),
 	writeVaultFile(
 		"stress/repeated-headings.md",
-		`# Repeated Headings
+		`---
+type: fixture
+tags:
+  - stress
+  - headings
+status: active
+---
+
+# Repeated Headings
 
 ## Status
 TODO first status block
@@ -757,6 +1078,11 @@ TODO third status block
 		`---
 fixture: true
 category: stress
+type: fixture
+tags:
+  - stress
+  - mixed
+status: active
 ---
 
 # Mixed Content
@@ -809,7 +1135,16 @@ const pattern = "TODO";
 	),
 	writeVaultFile(
 		"international/検索テスト.md",
-		`# 検索テスト
+		`---
+type: reference
+tags:
+  - international
+  - unicode
+status: active
+lang: ja
+---
+
+# 検索テスト
 
 これは Unicode を含む vault fixture です。
 

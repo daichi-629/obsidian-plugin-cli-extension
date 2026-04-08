@@ -101,13 +101,7 @@ async function prepareVault(profile, seed, manifestDir) {
 
 	const generate = await runCommand(
 		"node",
-		[
-			"scripts/perf/generate-synthetic-vault.mjs",
-			"--profile",
-			profile,
-			"--seed",
-			String(seed)
-		],
+		["scripts/perf/generate-synthetic-vault.mjs", "--profile", profile, "--seed", String(seed)],
 		{
 			cwd: repoRoot,
 			timeoutMs: 600000
@@ -282,7 +276,9 @@ async function main() {
 	const seed = toInteger(args.seed, 42);
 	const keepWorkArtifacts = args["keep-work-artifacts"] !== "false";
 	const profileOverride = args.profile ? String(args.profile) : undefined;
-	const sessionRoot = resolve(String(args["output-dir"] ?? resolve(resultsRoot, timestampSlug())));
+	const sessionRoot = resolve(
+		String(args["output-dir"] ?? resolve(resultsRoot, timestampSlug()))
+	);
 	ensureDir(sessionRoot);
 	ensureDir(promptsRoot);
 

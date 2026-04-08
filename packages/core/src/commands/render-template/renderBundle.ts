@@ -1,11 +1,7 @@
 import { Eta } from "eta/core";
 import { UserError } from "../../shared/errors/userError";
 import { validateRenderedPaths } from "./validateRenderedPaths";
-import type {
-	RenderTemplateDefinition,
-	RenderTemplatePlan,
-	TemplateRenderInput
-} from "./types";
+import type { RenderTemplateDefinition, RenderTemplatePlan, TemplateRenderInput } from "./types";
 
 function normalizePath(filePath: string): string {
 	return filePath.replace(/\\/g, "/");
@@ -37,7 +33,10 @@ function basename(filePath: string): string {
 }
 
 function normalizePartialSpecifier(specifier: string): string {
-	return specifier.replace(/\\/g, "/").replace(/^\.\/+/, "").trim();
+	return specifier
+		.replace(/\\/g, "/")
+		.replace(/^\.\/+/, "")
+		.trim();
 }
 
 function buildPartialAliases(filePath: string): string[] {
@@ -118,7 +117,12 @@ export function renderTemplateBundle(input: {
 		const fullPath = input.outputRoot
 			? joinPaths(input.outputRoot, relativePath)
 			: relativePath;
-		const content = renderWithEta(eta, definition.templateBody, runtime, definition.templatePath);
+		const content = renderWithEta(
+			eta,
+			definition.templateBody,
+			runtime,
+			definition.templatePath
+		);
 
 		return {
 			path: fullPath,

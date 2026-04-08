@@ -48,9 +48,12 @@ function validateExpectedDiff(changeMap, matcher) {
 		const lineCount =
 			text.length === 0
 				? 0
-				: text.replaceAll("\r\n", "\n").split("\n").filter((_, index, lines) => {
-						return !(index === lines.length - 1 && lines[index] === "");
-					}).length;
+				: text
+						.replaceAll("\r\n", "\n")
+						.split("\n")
+						.filter((_, index, lines) => {
+							return !(index === lines.length - 1 && lines[index] === "");
+						}).length;
 		if (lineCount !== matcher.lineCountEquals) {
 			errors.push(
 				`Expected "${matcher.path}" line count ${matcher.lineCountEquals} but received ${lineCount}.`
@@ -64,7 +67,11 @@ function validateExpectedDiff(changeMap, matcher) {
 function collectUnexpectedChanges(diff, expectedPaths, forbiddenPaths) {
 	const errors = [];
 	for (const change of diff.changes) {
-		if (forbiddenPaths.some((prefix) => change.path === prefix || change.path.startsWith(prefix))) {
+		if (
+			forbiddenPaths.some(
+				(prefix) => change.path === prefix || change.path.startsWith(prefix)
+			)
+		) {
 			errors.push(`Forbidden path changed: ${change.path}`);
 		}
 
@@ -131,7 +138,9 @@ async function main() {
 		}
 
 		if (finalResult.value.status !== "success") {
-			answerErrors.push(`Expected status "success" but received "${finalResult.value.status}".`);
+			answerErrors.push(
+				`Expected status "success" but received "${finalResult.value.status}".`
+			);
 		}
 
 		if (!deepEqual(finalResult.value.answer, resolvedScenario.expectedAnswer)) {

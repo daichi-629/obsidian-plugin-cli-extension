@@ -64,7 +64,10 @@ export function registerSchemaCliHandlers(plugin: Plugin): void {
 		}
 
 		try {
-			const scoped = filterVaultSchemaSnapshot(await buildVaultSchemaSnapshot(plugin), parsed.value);
+			const scoped = filterVaultSchemaSnapshot(
+				await buildVaultSchemaSnapshot(plugin),
+				parsed.value
+			);
 			return runSchemaInferCommand({
 				snapshot: scoped.snapshot,
 				scope: scoped.scope,
@@ -94,7 +97,10 @@ export function registerSchemaCliHandlers(plugin: Plugin): void {
 		}
 
 		try {
-			const scoped = filterVaultSchemaSnapshot(await buildVaultSchemaSnapshot(plugin), parsed.value);
+			const scoped = filterVaultSchemaSnapshot(
+				await buildVaultSchemaSnapshot(plugin),
+				parsed.value
+			);
 			return runSchemaMissingCommand({
 				snapshot: scoped.snapshot,
 				scope: scoped.scope,
@@ -127,7 +133,9 @@ export function registerSchemaCliHandlers(plugin: Plugin): void {
 			const targets = resolveSchemaTargetNotes(snapshot, parsed.value.paths);
 			const targetPaths = new Set(targets.map((target) => target.path));
 			const scoped = filterVaultSchemaSnapshot(snapshot, parsed.value);
-			const schemaScopeNotes = scoped.snapshot.notes.filter((note) => !targetPaths.has(note.path));
+			const schemaScopeNotes = scoped.snapshot.notes.filter(
+				(note) => !targetPaths.has(note.path)
+			);
 			return runSchemaValidateCommand({
 				snapshot: {
 					propertyCatalog: scoped.snapshot.propertyCatalog,

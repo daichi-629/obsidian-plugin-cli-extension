@@ -26,11 +26,7 @@ describe("parseRenderTemplateCliArgs", () => {
 				duplicateOutput: "suffix",
 				dataFile: ["vault:data/common.json", "local.json"],
 				data: { title: "Daily" },
-				set: [
-					{ count: 3 },
-					{ published: true },
-					{ meta: { owner: "alice" } }
-				]
+				set: [{ count: 3 }, { published: true }, { meta: { owner: "alice" } }]
 			}
 		});
 	});

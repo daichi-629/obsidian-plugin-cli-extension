@@ -11,9 +11,7 @@ function formatContentText(plan: RenderTemplatePlan): string {
 		return plan.files[0]?.content ?? "";
 	}
 
-	return plan.files
-		.map((file) => `=== file: ${file.path} ===\n${file.content}`)
-		.join("\n\n");
+	return plan.files.map((file) => `=== file: ${file.path} ===\n${file.content}`).join("\n\n");
 }
 
 export function formatRenderTemplateResult(input: {

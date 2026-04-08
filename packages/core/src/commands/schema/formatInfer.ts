@@ -69,7 +69,12 @@ function renderTsvRows(
 	return properties.map((property) =>
 		[
 			...(prefix
-				? [prefix.group_by_kind, prefix.group_by_key, prefix.group_value, prefix.group_note_count]
+				? [
+						prefix.group_by_kind,
+						prefix.group_by_key,
+						prefix.group_value,
+						prefix.group_note_count
+					]
 				: []),
 			property.key,
 			property.obsidianType ?? "",
@@ -85,7 +90,10 @@ function renderTsvRows(
 	);
 }
 
-export function formatInferResult(result: SchemaSummary | GroupedSchemaSummary, format: "text" | "json" | "tsv"): string {
+export function formatInferResult(
+	result: SchemaSummary | GroupedSchemaSummary,
+	format: "text" | "json" | "tsv"
+): string {
 	if (format === "json") {
 		return JSON.stringify(result, null, 2);
 	}
@@ -118,7 +126,7 @@ export function formatInferResult(result: SchemaSummary | GroupedSchemaSummary, 
 						group_value: group.value,
 						group_note_count: String(group.noteCount)
 					})
-			  );
+				);
 
 	return [header, ...rows].join("\n");
 }

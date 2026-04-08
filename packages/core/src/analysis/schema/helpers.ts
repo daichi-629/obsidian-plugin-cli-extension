@@ -54,12 +54,8 @@ export function detectDuplicateWarnings(
 
 			const otherNormalized = normalizeKeyForDuplicateCheck(other.key);
 			const matchesNormalized = currentNormalized === otherNormalized;
-			const matchesSingular =
-				singularize(currentNormalized) === singularize(otherNormalized);
-			if (
-				(matchesNormalized || matchesSingular) &&
-				current.valueShape === other.valueShape
-			) {
+			const matchesSingular = singularize(currentNormalized) === singularize(otherNormalized);
+			if ((matchesNormalized || matchesSingular) && current.valueShape === other.valueShape) {
 				const existing = warnings.get(current.key) ?? [];
 				existing.push({
 					type: "possible_duplicate_of",
@@ -228,11 +224,7 @@ export function buildGroupedNotes(
 
 	for (const note of notes) {
 		const value = note.frontmatter[groupBy.key];
-		if (
-			typeof value !== "string" &&
-			typeof value !== "number" &&
-			typeof value !== "boolean"
-		) {
+		if (typeof value !== "string" && typeof value !== "number" && typeof value !== "boolean") {
 			unassignedCount += 1;
 			continue;
 		}

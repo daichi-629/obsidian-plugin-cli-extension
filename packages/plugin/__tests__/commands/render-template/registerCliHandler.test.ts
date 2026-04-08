@@ -51,10 +51,7 @@ function createPlugin(input?: {
 
 					if (folders.has(filePath)) {
 						const prefix = `${filePath}/`;
-						const children = [
-							...files.keys(),
-							...folders.values()
-						]
+						const children = [...files.keys(), ...folders.values()]
 							.filter((entry) => entry.startsWith(prefix) && entry !== filePath)
 							.filter((entry) => !entry.slice(prefix.length).includes("/"))
 							.map((entry) =>
@@ -175,8 +172,10 @@ describe("registerRenderTemplateCliHandler", () => {
 	it("renders a convention bundle without template.json", async () => {
 		const { handler, files } = createPlugin({
 			files: {
-				"templates/convention/defaults.md": "---\ntitle: Atlas\nstatus: draft\nowners:\n- alice\n---\n",
-				"templates/convention/README.md": "---\noutput: projects/<%= it.path.slug(it.data.title) %>/README.md\n---\n# <%= it.data.title %>\nStatus: <%= it.data.status %>\nOwner: <%= it.data.owners[0] %>\n"
+				"templates/convention/defaults.md":
+					"---\ntitle: Atlas\nstatus: draft\nowners:\n- alice\n---\n",
+				"templates/convention/README.md":
+					"---\noutput: projects/<%= it.path.slug(it.data.title) %>/README.md\n---\n# <%= it.data.title %>\nStatus: <%= it.data.status %>\nOwner: <%= it.data.owners[0] %>\n"
 			}
 		});
 

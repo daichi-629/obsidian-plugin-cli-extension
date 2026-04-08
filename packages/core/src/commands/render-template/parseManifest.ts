@@ -28,7 +28,9 @@ function parseOutput(value: unknown): TemplateBundleManifestOutput {
 	}
 
 	if (typeof value.template !== "string" || typeof value.path !== "string") {
-		throw new UserError('Each template bundle output must include string "template" and "path".');
+		throw new UserError(
+			'Each template bundle output must include string "template" and "path".'
+		);
 	}
 
 	return {
@@ -70,7 +72,9 @@ export function parseTemplateManifest(text: string): TemplateBundleManifest {
 	const defaultDataFiles = Array.isArray(parsed.defaultDataFiles)
 		? parsed.defaultDataFiles.map((entry) => {
 				if (typeof entry !== "string" || !entry.endsWith(".json")) {
-					throw new UserError("Template bundle defaultDataFiles must be JSON file paths.");
+					throw new UserError(
+						"Template bundle defaultDataFiles must be JSON file paths."
+					);
 				}
 
 				return normalizeRelativePath(entry, "Bundle default data file");

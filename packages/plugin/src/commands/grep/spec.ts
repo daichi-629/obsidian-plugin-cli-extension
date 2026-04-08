@@ -20,12 +20,14 @@ export const grepCommandSpec: CommandSpec = {
 		{
 			key: "path",
 			value: "<vault-prefix[,vault-prefix...]>",
-			description: "Limit the search to one or more vault-relative path prefixes after grep policy checks."
+			description:
+				"Limit the search to one or more vault-relative path prefixes after grep policy checks."
 		},
 		{
 			key: "exclude-path",
 			value: "<vault-prefix[,vault-prefix...]>",
-			description: "Exclude one or more vault-relative path prefixes after include-path filtering."
+			description:
+				"Exclude one or more vault-relative path prefixes after include-path filtering."
 		},
 		{
 			key: "fixed-strings",
@@ -45,7 +47,8 @@ export const grepCommandSpec: CommandSpec = {
 		},
 		{
 			key: "count",
-			description: "Print the number of matched lines per file instead of printing matching lines."
+			description:
+				"Print the number of matched lines per file instead of printing matching lines."
 		},
 		{
 			key: "before-context",
@@ -69,7 +72,8 @@ export const grepCommandSpec: CommandSpec = {
 		},
 		{
 			key: "stats",
-			description: "Append filesScanned, matchedFiles, skippedFiles, totalMatches, and stoppedEarly in plain text."
+			description:
+				"Append filesScanned, matchedFiles, skippedFiles, totalMatches, and stoppedEarly in plain text."
 		},
 		{
 			key: "json",

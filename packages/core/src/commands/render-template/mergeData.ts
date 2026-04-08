@@ -10,7 +10,8 @@ function mergeValues(left: unknown, right: unknown): unknown {
 	if (isRecord(left) && isRecord(right)) {
 		const merged: Record<string, unknown> = { ...left };
 		for (const [key, value] of Object.entries(right)) {
-			merged[key] = key in merged ? mergeValues(merged[key], value) : mergeValues(undefined, value);
+			merged[key] =
+				key in merged ? mergeValues(merged[key], value) : mergeValues(undefined, value);
 		}
 
 		return merged;
@@ -19,7 +20,9 @@ function mergeValues(left: unknown, right: unknown): unknown {
 	return right;
 }
 
-export function mergeTemplateData(sources: Array<Record<string, unknown> | undefined>): Record<string, unknown> {
+export function mergeTemplateData(
+	sources: Array<Record<string, unknown> | undefined>
+): Record<string, unknown> {
 	let merged: Record<string, unknown> = {};
 	for (const source of sources) {
 		if (!source) {

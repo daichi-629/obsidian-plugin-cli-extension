@@ -89,9 +89,7 @@ function validateOne(
 	return issues;
 }
 
-export function validateNoteAgainstSchema(
-	input: ValidateSchemaInput
-): SchemaValidationBatchResult {
+export function validateNoteAgainstSchema(input: ValidateSchemaInput): SchemaValidationBatchResult {
 	if (input.snapshot.notes.length === 0) {
 		throw new UserError("Schema validation requires at least one note in the schema scope.");
 	}

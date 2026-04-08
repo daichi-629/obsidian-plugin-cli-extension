@@ -1,5 +1,11 @@
 import type { Plugin } from "obsidian";
-import { UserError, type OverwritePolicy, type PathConflictPolicy, type RenderTemplatePlan, type RenderTemplateResult } from "@sample/core";
+import {
+	UserError,
+	type OverwritePolicy,
+	type PathConflictPolicy,
+	type RenderTemplatePlan,
+	type RenderTemplateResult
+} from "@sample/core";
 import {
 	getTemplateOutputPathPolicyError,
 	type TemplateCommandSettings
@@ -78,14 +84,21 @@ export async function applyRenderPlan(
 		let targetPath = file.path;
 		if (plannedPaths.has(targetPath)) {
 			if (options.duplicateOutput === "suffix") {
-				targetPath = resolveSuffixedPath(targetPath, new Set([...existingPaths, ...plannedPaths]));
+				targetPath = resolveSuffixedPath(
+					targetPath,
+					new Set([...existingPaths, ...plannedPaths])
+				);
 			} else if (options.duplicateOutput === "fail") {
-				throw new UserError(`Rendered path "${targetPath}" is duplicated within the render plan.`);
+				throw new UserError(
+					`Rendered path "${targetPath}" is duplicated within the render plan.`
+				);
 			}
 		}
 
 		const abstractFile = plugin.app.vault.getAbstractFileByPath(targetPath);
-		const existingFile = plugin.app.vault.getFiles().find((candidate) => candidate.path === targetPath);
+		const existingFile = plugin.app.vault
+			.getFiles()
+			.find((candidate) => candidate.path === targetPath);
 		const existsAsFile = existingFile !== undefined;
 		if (abstractFile && !existsAsFile) {
 			throw new UserError(`Rendered path "${targetPath}" already exists as a folder.`);

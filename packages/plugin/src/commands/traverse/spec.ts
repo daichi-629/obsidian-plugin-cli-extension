@@ -11,12 +11,33 @@ export const traverseReachCommandSpec: CommandSpec = {
 		"folder and tag constrain the subgraph before traversal, not after formatting."
 	],
 	options: [
-		{ key: "from", value: "<path-or-linkpath>", description: "Seed note as a vault-relative path or internal link path.", required: true },
+		{
+			key: "from",
+			value: "<path-or-linkpath>",
+			description: "Seed note as a vault-relative path or internal link path.",
+			required: true
+		},
 		{ key: "depth", value: "<n>", description: "Maximum hop depth as a non-negative integer." },
-		{ key: "direction", value: "<out|in|both>", description: "Traverse outgoing links, backlinks, or an undirected projection." },
-		{ key: "folder", value: "<path>", description: "Limit the graph scope to a vault-relative folder prefix." },
-		{ key: "tag", value: "<tag>", description: "Limit the graph scope to notes that include the given tag." },
-		{ key: "format", value: "<text|json|tsv>", description: "Render text, JSON, or TSV output." }
+		{
+			key: "direction",
+			value: "<out|in|both>",
+			description: "Traverse outgoing links, backlinks, or an undirected projection."
+		},
+		{
+			key: "folder",
+			value: "<path>",
+			description: "Limit the graph scope to a vault-relative folder prefix."
+		},
+		{
+			key: "tag",
+			value: "<tag>",
+			description: "Limit the graph scope to notes that include the given tag."
+		},
+		{
+			key: "format",
+			value: "<text|json|tsv>",
+			description: "Render text, JSON, or TSV output."
+		}
 	],
 	notes: [
 		"path-or-linkpath accepts canonical note paths like projects/atlas.md, extensionless paths like projects/atlas, and unique basenames like Atlas.",
@@ -36,12 +57,38 @@ export const traversePathCommandSpec: CommandSpec = {
 		"Path not found is a normal empty result, not a usage failure."
 	],
 	options: [
-		{ key: "from", value: "<path-or-linkpath>", description: "Start note as a vault-relative path or internal link path.", required: true },
-		{ key: "to", value: "<path-or-linkpath>", description: "Target note as a vault-relative path or internal link path.", required: true },
-		{ key: "direction", value: "<out|both>", description: "Follow outgoing links only, or treat the graph as undirected." },
-		{ key: "folder", value: "<path>", description: "Limit the graph scope to a vault-relative folder prefix." },
-		{ key: "tag", value: "<tag>", description: "Limit the graph scope to notes that include the given tag." },
-		{ key: "format", value: "<text|json|tsv>", description: "Render text, JSON, or TSV output." }
+		{
+			key: "from",
+			value: "<path-or-linkpath>",
+			description: "Start note as a vault-relative path or internal link path.",
+			required: true
+		},
+		{
+			key: "to",
+			value: "<path-or-linkpath>",
+			description: "Target note as a vault-relative path or internal link path.",
+			required: true
+		},
+		{
+			key: "direction",
+			value: "<out|both>",
+			description: "Follow outgoing links only, or treat the graph as undirected."
+		},
+		{
+			key: "folder",
+			value: "<path>",
+			description: "Limit the graph scope to a vault-relative folder prefix."
+		},
+		{
+			key: "tag",
+			value: "<tag>",
+			description: "Limit the graph scope to notes that include the given tag."
+		},
+		{
+			key: "format",
+			value: "<text|json|tsv>",
+			description: "Render text, JSON, or TSV output."
+		}
 	],
 	notes: [
 		"path-or-linkpath accepts canonical note paths like projects/atlas.md, extensionless paths like projects/atlas, and unique basenames like Atlas."
@@ -60,13 +107,27 @@ export const traverseClustersCommandSpec: CommandSpec = {
 		"folder and tag constrain the graph scope before component detection."
 	],
 	options: [
-		{ key: "folder", value: "<path>", description: "Limit the graph scope to a vault-relative folder prefix." },
-		{ key: "tag", value: "<tag>", description: "Limit the graph scope to notes that include the given tag." },
-		{ key: "min-size", value: "<n>", description: "Only display components at or above this positive size." },
-		{ key: "format", value: "<text|json|tsv>", description: "Render text, JSON, or TSV output." }
+		{
+			key: "folder",
+			value: "<path>",
+			description: "Limit the graph scope to a vault-relative folder prefix."
+		},
+		{
+			key: "tag",
+			value: "<tag>",
+			description: "Limit the graph scope to notes that include the given tag."
+		},
+		{
+			key: "min-size",
+			value: "<n>",
+			description: "Only display components at or above this positive size."
+		},
+		{
+			key: "format",
+			value: "<text|json|tsv>",
+			description: "Render text, JSON, or TSV output."
+		}
 	],
-	notes: [
-		"Only one folder and one tag filter are supported in v1."
-	],
+	notes: ["Only one folder and one tag filter are supported in v1."],
 	seeAlso: ["excli-traverse:reach", "excli-traverse:path"]
 };

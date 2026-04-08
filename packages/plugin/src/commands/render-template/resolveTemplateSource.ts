@@ -256,7 +256,9 @@ export async function resolveTemplateSource(
 			`${abstractFile.path}/${manifest.partialsDir}`
 		);
 		if (!partialRoot || !isTFolder(partialRoot)) {
-			throw new UserError(`Template partials directory "${manifest.partialsDir}" is missing.`);
+			throw new UserError(
+				`Template partials directory "${manifest.partialsDir}" is missing.`
+			);
 		}
 
 		const stack = [...partialRoot.children];
@@ -267,7 +269,9 @@ export async function resolveTemplateSource(
 				continue;
 			}
 
-			const relativePath = current.path.slice(`${abstractFile.path}/${manifest.partialsDir}/`.length);
+			const relativePath = current.path.slice(
+				`${abstractFile.path}/${manifest.partialsDir}/`.length
+			);
 			const contents = await plugin.app.vault.cachedRead(current);
 			parseInlineTemplateScript(contents, { allow: false, path: current.path });
 			partials[relativePath] = contents;

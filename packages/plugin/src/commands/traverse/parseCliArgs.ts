@@ -67,7 +67,8 @@ export function parseTraverseReachCliArgs(
 	if (hasAnyValue(params, ["to", "min-size", "minSize"])) {
 		return {
 			ok: false,
-			message: "The reach command only accepts from, depth, direction, folder, tag, and format."
+			message:
+				"The reach command only accepts from, depth, direction, folder, tag, and format."
 		};
 	}
 

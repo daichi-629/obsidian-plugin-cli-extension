@@ -249,9 +249,7 @@ export function countMatchingLines(content, needle) {
 		return 0;
 	}
 
-	return normalized
-		.split("\n")
-		.filter((line) => line.includes(needle)).length;
+	return normalized.split("\n").filter((line) => line.includes(needle)).length;
 }
 
 export function escapeRegExp(value) {
@@ -383,7 +381,8 @@ export function deepEqual(left, right) {
 
 	if (Array.isArray(left) && Array.isArray(right)) {
 		return (
-			left.length === right.length && left.every((value, index) => deepEqual(value, right[index]))
+			left.length === right.length &&
+			left.every((value, index) => deepEqual(value, right[index]))
 		);
 	}
 

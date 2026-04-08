@@ -29,7 +29,12 @@ function getNeighborPaths(
 		return (snapshot.incoming[path] ?? []).map((edge) => edge.from);
 	}
 
-	return [...new Set([...(snapshot.outgoing[path] ?? []).map((edge) => edge.to), ...(snapshot.incoming[path] ?? []).map((edge) => edge.from)])].sort(compareGraphPaths);
+	return [
+		...new Set([
+			...(snapshot.outgoing[path] ?? []).map((edge) => edge.to),
+			...(snapshot.incoming[path] ?? []).map((edge) => edge.from)
+		])
+	].sort(compareGraphPaths);
 }
 
 export function computeReachability(input: ReachabilityInput): ReachabilityResult {
@@ -62,9 +67,9 @@ export function computeReachability(input: ReachabilityInput): ReachabilityResul
 	return {
 		nodes: [...hopsByPath.entries()]
 			.map(([path, hops]) => ({ path, hops }))
-			.sort((left, right) => left.hops - right.hops || compareGraphPaths(left.path, right.path)),
-		edges: input.snapshot.edges.filter(
-			(edge) => visited.has(edge.from) && visited.has(edge.to)
-		)
+			.sort(
+				(left, right) => left.hops - right.hops || compareGraphPaths(left.path, right.path)
+			),
+		edges: input.snapshot.edges.filter((edge) => visited.has(edge.from) && visited.has(edge.to))
 	};
 }

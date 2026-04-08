@@ -55,6 +55,47 @@ function pad(number, width) {
 	return String(number).padStart(width, "0");
 }
 
+function toYamlScalar(value) {
+	if (typeof value === "string") {
+		return /^[A-Za-z0-9_./:@+-]+$/.test(value) ? value : JSON.stringify(value);
+	}
+
+	if (typeof value === "number" || typeof value === "boolean") {
+		return String(value);
+	}
+
+	if (value === null) {
+		return "null";
+	}
+
+	return JSON.stringify(value);
+}
+
+function buildFrontmatter(properties) {
+	const lines = ["---"];
+	for (const [key, value] of Object.entries(properties)) {
+		if (value === undefined) {
+			continue;
+		}
+
+		if (Array.isArray(value)) {
+			lines.push(`${key}:`);
+			for (const item of value) {
+				lines.push(`  - ${toYamlScalar(item)}`);
+			}
+			continue;
+		}
+
+		lines.push(`${key}: ${toYamlScalar(value)}`);
+	}
+	lines.push("---", "");
+	return `${lines.join("\n")}\n`;
+}
+
+function withFrontmatter(properties, body) {
+	return `${buildFrontmatter(properties)}${body}`;
+}
+
 function createWriter(rootPath) {
 	const files = [];
 	return {
@@ -71,6 +112,58 @@ function createWriter(rootPath) {
 		},
 		files
 	};
+}
+
+function buildPerfDate(index) {
+	const day = ((index - 1) % 28) + 1;
+	return `2026-03-${pad(day, 2)}`;
+}
+
+function buildRegularNoteFrontmatter(index) {
+	const properties = {
+		type: "perf-note",
+		tags: ["perf", "synthetic", "notes"],
+		status: ["draft", "active", "review", "archived"][index % 4],
+		owners: [index % 2 === 0 ? "perf-bot" : "bench-team"],
+		bench_profile: "synthetic",
+		batch: `batch-${pad(((index - 1) % 6) + 1, 2)}`,
+		created: buildPerfDate(index)
+	};
+
+	if (index % 29 === 0) {
+		properties.created_alt = buildPerfDate(index + 3);
+	}
+
+	if (index % 37 === 0) {
+		properties.rogue_key = true;
+	}
+
+	if (index % 43 === 0) {
+		properties.status = 1;
+	}
+
+	if (index % 53 === 0) {
+		delete properties.status;
+	}
+
+	return properties;
+}
+
+function buildLargeNoteFrontmatter(index) {
+	const properties = {
+		type: "perf-large-note",
+		tags: ["perf", "synthetic", "large"],
+		status: index % 3 === 0 ? "review" : "active",
+		owners: ["perf-bot"],
+		bench_profile: "synthetic",
+		created: buildPerfDate(index)
+	};
+
+	if (index % 5 === 0) {
+		properties.status = 1;
+	}
+
+	return properties;
 }
 
 function makeRegularNote(index, linkTargets, linesPerRegularNote) {
@@ -91,7 +184,7 @@ function makeRegularNote(index, linkTargets, linesPerRegularNote) {
 		}
 	}
 
-	return `${lines.join("\n")}\n`;
+	return withFrontmatter(buildRegularNoteFrontmatter(index), `${lines.join("\n")}\n`);
 }
 
 function makeLargeNote(index, linkTargets, linesPerLargeNote) {
@@ -108,7 +201,7 @@ function makeLargeNote(index, linkTargets, linesPerLargeNote) {
 		);
 	}
 
-	return `${lines.join("\n")}\n`;
+	return withFrontmatter(buildLargeNoteFrontmatter(index), `${lines.join("\n")}\n`);
 }
 
 function makeCanvas(index) {
@@ -164,66 +257,133 @@ async function main() {
 	let syntheticLinkCount = 0;
 
 	const searchArchivePath = `${root}/archive/2025-incident-retro.md`;
-	const searchArchiveContent = `# Synthetic Incident Retro
+	const searchArchiveContent = withFrontmatter(
+		{
+			type: "perf-project",
+			tags: ["perf", "synthetic", "archive", "incident"],
+			status: "archived",
+			owners: ["bench-team"],
+			stage: "archive",
+			date: "2025-12-19"
+		},
+		`# Synthetic Incident Retro
 
 - TODO capture the latency regression benchmark
 - TODO compare archive search traversal
 - TODO confirm deterministic fixture generation
 
 This archived note is the canonical search target for the synthetic benchmark.
-`;
+`
+	);
 	writer.write("archive/2025-incident-retro.md", searchArchiveContent);
 
 	const unicodeKeyword = "検索性能ベンチ";
 	const searchUnicodePath = `${root}/international/検索性能ベンチ.md`;
-	const searchUnicodeContent = `# 検索性能ベンチ
+	const searchUnicodeContent = withFrontmatter(
+		{
+			type: "perf-reference",
+			tags: ["perf", "synthetic", "unicode"],
+			status: "active",
+			owners: ["bench-team"],
+			lang: "ja",
+			date: "2026-03-08"
+		},
+		`# 検索性能ベンチ
 
 - ${unicodeKeyword} の対象ノートです
 - TODO 日本語の検索結果を確認する
 - ${unicodeKeyword} を含む行を数える
 - ${unicodeKeyword} の一致行数を返す
-`;
+`
+	);
 	writer.write("international/検索性能ベンチ.md", searchUnicodeContent);
 
 	const searchScopePathPrefix = `${root}/projects/active/`;
 	const releaseChecklistPath = `${root}/projects/active/release-checklist.md`;
-	const releaseChecklistContent = `# Synthetic Release Checklist
+	const releaseChecklistContent = withFrontmatter(
+		{
+			type: "perf-project",
+			tags: ["perf", "synthetic", "project", "release"],
+			status: "todo",
+			owners: ["perf-bot"],
+			stage: "active",
+			created: "2026-03-04"
+		},
+		`# Synthetic Release Checklist
 
 - [ ] TODO verify benchmark prompt determinism
 - [ ] TODO verify benchmark vault diff matching
 - [ ] TODO verify benchmark summary output
-`;
+`
+	);
 	writer.write("projects/active/release-checklist.md", releaseChecklistContent);
 
 	const alphaOverviewPath = `${root}/projects/active/alpha/overview.md`;
 	const mixedAnchor = "benchmark-anchor-42-alpha";
-	const alphaOverviewContent = `# Alpha Overview
+	const alphaOverviewContent = withFrontmatter(
+		{
+			type: "perf-project",
+			tags: ["perf", "synthetic", "project", "alpha"],
+			status: "active",
+			owners: ["perf-bot"],
+			stage: "active",
+			created: "2026-03-05"
+		},
+		`# Alpha Overview
 
 - TODO inspect synthetic benchmark drift
 - TODO keep search targets deterministic
 - Anchor: ${mixedAnchor}
-`;
+`
+	);
 	writer.write("projects/active/alpha/overview.md", alphaOverviewContent);
 
-	const betaSpecContent = `# Beta Spec
+	const betaSpecContent = withFrontmatter(
+		{
+			type: "perf-project",
+			tags: ["perf", "synthetic", "project", "beta"],
+			status: 1,
+			owners: ["bench-team"],
+			stage: "active",
+			created: "2026-03-06"
+		},
+		`# Beta Spec
 
 - TODO keep patch tasks isolated
 - TODO compare scope count outputs
-`;
+`
+	);
 	writer.write("projects/active/beta/spec.md", betaSpecContent);
 
 	const restrictedPrefix = `${root}/restricted/`;
 	writer.write(
 		"restricted/secret-plan.md",
-		`# Restricted Fixture
+		withFrontmatter(
+			{
+				type: "perf-restricted",
+				tags: ["perf", "synthetic", "restricted"],
+				status: "restricted",
+				visibility: "private",
+				owners: ["bench-team"]
+			},
+			`# Restricted Fixture
 
 This file exists so the benchmark verifier can reject unintended edits.
 `
+		)
 	);
 
 	writer.write(
 		"README.md",
-		`# Synthetic Benchmark Vault
+		withFrontmatter(
+			{
+				type: "readme",
+				tags: ["perf", "docs", "synthetic"],
+				status: "active",
+				profile,
+				seed
+			},
+			`# Synthetic Benchmark Vault
 
 This directory is generated by scripts/perf/generate-synthetic-vault.mjs.
 
@@ -231,6 +391,7 @@ This directory is generated by scripts/perf/generate-synthetic-vault.mjs.
 - Seed: ${seed}
 - Root: ${root}
 `
+		)
 	);
 
 	const regularNoteCount = config.targetMarkdownNotes - 7 - config.largeMarkdownNotes;

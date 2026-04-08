@@ -1,4 +1,8 @@
-import { buildTemplateRuntime, createTemplateSystemContext, renderTemplateBundle } from "../../../src";
+import {
+	buildTemplateRuntime,
+	createTemplateSystemContext,
+	renderTemplateBundle
+} from "../../../src";
 import { describe, expect, it, vi } from "vitest";
 
 describe("renderTemplateBundle", () => {
@@ -14,7 +18,8 @@ describe("renderTemplateBundle", () => {
 				{
 					templatePath: "templates/project/README.md",
 					templateBody: "# <%= it.data.title %>\n\n<%~ include('./header', it) %>\n",
-					outputPathTemplate: "notes/<%= it.path.slug(it.data.title) %>-<%= it.path.shortId() %>.md",
+					outputPathTemplate:
+						"notes/<%= it.path.slug(it.data.title) %>-<%= it.path.shortId() %>.md",
 					scriptData: { owner: "alice" }
 				}
 			],

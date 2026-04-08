@@ -56,7 +56,14 @@ export function parseRenderTemplateOptions(
 ): RenderTemplateOptions {
 	const existingFile = parseOverwritePolicy(input.existingFile);
 	const duplicateOutput = parsePathConflictPolicy(input.duplicateOutput);
-	const write = input.write === undefined ? "apply" : input.write === "dry-run" ? "dry-run" : input.write === "apply" ? "apply" : undefined;
+	const write =
+		input.write === undefined
+			? "apply"
+			: input.write === "dry-run"
+				? "dry-run"
+				: input.write === "apply"
+					? "apply"
+					: undefined;
 	if (!write) {
 		throw new UserError("The --write option must be apply or dry-run.");
 	}

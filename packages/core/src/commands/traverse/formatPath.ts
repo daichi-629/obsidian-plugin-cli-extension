@@ -20,5 +20,7 @@ export function formatTraversePathResult(
 		return "No path found.";
 	}
 
-	return [`${result.nodes.map((node) => node.path).join(" -> ")}`, `hops: ${result.hops}`].join("\n");
+	return [`${result.nodes.map((node) => node.path).join(" -> ")}`, `hops: ${result.hops}`].join(
+		"\n"
+	);
 }

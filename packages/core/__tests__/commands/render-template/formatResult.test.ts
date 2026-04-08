@@ -10,7 +10,12 @@ describe("formatRenderTemplateResult", () => {
 					mode: "bundle",
 					dryRun: false,
 					files: [
-						{ path: "README.md", template: "README.md", content: "# Atlas\n", bytes: 10 },
+						{
+							path: "README.md",
+							template: "README.md",
+							content: "# Atlas\n",
+							bytes: 10
+						},
 						{
 							path: "notes/atlas.md",
 							template: "notes/index.md",
@@ -25,7 +30,12 @@ describe("formatRenderTemplateResult", () => {
 					dryRun: false,
 					files: [
 						{ path: "README.md", template: "README.md", status: "created", bytes: 10 },
-						{ path: "notes/atlas.md", template: "notes/index.md", status: "replaced", bytes: 20 }
+						{
+							path: "notes/atlas.md",
+							template: "notes/index.md",
+							status: "replaced",
+							bytes: 20
+						}
 					]
 				},
 				stdout: "status/text"
@@ -41,7 +51,12 @@ describe("formatRenderTemplateResult", () => {
 					mode: "bundle",
 					dryRun: true,
 					files: [
-						{ path: "projects/atlas/README.md", template: "README.md", content: "# Atlas\n", bytes: 8 },
+						{
+							path: "projects/atlas/README.md",
+							template: "README.md",
+							content: "# Atlas\n",
+							bytes: 8
+						},
 						{
 							path: "projects/atlas/docs/overview.md",
 							template: "overview.md",
@@ -55,7 +70,12 @@ describe("formatRenderTemplateResult", () => {
 					mode: "bundle",
 					dryRun: true,
 					files: [
-						{ path: "projects/atlas/README.md", template: "README.md", status: "planned", bytes: 8 },
+						{
+							path: "projects/atlas/README.md",
+							template: "README.md",
+							status: "planned",
+							bytes: 8
+						},
 						{
 							path: "projects/atlas/docs/overview.md",
 							template: "overview.md",

@@ -12,15 +12,54 @@ export const renderTemplateCommandSpec: CommandSpec = {
 		"`write` controls vault writes and `stdout` controls CLI output, so preview and write behavior are independent."
 	],
 	options: [
-		{ key: "template", value: "<path-or-id>", description: "Vault template path or bare template id.", required: true },
-		{ key: "destination", value: "<path-template-or-root>", description: "Single-file destination path template, or bundle destination root. Required in single-file mode." },
-		{ key: "write", value: "<apply|dry-run>", description: "Whether to write into the vault or just plan the render." },
-		{ key: "stdout", value: "<status/text|status/json|content/text|status+content/text|status+content/json>", description: "Choose summary/content payload and output format." },
-		{ key: "existing-file", value: "<fail|replace|skip>", description: "How to handle an existing vault file at the final destination path." },
-		{ key: "duplicate-output", value: "<fail|suffix|overwrite>", description: "How bundle renders handle duplicate destination paths within one run." },
-		{ key: "data-file", value: "<path>", description: "JSON data file. Repeat the option to merge multiple files. Use vault: for vault-relative reads." },
-		{ key: "data", value: "<json-object>", description: "Inline JSON object merged into template data." },
-		{ key: "set", value: "<key=value>", description: "Convenience scalar assignments with dotted keys. Repeatable." }
+		{
+			key: "template",
+			value: "<path-or-id>",
+			description: "Vault template path or bare template id.",
+			required: true
+		},
+		{
+			key: "destination",
+			value: "<path-template-or-root>",
+			description:
+				"Single-file destination path template, or bundle destination root. Required in single-file mode."
+		},
+		{
+			key: "write",
+			value: "<apply|dry-run>",
+			description: "Whether to write into the vault or just plan the render."
+		},
+		{
+			key: "stdout",
+			value: "<status/text|status/json|content/text|status+content/text|status+content/json>",
+			description: "Choose summary/content payload and output format."
+		},
+		{
+			key: "existing-file",
+			value: "<fail|replace|skip>",
+			description: "How to handle an existing vault file at the final destination path."
+		},
+		{
+			key: "duplicate-output",
+			value: "<fail|suffix|overwrite>",
+			description: "How bundle renders handle duplicate destination paths within one run."
+		},
+		{
+			key: "data-file",
+			value: "<path>",
+			description:
+				"JSON data file. Repeat the option to merge multiple files. Use vault: for vault-relative reads."
+		},
+		{
+			key: "data",
+			value: "<json-object>",
+			description: "Inline JSON object merged into template data."
+		},
+		{
+			key: "set",
+			value: "<key=value>",
+			description: "Convenience scalar assignments with dotted keys. Repeatable."
+		}
 	],
 	examples: [
 		"obsidian excli-render-template template=daily-template.md destination='daily/<%= it._system.date %>-<%= it.path.shortId() %>.md' set=title=Daily",

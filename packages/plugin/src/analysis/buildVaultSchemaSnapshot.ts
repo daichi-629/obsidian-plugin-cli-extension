@@ -163,7 +163,9 @@ function getFolder(path: string): string {
 	return slashIndex === -1 ? "" : path.slice(0, slashIndex);
 }
 
-function readCatalog(metadataCache: Plugin["app"]["metadataCache"]): VaultSchemaSnapshot["propertyCatalog"] {
+function readCatalog(
+	metadataCache: Plugin["app"]["metadataCache"]
+): VaultSchemaSnapshot["propertyCatalog"] {
 	const reader = (metadataCache as { getAllPropertyInfos?: () => unknown }).getAllPropertyInfos;
 	if (typeof reader !== "function") {
 		return {};
@@ -196,9 +198,9 @@ function readCatalog(metadataCache: Plugin["app"]["metadataCache"]): VaultSchema
 }
 
 function extractTags(cache: CachedMetadata | null): string[] {
-	return [...new Set((cache?.tags ?? []).map((tag) => normalizeTag(tag.tag)).filter(Boolean))].sort(
-		(left, right) => left.localeCompare(right)
-	);
+	return [
+		...new Set((cache?.tags ?? []).map((tag) => normalizeTag(tag.tag)).filter(Boolean))
+	].sort((left, right) => left.localeCompare(right));
 }
 
 function extractTagsFromFrontmatter(frontmatter: Record<string, unknown>): string[] {

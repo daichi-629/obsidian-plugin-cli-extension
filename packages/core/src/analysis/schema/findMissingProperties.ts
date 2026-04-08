@@ -1,9 +1,7 @@
 import { inferSchema } from "./inferSchema";
 import type { FindMissingPropertiesInput, MissingPropertyResult } from "./types";
 
-export function findMissingProperties(
-	input: FindMissingPropertiesInput
-): MissingPropertyResult {
+export function findMissingProperties(input: FindMissingPropertiesInput): MissingPropertyResult {
 	const paths = input.snapshot.notes
 		.filter((note) => !(input.key in note.frontmatter))
 		.map((note) => note.path)
@@ -21,7 +19,7 @@ export function findMissingProperties(
 		paths,
 		property:
 			"properties" in summary
-				? summary.properties.find((property) => property.key === input.key) ?? null
+				? (summary.properties.find((property) => property.key === input.key) ?? null)
 				: null
 	};
 }

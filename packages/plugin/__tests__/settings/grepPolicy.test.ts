@@ -22,9 +22,9 @@ describe("grepPolicy", () => {
 			targetExtensions: ["md", "txt"]
 		});
 
-		expect(isPathAllowedByGrepPolicy(`${CONFIG_DIR}/workspace.json`, settings, CONFIG_DIR)).toBe(
-			false
-		);
+		expect(
+			isPathAllowedByGrepPolicy(`${CONFIG_DIR}/workspace.json`, settings, CONFIG_DIR)
+		).toBe(false);
 		expect(isPathAllowedByGrepPolicy("private/plan.md", settings, CONFIG_DIR)).toBe(false);
 		expect(isPathAllowedByGrepPolicy("notes/plan.md", settings, CONFIG_DIR)).toBe(true);
 	});

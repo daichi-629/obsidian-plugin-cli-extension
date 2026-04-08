@@ -32,7 +32,12 @@ type RenderTemplatePlugin = Plugin & {
 function buildDefinitions(
 	source: ResolvedTemplateSource,
 	input: { destination?: string }
-): Array<{ templatePath: string; templateBody: string; outputPathTemplate: string; scriptSource?: string }> {
+): Array<{
+	templatePath: string;
+	templateBody: string;
+	outputPathTemplate: string;
+	scriptSource?: string;
+}> {
 	if (source.mode === "single-file") {
 		const parsed = parseInlineTemplateScript(source.templateContent, {
 			allow: true,

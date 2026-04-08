@@ -64,9 +64,9 @@ export function buildVaultSource(
 	let skippedCount = 0;
 	const permissionSettings = plugin.settings.grepPermissionSettings;
 	const pathPrefixes =
-		options.pathPrefixes?.map((pathPrefix) => normalizeGrepPathPrefix(pathPrefix)).filter(
-			(pathPrefix): pathPrefix is string => pathPrefix !== undefined
-		) ??
+		options.pathPrefixes
+			?.map((pathPrefix) => normalizeGrepPathPrefix(pathPrefix))
+			.filter((pathPrefix): pathPrefix is string => pathPrefix !== undefined) ??
 		(options.pathPrefix ? [normalizeGrepPathPrefix(options.pathPrefix)].filter(Boolean) : []);
 	const excludePathPrefixes =
 		options.excludePathPrefixes

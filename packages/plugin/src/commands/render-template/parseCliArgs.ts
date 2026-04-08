@@ -101,8 +101,7 @@ export function parseRenderTemplateCliArgs(
 	params: CliData
 ): PluginCliParseResult<RenderTemplateCliInput> {
 	const dataValue = readValue(params, "data", "data");
-	const parsedData =
-		dataValue === undefined ? undefined : parseJsonObject(dataValue, "data");
+	const parsedData = dataValue === undefined ? undefined : parseJsonObject(dataValue, "data");
 	if (typeof parsedData === "string") {
 		return { ok: false, message: parsedData };
 	}

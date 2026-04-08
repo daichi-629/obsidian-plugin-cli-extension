@@ -2,7 +2,12 @@ import { compareGraphPaths } from "./buildGraphSnapshot";
 import type { GraphSnapshot } from "./types";
 
 function getNeighborPaths(snapshot: GraphSnapshot, path: string): string[] {
-	return [...new Set([...(snapshot.outgoing[path] ?? []).map((edge) => edge.to), ...(snapshot.incoming[path] ?? []).map((edge) => edge.from)])].sort(compareGraphPaths);
+	return [
+		...new Set([
+			...(snapshot.outgoing[path] ?? []).map((edge) => edge.to),
+			...(snapshot.incoming[path] ?? []).map((edge) => edge.from)
+		])
+	].sort(compareGraphPaths);
 }
 
 export function findWeakComponents(snapshot: GraphSnapshot): string[][] {

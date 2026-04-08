@@ -32,7 +32,9 @@ export function buildGraphSnapshot(nodes: GraphNode[], edges: GraphEdge[]): Grap
 		}
 	}
 
-	const sortedNodes = [...nodeMap.values()].sort((left, right) => comparePaths(left.path, right.path));
+	const sortedNodes = [...nodeMap.values()].sort((left, right) =>
+		comparePaths(left.path, right.path)
+	);
 	const allowedPaths = new Set(sortedNodes.map((node) => node.path));
 	const edgeMap = new Map<string, number>();
 
@@ -41,7 +43,8 @@ export function buildGraphSnapshot(nodes: GraphNode[], edges: GraphEdge[]): Grap
 			continue;
 		}
 
-		const linkCount = Number.isFinite(edge.linkCount) && edge.linkCount > 0 ? Math.trunc(edge.linkCount) : 0;
+		const linkCount =
+			Number.isFinite(edge.linkCount) && edge.linkCount > 0 ? Math.trunc(edge.linkCount) : 0;
 		if (linkCount <= 0) {
 			continue;
 		}
