@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest";
 import { registerGrepCliHandler } from "../../../src/commands/grep/registerCliHandler";
 import type { GrepPermissionSettings } from "../../../src/settings";
 
+const CONFIG_DIR = "config";
+
 const defaultPermissionSettings: GrepPermissionSettings = {
 	enabled: true,
-	denyPathPrefixes: [".obsidian/", "templates/private/"],
+	denyPathPrefixes: ["templates/private/"],
 	allowPathPrefixes: [],
 	targetExtensions: ["md", "txt"]
 };
@@ -24,7 +26,7 @@ function createPlugin(input?: {
 			extension: file.extension,
 			content: file.content ?? "",
 			readFails: file.readFails ?? false,
-			vault: { configDir: ".obsidian" }
+			vault: { configDir: CONFIG_DIR }
 		})) ?? [];
 
 	const plugin = {
@@ -33,6 +35,7 @@ function createPlugin(input?: {
 		},
 		app: {
 			vault: {
+				configDir: CONFIG_DIR,
 				getFiles() {
 					return files;
 				},

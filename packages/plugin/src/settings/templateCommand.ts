@@ -1,4 +1,4 @@
-import { HARD_CODED_DENY_PATH_PREFIXES } from "./grepPolicy";
+import { normalizeConfigDirPathPrefix } from "./grepPolicy";
 
 export type TemplateCommandSettings = {
 	templateRoot: string;
@@ -8,7 +8,7 @@ export type TemplateCommandSettings = {
 
 export const DEFAULT_TEMPLATE_COMMAND_SETTINGS: TemplateCommandSettings = {
 	templateRoot: "templates/",
-	denyOutputPathPrefixes: [...HARD_CODED_DENY_PATH_PREFIXES],
+	denyOutputPathPrefixes: [],
 	maxRenderedFiles: 20
 };
 
@@ -51,18 +51,29 @@ export function resolveTemplateCommandSettings(value: unknown): TemplateCommandS
 		templateRoot: templateRoot ?? DEFAULT_TEMPLATE_COMMAND_SETTINGS.templateRoot,
 		denyOutputPathPrefixes:
 			denyOutputPathPrefixes.length > 0
-				? Array.from(new Set([...HARD_CODED_DENY_PATH_PREFIXES, ...denyOutputPathPrefixes]))
+				? Array.from(new Set(denyOutputPathPrefixes))
 				: DEFAULT_TEMPLATE_COMMAND_SETTINGS.denyOutputPathPrefixes,
 		maxRenderedFiles
 	};
 }
 
+function getEffectiveDenyOutputPathPrefixes(
+	settings: TemplateCommandSettings,
+	configDir?: string
+): string[] {
+	const configDirPathPrefix = normalizeConfigDirPathPrefix(configDir);
+	return configDirPathPrefix
+		? Array.from(new Set([configDirPathPrefix, ...settings.denyOutputPathPrefixes]))
+		: settings.denyOutputPathPrefixes;
+}
+
 export function getTemplateOutputPathPolicyError(
 	path: string,
-	settings: TemplateCommandSettings
+	settings: TemplateCommandSettings,
+	configDir?: string
 ): string | undefined {
 	const normalized = path.replace(/^\/+/, "");
-	const deniedPrefix = settings.denyOutputPathPrefixes.find(
+	const deniedPrefix = getEffectiveDenyOutputPathPrefixes(settings, configDir).find(
 		(prefix) => normalized === prefix.slice(0, -1) || normalized.startsWith(prefix)
 	);
 	return deniedPrefix

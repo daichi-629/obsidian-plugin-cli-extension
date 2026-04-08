@@ -24,11 +24,6 @@ function normalizeTemplatePath(template: string, settings: TemplateCommandSettin
 	return `${settings.templateRoot}${template}`.replace(/^\/+/, "");
 }
 
-function basename(filePath: string): string {
-	const parts = filePath.replace(/\\/g, "/").split("/").filter(Boolean);
-	return parts.length > 0 ? parts[parts.length - 1] : "";
-}
-
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null && !Array.isArray(value);
 }

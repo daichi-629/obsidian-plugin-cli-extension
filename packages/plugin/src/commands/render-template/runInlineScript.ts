@@ -13,9 +13,11 @@ function loadBuildContext(scriptSource: string): BuildContextExport {
 
 	const paramName = match[1] || "api";
 	const body = match[2];
-	return new Function(
+	// eslint-disable-next-line @typescript-eslint/no-implied-eval -- Template scripts are local user-authored code blocks that this command intentionally executes.
+	const createBuildContext = Function(
 		`return async function buildContext(${paramName}) {\n${body}\n};`
-	)() as BuildContextExport;
+	) as () => BuildContextExport;
+	return createBuildContext();
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

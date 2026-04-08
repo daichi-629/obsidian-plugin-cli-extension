@@ -1,6 +1,5 @@
-import { UserError, type OverwritePolicy, type PathConflictPolicy, type RenderTemplatePlan, type RenderTemplateResult } from "@sample/core";
-import type { TFile } from "obsidian";
 import type { Plugin } from "obsidian";
+import { UserError, type OverwritePolicy, type PathConflictPolicy, type RenderTemplatePlan, type RenderTemplateResult } from "@sample/core";
 import {
 	getTemplateOutputPathPolicyError,
 	type TemplateCommandSettings
@@ -16,10 +15,6 @@ function extname(filePath: string): string {
 function dirname(filePath: string): string {
 	const segments = filePath.replace(/\\/g, "/").split("/").filter(Boolean);
 	return segments.length <= 1 ? "." : segments.slice(0, -1).join("/");
-}
-
-function isTFile(file: unknown): file is TFile {
-	return typeof file === "object" && file !== null && "extension" in (file as TFile);
 }
 
 function resolveSuffixedPath(basePath: string, existing: Set<string>): string {
@@ -71,7 +66,11 @@ export async function applyRenderPlan(
 	const resultFiles: RenderTemplateResult["files"] = [];
 
 	for (const file of plan.files) {
-		const policyError = getTemplateOutputPathPolicyError(file.path, options.settings);
+		const policyError = getTemplateOutputPathPolicyError(
+			file.path,
+			options.settings,
+			plugin.app.vault.configDir
+		);
 		if (policyError) {
 			throw new UserError(policyError);
 		}
@@ -86,7 +85,11 @@ export async function applyRenderPlan(
 		}
 
 		const abstractFile = plugin.app.vault.getAbstractFileByPath(targetPath);
-		const existsAsFile = isTFile(abstractFile);
+		const existingFile = plugin.app.vault.getFiles().find((candidate) => candidate.path === targetPath);
+		const existsAsFile = existingFile !== undefined;
+		if (abstractFile && !existsAsFile) {
+			throw new UserError(`Rendered path "${targetPath}" already exists as a folder.`);
+		}
 		if (existsAsFile) {
 			if (options.existingFile === "skip") {
 				plannedPaths.add(targetPath);
@@ -110,7 +113,7 @@ export async function applyRenderPlan(
 		if (!plan.dryRun) {
 			await ensureFolders(plugin, targetPath);
 			if (existsAsFile) {
-				await plugin.app.vault.modify(abstractFile, file.content);
+				await plugin.app.vault.modify(existingFile, file.content);
 			} else {
 				await plugin.app.vault.create(targetPath, file.content);
 			}

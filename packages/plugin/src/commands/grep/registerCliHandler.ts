@@ -34,7 +34,8 @@ export function registerGrepCliHandler(plugin: GrepPlugin): void {
 
 		const pathPolicyError = getGrepPathPolicyErrorForMany(
 			parsedArgs.value.pathPrefixes ?? [],
-			plugin.settings.grepPermissionSettings
+			plugin.settings.grepPermissionSettings,
+			plugin.app.vault.configDir
 		);
 		if (pathPolicyError) {
 			return pathPolicyError;

@@ -3,9 +3,11 @@ import { buildVaultSource, isVaultSearchTarget } from "../../../src/commands/gre
 import type SampleMonorepoPlugin from "../../../src/main";
 import type { GrepPermissionSettings } from "../../../src/settings";
 
+const CONFIG_DIR = "config";
+
 const defaultPermissionSettings: GrepPermissionSettings = {
 	enabled: true,
-	denyPathPrefixes: [".obsidian/", "templates/private/"],
+	denyPathPrefixes: ["templates/private/"],
 	allowPathPrefixes: [],
 	targetExtensions: ["md", "txt"]
 };
@@ -14,9 +16,9 @@ describe("isVaultSearchTarget", () => {
 	it("filters unsupported extensions, config files, and denied paths", () => {
 		expect(
 			isVaultSearchTarget({
-				filePath: ".obsidian/workspace.json",
+				filePath: `${CONFIG_DIR}/workspace.json`,
 				extension: "json",
-				configDir: ".obsidian",
+				configDir: CONFIG_DIR,
 				pathPrefixes: undefined,
 				excludePathPrefixes: undefined,
 				targetExtensions: defaultPermissionSettings.targetExtensions,
@@ -28,7 +30,7 @@ describe("isVaultSearchTarget", () => {
 			isVaultSearchTarget({
 				filePath: "templates/private/secret.md",
 				extension: "md",
-				configDir: ".obsidian",
+				configDir: CONFIG_DIR,
 				pathPrefixes: undefined,
 				excludePathPrefixes: undefined,
 				targetExtensions: defaultPermissionSettings.targetExtensions,
@@ -42,7 +44,7 @@ describe("isVaultSearchTarget", () => {
 			isVaultSearchTarget({
 				filePath: "daily/2026-04-08.md",
 				extension: "md",
-				configDir: ".obsidian",
+				configDir: CONFIG_DIR,
 				pathPrefixes: ["daily/"],
 				excludePathPrefixes: undefined,
 				targetExtensions: defaultPermissionSettings.targetExtensions,
@@ -54,7 +56,7 @@ describe("isVaultSearchTarget", () => {
 			isVaultSearchTarget({
 				filePath: "notes/ideas.md",
 				extension: "md",
-				configDir: ".obsidian",
+				configDir: CONFIG_DIR,
 				pathPrefixes: ["daily/"],
 				excludePathPrefixes: undefined,
 				targetExtensions: defaultPermissionSettings.targetExtensions,
@@ -68,7 +70,7 @@ describe("isVaultSearchTarget", () => {
 			isVaultSearchTarget({
 				filePath: "projects/active.md",
 				extension: "md",
-				configDir: ".obsidian",
+				configDir: CONFIG_DIR,
 				pathPrefixes: ["projects/", "reference/"],
 				excludePathPrefixes: ["projects/archive/"],
 				targetExtensions: defaultPermissionSettings.targetExtensions,
@@ -80,7 +82,7 @@ describe("isVaultSearchTarget", () => {
 			isVaultSearchTarget({
 				filePath: "projects/archive/old.md",
 				extension: "md",
-				configDir: ".obsidian",
+				configDir: CONFIG_DIR,
 				pathPrefixes: ["projects/", "reference/"],
 				excludePathPrefixes: ["projects/archive/"],
 				targetExtensions: defaultPermissionSettings.targetExtensions,
@@ -103,22 +105,22 @@ describe("buildVaultSource", () => {
 							{
 								path: "daily/2026-04-08.md",
 								extension: "md",
-								vault: { configDir: ".obsidian" }
+								vault: { configDir: CONFIG_DIR }
 							},
 							{
 								path: "templates/private/secret.md",
 								extension: "md",
-								vault: { configDir: ".obsidian" }
+								vault: { configDir: CONFIG_DIR }
 							},
 							{
 								path: "notes/ideas.txt",
 								extension: "txt",
-								vault: { configDir: ".obsidian" }
+								vault: { configDir: CONFIG_DIR }
 							},
 							{
 								path: "notes/data.canvas",
 								extension: "canvas",
-								vault: { configDir: ".obsidian" }
+								vault: { configDir: CONFIG_DIR }
 							}
 						];
 					},
@@ -158,17 +160,17 @@ describe("buildVaultSource", () => {
 							{
 								path: "projects/board.canvas",
 								extension: "canvas",
-								vault: { configDir: ".obsidian" }
+								vault: { configDir: CONFIG_DIR }
 							},
 							{
 								path: "projects/archive/old.canvas",
 								extension: "canvas",
-								vault: { configDir: ".obsidian" }
+								vault: { configDir: CONFIG_DIR }
 							},
 							{
 								path: "notes/ideas.md",
 								extension: "md",
-								vault: { configDir: ".obsidian" }
+								vault: { configDir: CONFIG_DIR }
 							}
 						];
 					},

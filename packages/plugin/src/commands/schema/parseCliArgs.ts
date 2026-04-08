@@ -6,13 +6,18 @@ import type {
 	SchemaValidateCliInput
 } from "./types";
 
+function getParamValue(params: CliData, hyphenated: string, camelCase: string): unknown {
+	const record = params as Record<string, unknown>;
+	return record[hyphenated] ?? record[camelCase];
+}
+
 function readValue(params: CliData, hyphenated: string, camelCase: string): string | undefined {
-	const value = (params as Record<string, unknown>)[hyphenated] ?? (params as Record<string, unknown>)[camelCase];
+	const value = getParamValue(params, hyphenated, camelCase);
 	return typeof value === "string" ? value : undefined;
 }
 
 function readList(params: CliData, hyphenated: string, camelCase: string): string[] {
-	const value = (params as Record<string, unknown>)[hyphenated] ?? (params as Record<string, unknown>)[camelCase];
+	const value = getParamValue(params, hyphenated, camelCase);
 	if (value === undefined) {
 		return [];
 	}
@@ -30,7 +35,7 @@ function parseJsonStringArray(value: string): string[] | null {
 	}
 
 	try {
-		const parsed = JSON.parse(value);
+		const parsed: unknown = JSON.parse(value);
 		if (!Array.isArray(parsed) || !parsed.every((entry) => typeof entry === "string")) {
 			return [];
 		}
@@ -60,7 +65,8 @@ function readPercentage(
 }
 
 function hasAnyValue(params: CliData, keys: string[]): boolean {
-	return keys.some((key) => (params as Record<string, unknown>)[key] !== undefined);
+	const record = params as Record<string, unknown>;
+	return keys.some((key) => record[key] !== undefined);
 }
 
 export function parseSchemaInferCliArgs(

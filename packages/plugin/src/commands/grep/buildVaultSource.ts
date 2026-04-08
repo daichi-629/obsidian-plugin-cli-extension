@@ -38,7 +38,7 @@ export function isVaultSearchTarget(input: {
 		return false;
 	}
 
-	if (!isPathAllowedByGrepPolicy(input.filePath, input.permissionSettings)) {
+	if (!isPathAllowedByGrepPolicy(input.filePath, input.permissionSettings, input.configDir)) {
 		return false;
 	}
 

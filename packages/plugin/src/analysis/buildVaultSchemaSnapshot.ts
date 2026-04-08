@@ -123,6 +123,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function readPropertyType(value: unknown): string | null {
+	if (!isRecord(value) || typeof value.type !== "string") {
+		return null;
+	}
+
+	return value.type;
+}
+
 function normalizeFrontmatter(frontmatter: FrontMatterCache | undefined): Record<string, unknown> {
 	if (!isRecord(frontmatter)) {
 		return {};
@@ -171,10 +179,7 @@ function readCatalog(metadataCache: Plugin["app"]["metadataCache"]): VaultSchema
 			[...raw.entries()].map(([key, value]) => [
 				String(key),
 				{
-					obsidianType:
-						typeof value === "object" && value !== null && "type" in value
-							? String((value as { type?: unknown }).type ?? "")
-							: null
+					obsidianType: readPropertyType(value)
 				}
 			])
 		);
@@ -184,10 +189,7 @@ function readCatalog(metadataCache: Plugin["app"]["metadataCache"]): VaultSchema
 		Object.entries(raw).map(([key, value]) => [
 			key,
 			{
-				obsidianType:
-					typeof value === "object" && value !== null && "type" in value
-						? String((value as { type?: unknown }).type ?? "")
-						: null
+				obsidianType: readPropertyType(value)
 			}
 		])
 	);

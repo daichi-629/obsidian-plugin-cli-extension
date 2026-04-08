@@ -5,11 +5,9 @@ export type GrepPermissionSettings = {
 	targetExtensions: string[];
 };
 
-export const HARD_CODED_DENY_PATH_PREFIXES = [".obsidian/"] as const;
-
 export const DEFAULT_GREP_PERMISSION_SETTINGS: GrepPermissionSettings = {
 	enabled: true,
-	denyPathPrefixes: [".obsidian/", "templates/private/"],
+	denyPathPrefixes: ["templates/private/"],
 	allowPathPrefixes: [],
 	targetExtensions: ["md", "txt"]
 };
@@ -21,6 +19,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function normalizePathPrefix(input?: string): string | undefined {
 	const normalized = input?.trim().replace(/^\/+|\/+$/g, "");
 	return normalized ? `${normalized}/` : undefined;
+}
+
+export function normalizeConfigDirPathPrefix(configDir?: string): string | undefined {
+	return normalizePathPrefix(configDir);
 }
 
 function normalizePathPrefixList(value: unknown): string[] {
@@ -82,16 +84,30 @@ export function pathMatchesPrefix(path: string, pathPrefix: string): boolean {
 	return path === pathPrefix.slice(0, -1) || path.startsWith(pathPrefix);
 }
 
-function getEffectiveDenyPathPrefixes(settings: GrepPermissionSettings): string[] {
-	return [...HARD_CODED_DENY_PATH_PREFIXES, ...settings.denyPathPrefixes];
+function getEffectiveDenyPathPrefixes(
+	settings: GrepPermissionSettings,
+	configDir?: string
+): string[] {
+	const configDirPathPrefix = normalizeConfigDirPathPrefix(configDir);
+	return configDirPathPrefix
+		? [configDirPathPrefix, ...settings.denyPathPrefixes]
+		: [...settings.denyPathPrefixes];
 }
 
 function getEffectiveAllowPathPrefixes(settings: GrepPermissionSettings): string[] {
 	return settings.enabled ? (settings.allowPathPrefixes ?? []) : [];
 }
 
-export function isPathAllowedByGrepPolicy(path: string, settings: GrepPermissionSettings): boolean {
-	if (getEffectiveDenyPathPrefixes(settings).some((prefix) => pathMatchesPrefix(path, prefix))) {
+export function isPathAllowedByGrepPolicy(
+	path: string,
+	settings: GrepPermissionSettings,
+	configDir?: string
+): boolean {
+	if (
+		getEffectiveDenyPathPrefixes(settings, configDir).some((prefix) =>
+			pathMatchesPrefix(path, prefix)
+		)
+	) {
 		return false;
 	}
 
@@ -105,13 +121,14 @@ export function isPathAllowedByGrepPolicy(path: string, settings: GrepPermission
 
 export function getGrepPathPolicyError(
 	pathPrefix: string | undefined,
-	settings: GrepPermissionSettings
+	settings: GrepPermissionSettings,
+	configDir?: string
 ): string | undefined {
 	if (!pathPrefix) {
 		return undefined;
 	}
 
-	const deniedPrefix = getEffectiveDenyPathPrefixes(settings).find((prefix) =>
+	const deniedPrefix = getEffectiveDenyPathPrefixes(settings, configDir).find((prefix) =>
 		pathMatchesPrefix(pathPrefix, prefix)
 	);
 	if (deniedPrefix) {
@@ -131,10 +148,11 @@ export function getGrepPathPolicyError(
 
 export function getGrepPathPolicyErrorForMany(
 	pathPrefixes: string[],
-	settings: GrepPermissionSettings
+	settings: GrepPermissionSettings,
+	configDir?: string
 ): string | undefined {
 	for (const pathPrefix of pathPrefixes) {
-		const error = getGrepPathPolicyError(pathPrefix, settings);
+		const error = getGrepPathPolicyError(pathPrefix, settings, configDir);
 		if (error) {
 			return error;
 		}

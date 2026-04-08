@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { registerSchemaCliHandlers } from "../../../src/commands/schema/registerCliHandler";
 
 type CapturedHandler = (params: Record<string, string | boolean | string[]>) => Promise<string>;
+const CONFIG_DIR = "config";
 
 function createPlugin() {
 	const handlers = new Map<string, CapturedHandler>();
@@ -9,7 +10,7 @@ function createPlugin() {
 		{ path: "projects/a.md", extension: "md" },
 		{ path: "projects/b.md", extension: "md" },
 		{ path: "inbox/c.md", extension: "md" },
-		{ path: ".obsidian/config.md", extension: "md" }
+		{ path: `${CONFIG_DIR}/config.md`, extension: "md" }
 	];
 	const caches: Record<string, { frontmatter?: Record<string, unknown>; tags?: Array<{ tag: string }> }> = {
 		"projects/a.md": {
@@ -29,7 +30,7 @@ function createPlugin() {
 	const plugin = {
 		app: {
 			vault: {
-				configDir: ".obsidian",
+				configDir: CONFIG_DIR,
 				getMarkdownFiles() {
 					return files;
 				}

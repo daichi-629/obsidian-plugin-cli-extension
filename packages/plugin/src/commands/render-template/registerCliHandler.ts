@@ -21,7 +21,7 @@ import { resolveDataSources } from "./resolveDataSources";
 import { resolveTemplateSource } from "./resolveTemplateSource";
 import { runInlineTemplateScript } from "./runInlineScript";
 import { renderTemplateCommandSpec } from "./spec";
-import type { RenderTemplateCliInput, ResolvedTemplateSource } from "./types";
+import type { ResolvedTemplateSource } from "./types";
 
 type RenderTemplatePlugin = Plugin & {
 	settings: {

@@ -2,13 +2,14 @@ import type { CliData } from "obsidian";
 import type { PluginCliParseResult } from "../types";
 import type { RenderTemplateCliInput } from "./types";
 
-function readFlag(params: CliData, hyphenated: string, camelCase: string): boolean {
-	const value = params[hyphenated] ?? params[camelCase];
-	return value === true || value === "true";
+function getParamValue(params: CliData, hyphenated: string, camelCase: string): unknown {
+	const record = params as Record<string, unknown>;
+	return record[hyphenated] ?? record[camelCase];
 }
 
 function readValue(params: CliData, hyphenated: string, camelCase: string): string | undefined {
-	return params[hyphenated] ?? params[camelCase];
+	const value = getParamValue(params, hyphenated, camelCase);
+	return typeof value === "string" ? value : undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -55,12 +56,12 @@ function assignDottedValue(target: Record<string, unknown>, key: string, value: 
 		cursor = cursor[part] as Record<string, unknown>;
 	}
 
-	cursor[parts[parts.length - 1] as string] = value;
+	cursor[parts[parts.length - 1]] = value;
 }
 
 function parseJsonObject(value: string, label: string): Record<string, unknown> | string {
 	try {
-		const parsed = JSON.parse(value);
+		const parsed: unknown = JSON.parse(value);
 		if (!isRecord(parsed)) {
 			return `The --${label} option must be a JSON object.`;
 		}
@@ -72,12 +73,16 @@ function parseJsonObject(value: string, label: string): Record<string, unknown> 
 }
 
 function readList(params: CliData, hyphenated: string, camelCase: string): string[] {
-	const value = params[hyphenated] ?? params[camelCase];
+	const value = getParamValue(params, hyphenated, camelCase);
 	if (value === undefined) {
 		return [];
 	}
 
-	return Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === "string") : [value];
+	if (Array.isArray(value)) {
+		return value.filter((entry): entry is string => typeof entry === "string");
+	}
+
+	return typeof value === "string" ? [value] : [];
 }
 
 function parseSet(value: string): Record<string, unknown> | string {

@@ -6,6 +6,8 @@ import {
 	resolveGrepPermissionSettings
 } from "../../src/settings";
 
+const CONFIG_DIR = "config";
+
 describe("grepPolicy", () => {
 	it("normalizes path prefixes to the internal slash-suffixed form", () => {
 		expect(normalizeGrepPathPrefix("/drafts/today/")).toBe("drafts/today/");
@@ -20,9 +22,11 @@ describe("grepPolicy", () => {
 			targetExtensions: ["md", "txt"]
 		});
 
-		expect(isPathAllowedByGrepPolicy(".obsidian/workspace.json", settings)).toBe(false);
-		expect(isPathAllowedByGrepPolicy("private/plan.md", settings)).toBe(false);
-		expect(isPathAllowedByGrepPolicy("notes/plan.md", settings)).toBe(true);
+		expect(isPathAllowedByGrepPolicy(`${CONFIG_DIR}/workspace.json`, settings, CONFIG_DIR)).toBe(
+			false
+		);
+		expect(isPathAllowedByGrepPolicy("private/plan.md", settings, CONFIG_DIR)).toBe(false);
+		expect(isPathAllowedByGrepPolicy("notes/plan.md", settings, CONFIG_DIR)).toBe(true);
 	});
 
 	it("returns a clear error when a requested path is outside the allowed scope", () => {
@@ -33,7 +37,7 @@ describe("grepPolicy", () => {
 			targetExtensions: ["md", "txt"]
 		});
 
-		expect(getGrepPathPolicyError("drafts/", settings)).toBe(
+		expect(getGrepPathPolicyError("drafts/", settings, CONFIG_DIR)).toBe(
 			'Path "drafts/" is outside the allowed grep scope.'
 		);
 	});
@@ -46,7 +50,7 @@ describe("grepPolicy", () => {
 			targetExtensions: ["md", "txt"]
 		});
 
-		expect(getGrepPathPolicyError("private/", settings)).toBe(
+		expect(getGrepPathPolicyError("private/", settings, CONFIG_DIR)).toBe(
 			'Access to path "private/" is denied by grep policy.'
 		);
 	});

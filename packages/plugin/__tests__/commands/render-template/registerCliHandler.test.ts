@@ -3,10 +3,11 @@ import { registerRenderTemplateCliHandler } from "../../../src/commands/render-t
 import type { TemplateCommandSettings } from "../../../src/settings";
 
 type CapturedHandler = (params: Record<string, string | boolean>) => Promise<string>;
+const CONFIG_DIR = "config";
 
 const defaultTemplateSettings: TemplateCommandSettings = {
 	templateRoot: "templates/",
-	denyOutputPathPrefixes: [".obsidian/"],
+	denyOutputPathPrefixes: [],
 	maxRenderedFiles: 20
 };
 
@@ -37,13 +38,14 @@ function createPlugin(input?: {
 		},
 		app: {
 			vault: {
+				configDir: CONFIG_DIR,
 				getAbstractFileByPath(filePath: string) {
 					if (files.has(filePath)) {
 						const fileParts = filePath.split(".");
 						return {
 							path: filePath,
 							extension: fileParts[fileParts.length - 1],
-							vault: { configDir: ".obsidian" }
+							vault: { configDir: CONFIG_DIR }
 						};
 					}
 
@@ -62,7 +64,7 @@ function createPlugin(input?: {
 											return {
 												path: entry,
 												extension: entryParts[entryParts.length - 1],
-												vault: { configDir: ".obsidian" }
+												vault: { configDir: CONFIG_DIR }
 											};
 										})()
 									: { path: entry, children: [] }
@@ -76,7 +78,7 @@ function createPlugin(input?: {
 					return [...files.keys()].map((filePath) => ({
 						path: filePath,
 						extension: filePath.split(".")[filePath.split(".").length - 1],
-						vault: { configDir: ".obsidian" }
+						vault: { configDir: CONFIG_DIR }
 					}));
 				},
 				async cachedRead(file: { path: string }) {

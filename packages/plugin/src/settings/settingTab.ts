@@ -1,5 +1,6 @@
 import { PluginSettingTab, Setting } from "obsidian";
 import type SampleMonorepoPlugin from "../main";
+import { normalizeConfigDirPathPrefix } from "./grepPolicy";
 import {
 	formatExtensionLines,
 	formatPathPrefixLines,
@@ -18,8 +19,10 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 	display(): void {
 		const { containerEl } = this;
 		containerEl.empty();
+		const configDirPathPrefix =
+			normalizeConfigDirPathPrefix(this.app.vault.configDir) ?? "config/";
 
-		containerEl.createEl("h2", { text: "Grep settings" });
+		new Setting(containerEl).setName("Grep access").setHeading();
 		containerEl.createEl("p", {
 			text: "Configure which vault paths the grep CLI handler can scan."
 		});
@@ -41,11 +44,10 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Denied path prefixes")
 			.setDesc(
-				"One vault-relative path prefix per line. These prefixes are always denied. .obsidian/ is always denied even if omitted here."
+				`One vault-relative path prefix per line. These prefixes are always denied. ${configDirPathPrefix} is always denied even if omitted here.`
 			)
 			.addTextArea((textArea) => {
 				textArea
-					.setPlaceholder("templates/private/\nsecrets/")
 					.setValue(
 						formatPathPrefixLines(this.plugin.settings.grepPermissionSettings.denyPathPrefixes)
 					)
@@ -66,7 +68,6 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 			)
 			.addTextArea((textArea) => {
 				textArea
-					.setPlaceholder("projects/\nreference/")
 					.setValue(
 						formatPathPrefixLines(
 							this.plugin.settings.grepPermissionSettings.allowPathPrefixes ?? []
@@ -89,7 +90,6 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 			)
 			.addTextArea((textArea) => {
 				textArea
-					.setPlaceholder("md\ntxt")
 					.setValue(
 						formatExtensionLines(this.plugin.settings.grepPermissionSettings.targetExtensions)
 					)
@@ -103,7 +103,7 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 				textArea.inputEl.cols = 20;
 			});
 
-		containerEl.createEl("h2", { text: "Template command settings" });
+		new Setting(containerEl).setName("Template command").setHeading();
 		containerEl.createEl("p", {
 			text: "Configure template lookup, output restrictions, and render limits for the render-template CLI handler."
 		});
@@ -113,7 +113,6 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 			.setDesc("Bare template ids are resolved relative to this vault path prefix.")
 			.addText((text) =>
 				text
-					.setPlaceholder("templates/")
 					.setValue(this.plugin.settings.templateCommandSettings.templateRoot)
 					.onChange(async (value) => {
 						this.plugin.settings.templateCommandSettings.templateRoot =
@@ -125,11 +124,10 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Denied output path prefixes")
 			.setDesc(
-				"One vault-relative path prefix per line. Rendered output paths under these prefixes are rejected."
+				`One vault-relative path prefix per line. Rendered output paths under these prefixes are rejected. ${configDirPathPrefix} is always denied.`
 			)
 			.addTextArea((textArea) => {
 				textArea
-					.setPlaceholder(".obsidian/\nprivate/")
 					.setValue(
 						formatPathPrefixLines(
 							this.plugin.settings.templateCommandSettings.denyOutputPathPrefixes
