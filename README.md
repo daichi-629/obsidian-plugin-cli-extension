@@ -1,180 +1,128 @@
 # excli
 
-Obsidian plugin development environment with Docker included.
+`excli` is an Obsidian plugin for vault operations that work well from the Obsidian CLI and local automation.
 
-`docker compose up -d` gives you a ready-to-use setup with:
 
-- Obsidian
-- Obsidian CLI
-- Node.js
-- pnpm
-- hot reload
+It adds script-friendly commands for searching notes, applying patches, rendering templates, inspecting frontmatter schema, traversing the link graph, and managing an inbox of suggestions. It also adds two Obsidian views for browsing inbox cards inside the app.
 
-You do not need to install Obsidian, Node.js, or pnpm on your host machine.
-Clone the repository, start Docker, and the environment is ready.
+Developer workflow notes from the previous README now live in [`docs/develop-docs/README.md`](docs/develop-docs/README.md).
 
-After the container starts, open Obsidian in your browser at <http://localhost:3000>.
+## What excli can do
 
-## What you get
+- Search vault files with grep-style output modes
+- Apply Codex-compatible patches to vault files
+- Render note templates or template bundles into the vault
+- Infer and validate frontmatter/property schema from existing notes
+- Traverse links, shortest paths, and clusters in the note graph
+- Store suggestion cards in an inbox that can be reviewed in Obsidian or over CLI
 
-- A default monorepo structure for Obsidian plugin development
-- `packages/plugin` for the actual Obsidian plugin
-- `packages/core` for reusable logic that stays independent from Obsidian
-- A local vault in `./vault` for development and testing
-- Automatic plugin publishing into the vault plugin directory
-- Hot reload support during `pnpm run dev`
+## Main features
 
-## Quick start
+### Grep for automation
 
-Start the environment:
+`excli-grep` is meant for scripts and agents that need more control than Obsidian's built-in search.
 
 ```bash
-docker compose up -d
+obsidian excli-grep pattern=TODO
+obsidian excli-grep pattern=TODO path=daily/ line-number
+obsidian excli-grep pattern=TODO files-with-matches
+obsidian excli-grep pattern='^todo' ignore-case max-results=5 json
 ```
 
-Install dependencies inside the container:
+The command supports regular expressions, fixed-string mode, include and exclude path filters, context lines, counts, JSON output, and scan statistics.
+
+### Safe vault edits
+
+`excli-apply-patch` applies a Codex `apply_patch` document through Obsidian's vault adapter instead of writing around Obsidian.
 
 ```bash
-./bin/obsidian-dev pnpm install
+obsidian excli-apply-patch patch-file=tmp/change.patch dry-run
+obsidian excli-apply-patch patch-file=vault:tmp/change.patch allow-create verbose
 ```
 
-Generate or refresh the baseline test vault fixtures before vault-backed testing:
+Use `dry-run` to validate a patch before writing. `allow-create` is required for new files.
+
+### Template rendering
+
+`excli-render-template` turns template files or bundles into notes.
 
 ```bash
-./bin/obsidian-dev pnpm run vault:generate
+obsidian excli-render-template template=daily-template.md destination='daily/<%= it._system.date %>.md'
+obsidian excli-render-template template=project-scaffold destination='projects/atlas' data='{"title":"Atlas"}'
 ```
 
-Start the plugin watcher:
+You can preview output without writing, merge JSON data files, and choose how existing files are handled.
+
+### Schema inspection
+
+The schema commands help you understand and enforce frontmatter conventions.
 
 ```bash
-./bin/obsidian-dev pnpm run dev
+obsidian excli-schema:infer folder=projects/ format=text
+obsidian excli-schema:missing key=status folder=projects/
+obsidian excli-schema:validate path=projects/atlas.md folder=projects/ fail-on=high
 ```
 
-This is enough to start developing.
+### Graph traversal
 
-## Obsidian CLI
-
-The container includes the `obsidian` command.
-
-Example:
+The traverse commands inspect connections between notes.
 
 ```bash
-./bin/obsidian-dev obsidian help
+obsidian excli-traverse:reach from=HOME depth=2
+obsidian excli-traverse:path from=HOME to=projects/atlas
+obsidian excli-traverse:clusters folder=projects/ min-size=3
 ```
 
-The sample plugin also registers a grep-oriented CLI handler:
+### Inbox for suggestions
+
+`excli` includes an inbox system for suggestions, issues, ideas, and review tasks.
+
+- Ribbon action: open inbox focus view
+- Ribbon action: open inbox list view
+- Command palette: `Open inbox focus view`
+- Command palette: `Open inbox list view`
+- CLI: create, list, show, update, and delete inbox cards
+
+Examples:
 
 ```bash
-./bin/obsidian-dev obsidian excli-grep pattern=TODO
-./bin/obsidian-dev obsidian excli-grep pattern=TODO path=daily/ line-number
-./bin/obsidian-dev obsidian excli-grep pattern=TODO files-with-matches
+obsidian excli-inbox:create kind=idea title="Split long note" related=projects/atlas.md
+obsidian excli-inbox:list status=open,snoozed format=json
+obsidian excli-inbox:update id=<inbox-id> status=done
 ```
 
-Use Obsidian's built-in `search` for general-purpose searching. Use `excli-grep`
-when you need grep-style output control such as `files-with-matches`, `count`, or `max-results`
-for scripts and automation.
+## Settings
 
-## Vault and ports
+Open **Settings -> Community plugins -> excli** to configure:
 
-The development vault is mounted at `/config/vault` inside the container and is backed by [`./vault`](/home/daichi/ghq/github.com/daichi-629/obsidian-simple-plugin-monorepo/vault) in this repository.
+- Grep path restrictions and target file extensions
+- Template root, denied output paths, and render limits
+- Inbox dismiss cooldown for deduplication
 
-Treat [`scripts/generate-test-vault.mjs`](/home/daichi/ghq/github.com/daichi-629/obsidian-plugin-cli-extension/scripts/generate-test-vault.mjs) as the source for the test vault's baseline data, and use `pnpm run vault:generate` when you want to reset or refresh that starting state. Tests may still edit the vault manually or through commands after generation.
+The plugin defaults to local vault behavior. There are no required external services.
 
-The default exposed ports are `3000` and `3001`. To change them, edit the `ports` section in [`compose.yml`](/home/daichi/ghq/github.com/daichi-629/obsidian-simple-plugin-monorepo/compose.yml).
+## Command help
 
-## Monorepo layout
-
-```text
-packages/
-  core/    Shared logic, utilities, and tests
-  plugin/  Obsidian plugin entrypoint and build output
-vault/     Local development vault
-```
-
-This layout gives you a clean default split between plugin-specific code and reusable application logic.
-
-## Development
-
-Inside the container, the main commands are:
+Every CLI command exposes a built-in manual:
 
 ```bash
-./bin/obsidian-dev pnpm run dev
-./bin/obsidian-dev pnpm run build
-./bin/obsidian-dev pnpm run lint
-./bin/obsidian-dev pnpm run test
+obsidian excli-grep man
+obsidian excli-render-template man
+obsidian excli-inbox:create man
 ```
 
-If you enter the Nix dev shell with `nix develop`, the helper is also available on your `PATH` as `obsidian-dev`.
+## Installation
 
-## Synthetic Agent Benchmarks
+If you are installing manually, create `.obsidian/plugins/excli/` in your vault and place these files there:
 
-The repository includes a local-only benchmark harness for `codex exec` and `claude -p` against a deterministic synthetic vault.
+- `main.js`
+- `manifest.json`
+- `styles.css`
 
-Tracked benchmark definitions live in [`perf/`](/home/daichi/ghq/github.com/daichi-629/obsidian-plugin-cli-extension/perf/). Runtime prompts and results are written to `perf/prompts/` and `perf/results/`.
+Then enable **excli** from **Settings -> Community plugins**.
 
-Generate the synthetic corpus directly:
+## Notes
 
-```bash
-pnpm run perf:generate -- --profile large --seed 42
-```
-
-Run a benchmark scenario:
-
-```bash
-pnpm run perf:run -- --agent codex --scenario 'search-*' --profile large --runs 1
-pnpm run perf:run -- --agent claude --scenario 'operate-*' --profile large --runs 1
-```
-
-Summarize a finished run directory:
-
-```bash
-pnpm run perf:summary -- --input perf/results/<timestamp>
-```
-
-During watch runs, the built plugin files are copied to:
-
-```text
-vault/.obsidian/plugins/excli/
-```
-
-Hot reload is prepared automatically, and watch runs also update:
-
-```text
-vault/.obsidian/plugins/excli/.hotreload
-```
-
-## Releasing
-
-1. Bump the version with one of:
-   `pnpm run version:patch`, `pnpm run version:minor`, or `pnpm run version:major`
-2. Review and commit the updated version files
-3. Push the commit to `main`
-4. Create a tag that exactly matches `packages/plugin/manifest.json`'s `version`
-5. Push the tag to GitHub
-
-The release workflow runs on tag pushes matching `*.*.*` and verifies that:
-
-- the tag exactly matches `packages/plugin/manifest.json`'s `version`
-- `packages/plugin/versions.json` contains the same version
-
-If validation passes, GitHub Actions builds the plugin and uploads:
-
-- `packages/plugin/main.js`
-- `packages/plugin/manifest.json`
-- `packages/plugin/styles.css`
-
-## Acknowledgements
-
-This template repository was developed starting from the
-[`obsidian-sample-plugin`](https://github.com/obsidianmd/obsidian-sample-plugin).
-
-## Third-party container base
-
-The development container defined in
-[`Dockerfile.obsidian`](/home/daichi/ghq/github.com/daichi-629/obsidian-simple-plugin-monorepo/Dockerfile.obsidian)
-is based on [`linuxserver/obsidian`](https://github.com/linuxserver/docker-obsidian).
-
-Please refer to the upstream project for its license and redistribution terms
-when building or distributing the container image.
-The Obsidian plugin source code in this repository is separate from that
-container image.
+- `grep` automatically excludes Obsidian's config directory.
+- Grep and template output policies are enforced from plugin settings.
+- Commands are designed for local vault automation, so output formats favor scripting and agent workflows.
