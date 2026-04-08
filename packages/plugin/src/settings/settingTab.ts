@@ -102,5 +102,63 @@ export class SamplePluginSettingTab extends PluginSettingTab {
 				textArea.inputEl.rows = 4;
 				textArea.inputEl.cols = 20;
 			});
+
+		containerEl.createEl("h2", { text: "Template command settings" });
+		containerEl.createEl("p", {
+			text: "Configure template lookup, output restrictions, and render limits for the render-template CLI handler."
+		});
+
+		new Setting(containerEl)
+			.setName("Template root")
+			.setDesc("Bare template ids are resolved relative to this vault path prefix.")
+			.addText((text) =>
+				text
+					.setPlaceholder("templates/")
+					.setValue(this.plugin.settings.templateCommandSettings.templateRoot)
+					.onChange(async (value) => {
+						this.plugin.settings.templateCommandSettings.templateRoot =
+							parsePathPrefixLines(value)[0] ?? "templates/";
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Denied output path prefixes")
+			.setDesc(
+				"One vault-relative path prefix per line. Rendered output paths under these prefixes are rejected."
+			)
+			.addTextArea((textArea) => {
+				textArea
+					.setPlaceholder(".obsidian/\nprivate/")
+					.setValue(
+						formatPathPrefixLines(
+							this.plugin.settings.templateCommandSettings.denyOutputPathPrefixes
+						)
+					)
+					.onChange(async (value) => {
+						this.plugin.settings.templateCommandSettings.denyOutputPathPrefixes =
+							parsePathPrefixLines(value);
+						await this.plugin.saveSettings();
+					});
+
+				textArea.inputEl.rows = 4;
+				textArea.inputEl.cols = 40;
+			});
+
+		new Setting(containerEl)
+			.setName("Maximum rendered files")
+			.setDesc("Reject bundle renders that would generate more files than this limit.")
+			.addText((text) =>
+				text
+					.setPlaceholder("20")
+					.setValue(String(this.plugin.settings.templateCommandSettings.maxRenderedFiles))
+					.onChange(async (value) => {
+						const parsed = Number.parseInt(value, 10);
+						if (Number.isInteger(parsed) && parsed > 0) {
+							this.plugin.settings.templateCommandSettings.maxRenderedFiles = parsed;
+							await this.plugin.saveSettings();
+						}
+					})
+			);
 	}
 }

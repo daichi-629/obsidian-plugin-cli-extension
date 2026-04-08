@@ -25,6 +25,10 @@ importers:
         version: 5.9.3
 
   packages/core:
+    dependencies:
+      eta:
+        specifier: ^4.5.1
+        version: 4.5.1
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
@@ -1030,6 +1034,10 @@ packages:
   esutils@2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
+
+  eta@4.5.1:
+    resolution: {integrity: sha512-EaNCGm+8XEIU7YNcc+THptWAO5NfKBHHARxt+wxZljj9bTr/+arRoOm9/MpGt4n6xn9fLnPFRSoLD0WFYGFUxQ==}
+    engines: {node: '>=20'}
 
   expect-type@1.3.0:
     resolution: {integrity: sha512-knvyeauYhqjOYvQ66MznSMs83wmHrCycNEN6Ao+2AeYEfxUIkuiVxdEa1qlGEPK+We3n0THiDciYSsCcgW/DoA==}
@@ -3012,6 +3020,8 @@ snapshots:
       '@types/estree': 1.0.8
 
   esutils@2.0.3: {}
+
+  eta@4.5.1: {}
 
   expect-type@1.3.0: {}
 
