@@ -7,12 +7,9 @@ import { formatTraversePathResult } from "./formatPath";
 import { formatTraverseReachResult } from "./formatReach";
 import type {
 	TraverseClustersCommandInput,
-	TraverseClustersResult,
 	TraverseOutputFormat,
 	TraversePathCommandInput,
-	TraversePathResult,
 	TraverseReachCommandInput,
-	TraverseReachResult
 } from "./types";
 
 function assertOutputFormat(format: string | undefined): TraverseOutputFormat {

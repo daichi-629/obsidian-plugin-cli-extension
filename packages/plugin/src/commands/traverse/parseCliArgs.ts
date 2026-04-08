@@ -21,7 +21,7 @@ function hasAnyValue(params: CliData, keys: string[]): boolean {
 	return keys.some((key) => record[key] !== undefined);
 }
 
-function readFormat(params: CliData): "text" | "json" | "tsv" | string {
+function readFormat(params: CliData): string {
 	return readValue(params, "format", "format") ?? "text";
 }
 

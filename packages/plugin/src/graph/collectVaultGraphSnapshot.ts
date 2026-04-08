@@ -1,5 +1,5 @@
 import { buildGraphSnapshot, type GraphEdge, type GraphNode } from "@sample/core";
-import type { CachedMetadata, FrontMatterCache, Plugin } from "obsidian";
+import type { CachedMetadata, Plugin } from "obsidian";
 
 function comparePaths(left: string, right: string): number {
 	if (left < right) {
@@ -55,7 +55,7 @@ function normalizeStringArray(value: unknown): string[] {
 
 function extractTags(cache: CachedMetadata | null): string[] {
 	const inlineTags = (cache?.tags ?? []).map((tag) => normalizeTag(tag.tag));
-	const frontmatterTags = normalizeStringArray((cache?.frontmatter as FrontMatterCache | undefined)?.tags).map(
+	const frontmatterTags = normalizeStringArray(cache?.frontmatter?.tags).map(
 		(tag) => normalizeTag(tag)
 	);
 	return [...new Set([...inlineTags, ...frontmatterTags].filter(Boolean))].sort(comparePaths);
