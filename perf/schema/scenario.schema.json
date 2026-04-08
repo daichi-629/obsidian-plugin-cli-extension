@@ -1,0 +1,81 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "SyntheticAgentBenchmarkScenario",
+	"type": "object",
+	"required": [
+		"id",
+		"kind",
+		"profile",
+		"promptTemplate",
+		"timeoutMs",
+		"maxTurnsHint",
+		"expectedAnswer",
+		"expectedDiff",
+		"forbiddenPaths",
+		"requiredCommands",
+		"tags"
+	],
+	"properties": {
+		"id": {
+			"type": "string"
+		},
+		"kind": {
+			"type": "string",
+			"enum": ["search", "operate", "mixed"]
+		},
+		"profile": {
+			"type": "string",
+			"enum": ["small", "large", "xl"]
+		},
+		"promptTemplate": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"minItems": 1
+				}
+			]
+		},
+		"timeoutMs": {
+			"type": "integer",
+			"minimum": 1000
+		},
+		"maxTurnsHint": {
+			"type": "integer",
+			"minimum": 1
+		},
+		"expectedAnswer": {
+			"type": "object"
+		},
+		"expectedDiff": {
+			"type": "array",
+			"items": {
+				"type": "object"
+			}
+		},
+		"forbiddenPaths": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"requiredCommands": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"tags": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false
+}

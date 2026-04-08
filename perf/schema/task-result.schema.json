@@ -1,0 +1,40 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"title": "AgentBenchmarkTaskResult",
+	"type": "object",
+	"required": ["taskId", "status", "answer"],
+	"properties": {
+		"taskId": {
+			"type": "string"
+		},
+		"status": {
+			"type": "string",
+			"enum": ["success", "failed"]
+		},
+		"answer": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": "string"
+				},
+				"todoLineCount": {
+					"type": "integer"
+				},
+				"matchLineCount": {
+					"type": "integer"
+				},
+				"pathPrefix": {
+					"type": "string"
+				},
+				"anchor": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"notes": {
+			"type": "string"
+		}
+	},
+	"additionalProperties": false
+}

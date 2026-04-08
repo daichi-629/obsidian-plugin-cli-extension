@@ -1,0 +1,22 @@
+{
+	"id": "search-archive-001",
+	"kind": "search",
+	"profile": "large",
+	"promptTemplate": [
+		"You are in the repository root for this benchmark.",
+		"Use the Obsidian CLI that is already available in this repo for vault inspection. Prefer `./bin/obsidian-dev obsidian ...` commands when you need vault data.",
+		"Return only JSON matching the provided schema. Do not wrap the JSON in markdown fences.",
+		"Do not edit `.obsidian/` or `{{golden.paths.restrictedPrefix}}`.",
+		"Task: find the archived synthetic benchmark incident note and return its vault-relative path plus the number of lines in that note that contain the literal substring `TODO`."
+	],
+	"timeoutMs": 180000,
+	"maxTurnsHint": 10,
+	"expectedAnswer": {
+		"path": "{{golden.searchArchive.path}}",
+		"todoLineCount": "{{golden.searchArchive.todoLineCount}}"
+	},
+	"expectedDiff": [],
+	"forbiddenPaths": [".obsidian/", "{{golden.paths.restrictedPrefix}}"],
+	"requiredCommands": ["./bin/obsidian-dev obsidian excli-grep"],
+	"tags": ["search", "archive", "synthetic"]
+}

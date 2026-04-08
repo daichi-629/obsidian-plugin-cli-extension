@@ -1,5 +1,5 @@
 {
-	"name": "obsidian-sample-monorepo-plugin",
+	"name": "obsidian-excli",
 	"private": true,
 	"version": "0.0.1",
 	"packageManager": "pnpm@10.14.0",
@@ -9,6 +9,10 @@
 		"lint": "pnpm -r run lint",
 		"test": "pnpm -r run test",
 		"vault:generate": "node ./scripts/generate-test-vault.mjs",
+		"perf:generate": "node ./scripts/perf/generate-synthetic-vault.mjs",
+		"perf:run": "node ./scripts/perf/run-agent-bench.mjs",
+		"perf:verify": "node ./scripts/perf/verify-agent-result.mjs",
+		"perf:summary": "node ./scripts/perf/summarize-agent-bench.mjs",
 		"format": "prettier -w .",
 		"format:check": "prettier -c .",
 		"version:bump": "node ./scripts/version-bump.mjs",

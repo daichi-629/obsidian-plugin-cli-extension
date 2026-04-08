@@ -1,0 +1,31 @@
+{
+	"id": "mixed-search-then-patch-001",
+	"kind": "mixed",
+	"profile": "large",
+	"promptTemplate": [
+		"You are in the repository root for this benchmark.",
+		"Use the Obsidian CLI that is already available in this repo for vault inspection and vault writes. Prefer `./bin/obsidian-dev obsidian ...` commands when you need vault data or file edits.",
+		"Return only JSON matching the provided schema. Do not wrap the JSON in markdown fences.",
+		"Do not edit `.obsidian/` or `{{golden.paths.restrictedPrefix}}`.",
+		"Task: find the synthetic project note that contains the exact anchor `{{golden.mixedSearchPatch.anchor}}`, append the exact checklist line `{{golden.mixedSearchPatch.appendedLine}}` to that same note, and return the edited path plus the anchor you used."
+	],
+	"timeoutMs": 180000,
+	"maxTurnsHint": 14,
+	"expectedAnswer": {
+		"path": "{{golden.mixedSearchPatch.path}}",
+		"anchor": "{{golden.mixedSearchPatch.anchor}}"
+	},
+	"expectedDiff": [
+		{
+			"path": "{{golden.mixedSearchPatch.path}}",
+			"mustExist": true,
+			"contains": "{{golden.mixedSearchPatch.appendedLine}}"
+		}
+	],
+	"forbiddenPaths": [".obsidian/", "{{golden.paths.restrictedPrefix}}"],
+	"requiredCommands": [
+		"./bin/obsidian-dev obsidian excli-grep",
+		"./bin/obsidian-dev obsidian excli-apply-patch"
+	],
+	"tags": ["mixed", "search", "patch", "synthetic"]
+}

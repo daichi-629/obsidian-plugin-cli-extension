@@ -1,0 +1,22 @@
+{
+	"id": "search-unicode-001",
+	"kind": "search",
+	"profile": "large",
+	"promptTemplate": [
+		"You are in the repository root for this benchmark.",
+		"Use the Obsidian CLI that is already available in this repo for vault inspection. Prefer `./bin/obsidian-dev obsidian ...` commands when you need vault data.",
+		"Return only JSON matching the provided schema. Do not wrap the JSON in markdown fences.",
+		"Do not edit `.obsidian/` or `{{golden.paths.restrictedPrefix}}`.",
+		"Task: find the synthetic Unicode benchmark note containing the exact substring `{{golden.searchUnicode.keyword}}` and return its vault-relative path plus the number of lines in that file that contain the exact substring."
+	],
+	"timeoutMs": 180000,
+	"maxTurnsHint": 10,
+	"expectedAnswer": {
+		"path": "{{golden.searchUnicode.path}}",
+		"matchLineCount": "{{golden.searchUnicode.matchLineCount}}"
+	},
+	"expectedDiff": [],
+	"forbiddenPaths": [".obsidian/", "{{golden.paths.restrictedPrefix}}"],
+	"requiredCommands": ["./bin/obsidian-dev obsidian excli-grep"],
+	"tags": ["search", "unicode", "synthetic"]
+}

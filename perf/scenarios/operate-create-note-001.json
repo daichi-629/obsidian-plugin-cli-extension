@@ -1,0 +1,27 @@
+{
+	"id": "operate-create-note-001",
+	"kind": "operate",
+	"profile": "large",
+	"promptTemplate": [
+		"You are in the repository root for this benchmark.",
+		"Use the Obsidian CLI that is already available in this repo for vault inspection and vault writes. Prefer `./bin/obsidian-dev obsidian ...` commands when you need vault data or file edits.",
+		"Return only JSON matching the provided schema. Do not wrap the JSON in markdown fences.",
+		"Do not edit `.obsidian/` or `{{golden.paths.restrictedPrefix}}`.",
+		"Task: create a new markdown note at `{{golden.createNote.path}}` with content exactly equal to the following text, including the trailing newline: `{{golden.createNote.content}}`. Do not modify any other file. Return the created path."
+	],
+	"timeoutMs": 180000,
+	"maxTurnsHint": 12,
+	"expectedAnswer": {
+		"path": "{{golden.createNote.path}}"
+	},
+	"expectedDiff": [
+		{
+			"path": "{{golden.createNote.path}}",
+			"mustExist": true,
+			"contains": "{{golden.createNote.contentTrimmed}}"
+		}
+	],
+	"forbiddenPaths": [".obsidian/", "{{golden.paths.restrictedPrefix}}"],
+	"requiredCommands": ["./bin/obsidian-dev obsidian excli-apply-patch"],
+	"tags": ["operate", "create", "synthetic"]
+}

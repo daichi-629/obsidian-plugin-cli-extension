@@ -1,4 +1,4 @@
-# Obsidian Sample Monorepo Plugin
+# excli
 
 Obsidian plugin development environment with Docker included.
 
@@ -65,12 +65,12 @@ Example:
 The sample plugin also registers a grep-oriented CLI handler:
 
 ```bash
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=TODO
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=TODO path=daily/ line-number
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=TODO files-with-matches
+./bin/obsidian-dev obsidian excli-grep pattern=TODO
+./bin/obsidian-dev obsidian excli-grep pattern=TODO path=daily/ line-number
+./bin/obsidian-dev obsidian excli-grep pattern=TODO files-with-matches
 ```
 
-Use Obsidian's built-in `search` for general-purpose searching. Use `sample-monorepo-plugin-grep`
+Use Obsidian's built-in `search` for general-purpose searching. Use `excli-grep`
 when you need grep-style output control such as `files-with-matches`, `count`, or `max-results`
 for scripts and automation.
 
@@ -106,16 +106,41 @@ Inside the container, the main commands are:
 
 If you enter the Nix dev shell with `nix develop`, the helper is also available on your `PATH` as `obsidian-dev`.
 
+## Synthetic Agent Benchmarks
+
+The repository includes a local-only benchmark harness for `codex exec` and `claude -p` against a deterministic synthetic vault.
+
+Tracked benchmark definitions live in [`perf/`](/home/daichi/ghq/github.com/daichi-629/obsidian-plugin-cli-extension/perf/). Runtime prompts and results are written to `perf/prompts/` and `perf/results/`.
+
+Generate the synthetic corpus directly:
+
+```bash
+pnpm run perf:generate -- --profile large --seed 42
+```
+
+Run a benchmark scenario:
+
+```bash
+pnpm run perf:run -- --agent codex --scenario 'search-*' --profile large --runs 1
+pnpm run perf:run -- --agent claude --scenario 'operate-*' --profile large --runs 1
+```
+
+Summarize a finished run directory:
+
+```bash
+pnpm run perf:summary -- --input perf/results/<timestamp>
+```
+
 During watch runs, the built plugin files are copied to:
 
 ```text
-vault/.obsidian/plugins/sample-monorepo-plugin/
+vault/.obsidian/plugins/excli/
 ```
 
 Hot reload is prepared automatically, and watch runs also update:
 
 ```text
-vault/.obsidian/plugins/sample-monorepo-plugin/.hotreload
+vault/.obsidian/plugins/excli/.hotreload
 ```
 
 ## Releasing

@@ -42,3 +42,9 @@ vault/*
 home/
 
 .pnpm-store
+
+# Performance benchmark artifacts
+perf/prompts/*
+!perf/prompts/.gitkeep
+perf/results/*
+!perf/results/.gitkeep

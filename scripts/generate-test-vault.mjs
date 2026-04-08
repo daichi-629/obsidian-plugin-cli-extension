@@ -160,7 +160,7 @@ export function formatHit(hit: SearchHit): string {
 ## Bash
 
 \`\`\`bash
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=TODO path=reference/
+./bin/obsidian-dev obsidian excli-grep pattern=TODO path=reference/
 \`\`\`
 
 ## JSON
@@ -272,7 +272,7 @@ This note acts as a realistic map of content for the generated vault.
 	),
 	writeVaultFile(".obsidian/workspace.json", buildWorkspaceJson()),
 	writeVaultFile(
-		".obsidian/plugins/sample-monorepo-plugin/data.json",
+		".obsidian/plugins/excli/data.json",
 		`${JSON.stringify(
 			{
 				grepPermissionSettings: {
@@ -459,9 +459,9 @@ This note collects search-heavy examples for local Obsidian CLI testing.
 ## Example commands
 
 \`\`\`bash
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=TODO
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=incident path=projects/archive/
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=EDGECASE_ path=reference/
+./bin/obsidian-dev obsidian excli-grep pattern=TODO
+./bin/obsidian-dev obsidian excli-grep pattern=incident path=projects/archive/
+./bin/obsidian-dev obsidian excli-grep pattern=EDGECASE_ path=reference/
 \`\`\`
 
 ## Fixture map
@@ -549,15 +549,15 @@ TODO legacy note still searchable
 ## Basic
 
 \`\`\`bash
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=TODO
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=TODO path=daily/ line-number
+./bin/obsidian-dev obsidian excli-grep pattern=TODO
+./bin/obsidian-dev obsidian excli-grep pattern=TODO path=daily/ line-number
 \`\`\`
 
 ## Narrow search
 
 \`\`\`bash
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=incident path=projects/archive/
-./bin/obsidian-dev obsidian sample-monorepo-plugin-grep pattern=EDGECASE_ path=reference/ count
+./bin/obsidian-dev obsidian excli-grep pattern=incident path=projects/archive/
+./bin/obsidian-dev obsidian excli-grep pattern=EDGECASE_ path=reference/ count
 \`\`\`
 
 ## Notes
