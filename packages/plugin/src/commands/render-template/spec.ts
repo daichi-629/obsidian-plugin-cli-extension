@@ -1,10 +1,10 @@
 import type { CommandSpec } from "../../shared/cli/types";
 
 export const renderTemplateCommandSpec: CommandSpec = {
-	name: "sample-monorepo-plugin-render-template",
+	name: "excli-render-template",
 	summary: "Render a vault template file or template bundle into one or more notes.",
 	synopsis: [
-		"obsidian sample-monorepo-plugin-render-template template=<path-or-id> [destination=<path-template-or-root>] [write=<apply|dry-run>] [stdout=<status/text|status/json|content/text|status+content/text|status+content/json>] [existing-file=<fail|replace|skip>] [duplicate-output=<fail|suffix|overwrite>] [data-file=<path>]... [data=<json-object>] [set=<key=value>]..."
+		"obsidian excli-render-template template=<path-or-id> [destination=<path-template-or-root>] [write=<apply|dry-run>] [stdout=<status/text|status/json|content/text|status+content/text|status+content/json>] [existing-file=<fail|replace|skip>] [duplicate-output=<fail|suffix|overwrite>] [data-file=<path>]... [data=<json-object>] [set=<key=value>]..."
 	],
 	description: [
 		"Render a single template file or a template bundle from the vault.",
@@ -23,9 +23,9 @@ export const renderTemplateCommandSpec: CommandSpec = {
 		{ key: "set", value: "<key=value>", description: "Convenience scalar assignments with dotted keys. Repeatable." }
 	],
 	examples: [
-		"obsidian sample-monorepo-plugin-render-template template=daily-template.md destination='daily/<%= it._system.date %>-<%= it.path.shortId() %>.md' set=title=Daily",
-		"obsidian sample-monorepo-plugin-render-template template=project-scaffold destination='projects/atlas' existing-file=replace data='{\"title\":\"Atlas\"}'",
-		"obsidian sample-monorepo-plugin-render-template template=meeting-template.md destination='meetings/<%= it.path.slug(it.data.title) %>.md' write=dry-run stdout=content/text data='{\"title\":\"Weekly Sync\"}'"
+		"obsidian excli-render-template template=daily-template.md destination='daily/<%= it._system.date %>-<%= it.path.shortId() %>.md' set=title=Daily",
+		"obsidian excli-render-template template=project-scaffold destination='projects/atlas' existing-file=replace data='{\"title\":\"Atlas\"}'",
+		"obsidian excli-render-template template=meeting-template.md destination='meetings/<%= it.path.slug(it.data.title) %>.md' write=dry-run stdout=content/text data='{\"title\":\"Weekly Sync\"}'"
 	],
 	notes: [
 		"Single-file mode requires `destination`; bundle mode can omit it and use manifest-relative output paths from the vault root.",
@@ -33,5 +33,5 @@ export const renderTemplateCommandSpec: CommandSpec = {
 		"`data-file` and `set` are repeatable.",
 		"`duplicate-output` is only valid for bundle mode."
 	],
-	seeAlso: ["sample-monorepo-plugin-apply-patch", "sample-monorepo-plugin-grep"]
+	seeAlso: ["excli-apply-patch", "excli-grep"]
 };

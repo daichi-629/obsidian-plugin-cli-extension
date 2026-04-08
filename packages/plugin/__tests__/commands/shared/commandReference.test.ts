@@ -28,8 +28,8 @@ describe("commandReference", () => {
 
 	it("appends the manual synopsis line", () => {
 		expect(buildSynopsis(grepCommandSpec)).toEqual([
-			"obsidian sample-monorepo-plugin-grep pattern=<pattern> [path=<vault-prefix[,vault-prefix...]>] [exclude-path=<vault-prefix[,vault-prefix...]>] [fixed-strings] [ignore-case] [line-number] [files-with-matches] [count] [before-context=<number>] [after-context=<number>] [context=<number>] [max-results=<number>] [stats] [json]",
-			"obsidian sample-monorepo-plugin-grep man"
+			"obsidian excli-grep pattern=<pattern> [path=<vault-prefix[,vault-prefix...]>] [exclude-path=<vault-prefix[,vault-prefix...]>] [fixed-strings] [ignore-case] [line-number] [files-with-matches] [count] [before-context=<number>] [after-context=<number>] [context=<number>] [max-results=<number>] [stats] [json]",
+			"obsidian excli-grep man"
 		]);
 	});
 
@@ -37,10 +37,10 @@ describe("commandReference", () => {
 		const reference = renderCommandReference(grepCommandSpec);
 
 		expect(reference).toContain(
-			"NAME\n  sample-monorepo-plugin-grep - Search vault files with grep-style output modes."
+			"NAME\n  excli-grep - Search vault files with grep-style output modes."
 		);
 		expect(reference).toContain(
-			"SYNOPSIS\n  obsidian sample-monorepo-plugin-grep pattern=<pattern> [path=<vault-prefix[,vault-prefix...]>] [exclude-path=<vault-prefix[,vault-prefix...]>] [fixed-strings] [ignore-case] [line-number] [files-with-matches] [count] [before-context=<number>] [after-context=<number>] [context=<number>] [max-results=<number>] [stats] [json]\n  obsidian sample-monorepo-plugin-grep man"
+			"SYNOPSIS\n  obsidian excli-grep pattern=<pattern> [path=<vault-prefix[,vault-prefix...]>] [exclude-path=<vault-prefix[,vault-prefix...]>] [fixed-strings] [ignore-case] [line-number] [files-with-matches] [count] [before-context=<number>] [after-context=<number>] [context=<number>] [max-results=<number>] [stats] [json]\n  obsidian excli-grep man"
 		);
 		expect(reference).toContain("OPTIONS\n  pattern=<pattern>");
 		expect(reference).toContain(
@@ -51,6 +51,6 @@ describe("commandReference", () => {
 		expect(reference).toContain(
 			"Render matches and aggregate search stats as JSON instead of plain text."
 		);
-		expect(reference).toContain("SEE ALSO\n  sample-monorepo-plugin-apply-patch");
+		expect(reference).toContain("SEE ALSO\n  excli-apply-patch");
 	});
 });

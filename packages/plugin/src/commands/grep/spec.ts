@@ -1,10 +1,10 @@
 import type { CommandSpec } from "../../shared/cli/types";
 
 export const grepCommandSpec: CommandSpec = {
-	name: "sample-monorepo-plugin-grep",
+	name: "excli-grep",
 	summary: "Search vault files with grep-style output modes.",
 	synopsis: [
-		"obsidian sample-monorepo-plugin-grep pattern=<pattern> [path=<vault-prefix[,vault-prefix...]>] [exclude-path=<vault-prefix[,vault-prefix...]>] [fixed-strings] [ignore-case] [line-number] [files-with-matches] [count] [before-context=<number>] [after-context=<number>] [context=<number>] [max-results=<number>] [stats] [json]"
+		"obsidian excli-grep pattern=<pattern> [path=<vault-prefix[,vault-prefix...]>] [exclude-path=<vault-prefix[,vault-prefix...]>] [fixed-strings] [ignore-case] [line-number] [files-with-matches] [count] [before-context=<number>] [after-context=<number>] [context=<number>] [max-results=<number>] [stats] [json]"
 	],
 	description: [
 		"Search vault text files and format the result for CLI automation.",
@@ -77,12 +77,12 @@ export const grepCommandSpec: CommandSpec = {
 		}
 	],
 	examples: [
-		"obsidian sample-monorepo-plugin-grep pattern=TODO",
-		"obsidian sample-monorepo-plugin-grep pattern=TODO path=daily/ line-number",
-		"obsidian sample-monorepo-plugin-grep pattern=TODO path=projects/,reference/ exclude-path=projects/archive/",
-		"obsidian sample-monorepo-plugin-grep pattern='^TODO' ignore-case max-results=5",
-		"obsidian sample-monorepo-plugin-grep pattern=TODO context=1 stats",
-		"obsidian sample-monorepo-plugin-grep pattern=TODO json"
+		"obsidian excli-grep pattern=TODO",
+		"obsidian excli-grep pattern=TODO path=daily/ line-number",
+		"obsidian excli-grep pattern=TODO path=projects/,reference/ exclude-path=projects/archive/",
+		"obsidian excli-grep pattern='^TODO' ignore-case max-results=5",
+		"obsidian excli-grep pattern=TODO context=1 stats",
+		"obsidian excli-grep pattern=TODO json"
 	],
 	notes: [
 		"Default plain-text output is `path:text`. With `line-number`, it becomes `path:line:text`. Context lines use `path-line-text`.",
@@ -95,5 +95,5 @@ export const grepCommandSpec: CommandSpec = {
 		"If files are skipped due to read errors, plain-text output appends a trailing warning line.",
 		"Search target extensions come from plugin settings."
 	],
-	seeAlso: ["sample-monorepo-plugin-apply-patch"]
+	seeAlso: ["excli-apply-patch"]
 };

@@ -1,9 +1,9 @@
 {
-  "id": "sample-monorepo-plugin",
-  "name": "Sample Monorepo Plugin",
+  "id": "excli",
+  "name": "excli",
   "version": "0.0.1",
   "minAppVersion": "1.5.0",
-  "description": "Sample Obsidian plugin in a monorepo with core logic package.",
+  "description": "excli Obsidian plugin in a monorepo with core logic package.",
   "author": "Your Name",
   "authorUrl": "https://example.com",
   "isDesktopOnly": false
