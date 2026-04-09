@@ -85,19 +85,22 @@ export const grepCommandSpec: CommandSpec = {
 		"obsidian excli-grep pattern=TODO path=daily/ line-number",
 		"obsidian excli-grep pattern=TODO path=projects/,reference/ exclude-path=projects/archive/",
 		"obsidian excli-grep pattern='^TODO' ignore-case max-results=5",
+		"obsidian excli-grep pattern=TODO count",
 		"obsidian excli-grep pattern=TODO context=1 stats",
 		"obsidian excli-grep pattern=TODO json"
 	],
 	notes: [
 		"Default plain-text output is `path:text`. With `line-number`, it becomes `path:line:text`. Context lines use `path-line-text`.",
+		"`count` already returns one `path:matchCount` row per matched file.",
+		"If `files-with-matches` and `count` are both present, `count` takes precedence.",
 		"Use `files-with-matches`, `count`, `stats`, or `json` when you need script-friendly output control.",
 		"`path` and `exclude-path` accept comma-separated vault-relative prefixes.",
-		"`files-with-matches` and `count` cannot be specified together.",
 		"`context` counts only matched lines toward `max-results`; surrounding context lines are still printed.",
 		"`json` includes statistics directly and ignores the plain-text `stats` appendix.",
 		"If no matches are found, the command returns `No matches found.`.",
 		"If files are skipped due to read errors, plain-text output appends a trailing warning line.",
-		"Search target extensions come from plugin settings."
+		"Search target extensions come from plugin settings.",
+		"Quote values that contain spaces or shell-significant characters, for example `pattern='open items'` or `path='meeting notes/'`."
 	],
 	seeAlso: ["excli-apply-patch"]
 };

@@ -41,7 +41,8 @@ export const traverseReachCommandSpec: CommandSpec = {
 	],
 	notes: [
 		"path-or-linkpath accepts canonical note paths like projects/atlas.md, extensionless paths like projects/atlas, and unique basenames like Atlas.",
-		"Large depth values can return large neighborhoods because v1 does not truncate results."
+		"Large depth values can return large neighborhoods because v1 does not truncate results.",
+		"Quote `from`, `folder`, and `tag` values when they contain spaces or shell-significant characters, for example `from='meeting notes/weekly sync.md'`."
 	],
 	seeAlso: ["excli-traverse:path", "excli-traverse:clusters"]
 };
@@ -91,7 +92,8 @@ export const traversePathCommandSpec: CommandSpec = {
 		}
 	],
 	notes: [
-		"path-or-linkpath accepts canonical note paths like projects/atlas.md, extensionless paths like projects/atlas, and unique basenames like Atlas."
+		"path-or-linkpath accepts canonical note paths like projects/atlas.md, extensionless paths like projects/atlas, and unique basenames like Atlas.",
+		"Quote `from`, `to`, `folder`, and `tag` values when they contain spaces or shell-significant characters."
 	],
 	seeAlso: ["excli-traverse:reach", "excli-traverse:clusters"]
 };
@@ -128,6 +130,9 @@ export const traverseClustersCommandSpec: CommandSpec = {
 			description: "Render text, JSON, or TSV output."
 		}
 	],
-	notes: ["Only one folder and one tag filter are supported in v1."],
+	notes: [
+		"Only one folder and one tag filter are supported in v1.",
+		"Quote `folder` and `tag` values when they contain spaces or shell-significant characters."
+	],
 	seeAlso: ["excli-traverse:reach", "excli-traverse:path"]
 };

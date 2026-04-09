@@ -86,6 +86,27 @@ describe("searchDocuments", () => {
 		expect(result.totalMatches).toBe(3);
 	});
 
+	it("prefers count output when filesWithMatches and count are both set", async () => {
+		const options = parseSearchOptions({
+			pattern: "TODO",
+			fixedStrings: true,
+			filesWithMatches: true,
+			count: true
+		});
+		const result = await searchDocuments(
+			[
+				{ path: "a.md", content: "TODO\nskip\nTODO" },
+				{ path: "b.md", content: "TODO" }
+			],
+			options
+		);
+
+		expect(result.matches).toEqual([
+			{ path: "a.md", text: "2" },
+			{ path: "b.md", text: "1" }
+		]);
+	});
+
 	it("stops early when maxResults is reached", async () => {
 		const options = parseSearchOptions({
 			pattern: "TODO",

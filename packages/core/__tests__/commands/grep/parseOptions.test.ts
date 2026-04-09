@@ -18,14 +18,17 @@ describe("parseSearchOptions", () => {
 		);
 	});
 
-	it("throws for conflicting output modes", () => {
-		expect(() =>
+	it("allows files-with-matches and count together", () => {
+		expect(
 			parseSearchOptions({
 				pattern: "TODO",
 				filesWithMatches: true,
 				count: true
 			})
-		).toThrow("The --files-with-matches and --count options cannot be used together.");
+		).toMatchObject({
+			filesWithMatches: true,
+			count: true
+		});
 	});
 
 	it("throws for invalid regex during execution setup", () => {

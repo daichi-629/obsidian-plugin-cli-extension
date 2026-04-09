@@ -55,4 +55,47 @@ describe("collectVaultGraphSnapshot", () => {
 			{ from: "notes/b.md", to: "notes/a.md", linkCount: 1 }
 		]);
 	});
+
+	it("falls back to cached outgoing links when resolvedLinks are missing", () => {
+		const snapshot = collectVaultGraphSnapshot({
+			app: {
+				vault: {
+					configDir: "config",
+					getMarkdownFiles() {
+						return [{ path: "notes/a.md" }, { path: "notes/b.md" }, { path: "notes/c.md" }];
+					}
+				},
+				metadataCache: {
+					getFileCache(file: { path: string }) {
+						if (file.path === "notes/a.md") {
+							return {
+								links: [{ link: "notes/b" }, { link: "notes/c" }],
+								embeds: [{ link: "notes/c" }]
+							};
+						}
+
+						return { links: [] };
+					},
+					getFirstLinkpathDest(linkpath: string) {
+						const table: Record<string, { path: string } | null> = {
+							"notes/b": { path: "notes/b.md" },
+							"notes/c": { path: "notes/c.md" }
+						};
+						return table[linkpath] ?? null;
+					},
+					resolvedLinks: {
+						"notes/b.md": {
+							"notes/a.md": 1
+						}
+					}
+				}
+			}
+		} as never);
+
+		expect(snapshot.edges).toEqual([
+			{ from: "notes/a.md", to: "notes/b.md", linkCount: 1 },
+			{ from: "notes/a.md", to: "notes/c.md", linkCount: 2 },
+			{ from: "notes/b.md", to: "notes/a.md", linkCount: 1 }
+		]);
+	});
 });

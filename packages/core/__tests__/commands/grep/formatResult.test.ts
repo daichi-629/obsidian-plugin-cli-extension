@@ -122,4 +122,26 @@ describe("formatSearchResult", () => {
 			)
 		).toContain('"totalMatches": 1');
 	});
+
+	it("formats count output when count and files-with-matches are both enabled", () => {
+		const options = parseSearchOptions({
+			pattern: "TODO",
+			filesWithMatches: true,
+			count: true
+		});
+
+		expect(
+			formatSearchResult(
+				{
+					matches: [{ path: "notes/a.md", text: "3" }],
+					filesScanned: 1,
+					matchedFiles: 1,
+					skippedFiles: 0,
+					stoppedEarly: false,
+					totalMatches: 3
+				},
+				options
+			)
+		).toBe("notes/a.md:3");
+	});
 });

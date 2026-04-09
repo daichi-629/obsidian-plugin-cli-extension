@@ -7,7 +7,7 @@ const OPTION_GAP = 2;
 
 function readFlag(params: CliData, key: string): boolean {
 	const value = params[key];
-	return value === true || value === "true";
+	return value === true || value === "true" || value === "";
 }
 
 function formatCommandName(spec: CommandSpec): string {

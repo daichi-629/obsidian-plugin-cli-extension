@@ -59,6 +59,35 @@ describe("parseGrepCliArgs", () => {
 		});
 	});
 
+	it("treats empty-string bare flags as enabled", () => {
+		expect(
+			parseGrepCliArgs({
+				pattern: "TODO",
+				"fixed-strings": "",
+				stats: ""
+			})
+		).toEqual({
+			ok: true,
+			value: {
+				pattern: "TODO",
+				pathPrefix: undefined,
+				pathPrefixes: undefined,
+				excludePathPrefixes: undefined,
+				fixedStrings: true,
+				ignoreCase: false,
+				lineNumber: false,
+				filesWithMatches: false,
+				count: false,
+				beforeContext: undefined,
+				afterContext: undefined,
+				context: undefined,
+				maxResults: undefined,
+				stats: true,
+				json: false
+			}
+		});
+	});
+
 	it("rejects invalid max-results values in the plugin layer", () => {
 		expect(parseGrepCliArgs({ pattern: "TODO", "max-results": "0" })).toEqual({
 			ok: false,

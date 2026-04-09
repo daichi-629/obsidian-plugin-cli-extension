@@ -4,7 +4,7 @@ import type { ApplyPatchCliInput } from "./types";
 
 function readFlag(params: CliData, hyphenated: string, camelCase: string): boolean {
 	const value = params[hyphenated] ?? params[camelCase];
-	return value === true || value === "true";
+	return value === true || value === "true" || value === "";
 }
 
 function readValue(params: CliData, hyphenated: string, camelCase: string): string | undefined {

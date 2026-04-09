@@ -3,7 +3,7 @@ import type { ApplyPatchInput, ApplyPatchPlan } from "./types";
 
 export function planApplyPatchChanges(
 	plan: ApplyPatchPlan,
-	input: Pick<ApplyPatchInput, "allowCreate">
+	input: Pick<ApplyPatchInput, "allowCreate" | "dryRun">
 ): ApplyPatchPlan {
 	const seenSourcePaths = new Set<string>();
 	const seenDestinationPaths = new Set<string>();
@@ -15,7 +15,7 @@ export function planApplyPatchChanges(
 
 		seenSourcePaths.add(operation.path);
 
-		if (operation.type === "add" && !input.allowCreate) {
+		if (operation.type === "add" && !input.allowCreate && !input.dryRun) {
 			throw new UserError(
 				`Add File is not allowed without --allow-create: ${operation.path}`
 			);

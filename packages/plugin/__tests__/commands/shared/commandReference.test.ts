@@ -23,6 +23,7 @@ describe("commandReference", () => {
 	it("treats bare man flags as manual requests", () => {
 		expect(isManualRequest({ man: true })).toBe(true);
 		expect(isManualRequest({ man: "true" })).toBe(true);
+		expect(isManualRequest({ man: "" })).toBe(true);
 		expect(isManualRequest({ man: "false" })).toBe(false);
 	});
 

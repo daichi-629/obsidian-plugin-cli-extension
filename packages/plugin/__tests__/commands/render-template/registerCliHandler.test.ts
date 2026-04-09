@@ -147,6 +147,25 @@ describe("registerRenderTemplateCliHandler", () => {
 		).resolves.toBe("# Daily\n");
 	});
 
+	it("renders with output aliases when stdout is omitted", async () => {
+		const { handler } = createPlugin({
+			files: {
+				"templates/daily-template.md": "# <%= it.data.title %>\n"
+			}
+		});
+
+		await expect(
+			handler({
+				template: "daily-template.md",
+				destination: "daily/test.md",
+				data: '{"title":"Daily"}',
+				write: "dry-run",
+				"output-format": "json",
+				"include-content": ""
+			})
+		).resolves.toContain('"content": "# Daily\\n"');
+	});
+
 	it("renders a bundle and writes the planned file", async () => {
 		const { handler, files } = createPlugin({
 			files: {

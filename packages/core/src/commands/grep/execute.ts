@@ -77,13 +77,13 @@ export async function searchDocuments(
 
 		result.totalMatches += limitedMatchingLines.length;
 
-		if (options.filesWithMatches) {
-			result.matches.push({ path: document.path, text: "" });
-		} else if (options.count) {
+		if (options.count) {
 			result.matches.push({
 				path: document.path,
 				text: String(limitedMatchingLines.length)
 			});
+		} else if (options.filesWithMatches) {
+			result.matches.push({ path: document.path, text: "" });
 		} else if (options.beforeContext > 0 || options.afterContext > 0) {
 			result.matches.push(
 				...buildContextMatches(document, lines, limitedMatchingLines, options)

@@ -15,10 +15,6 @@ export function parseSearchOptions(input: SearchInput): SearchOptions {
 		throw new Error("The --pattern option is required.");
 	}
 
-	if (input.filesWithMatches && input.count) {
-		throw new Error("The --files-with-matches and --count options cannot be used together.");
-	}
-
 	if (
 		input.maxResults !== undefined &&
 		(!Number.isInteger(input.maxResults) || input.maxResults <= 0)

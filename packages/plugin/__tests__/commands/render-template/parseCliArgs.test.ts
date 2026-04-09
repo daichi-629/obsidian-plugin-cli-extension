@@ -30,4 +30,42 @@ describe("parseRenderTemplateCliArgs", () => {
 			}
 		});
 	});
+
+	it("supports output-format/include-content aliases", () => {
+		expect(
+			parseRenderTemplateCliArgs({
+				template: "daily-template.md",
+				destination: "daily/test.md",
+				"output-format": "json",
+				"include-content": "",
+				write: "dry-run"
+			})
+		).toEqual({
+			ok: true,
+			value: {
+				template: "daily-template.md",
+				destination: "daily/test.md",
+				write: "dry-run",
+				stdout: "status+content/json",
+				existingFile: undefined,
+				duplicateOutput: undefined,
+				dataFile: [],
+				data: undefined,
+				set: []
+			}
+		});
+	});
+
+	it("rejects mixing stdout with output aliases", () => {
+		expect(
+			parseRenderTemplateCliArgs({
+				template: "daily-template.md",
+				stdout: "status/json",
+				"output-format": "json"
+			})
+		).toEqual({
+			ok: false,
+			message: "Use either --stdout or the --output-format/--include-content aliases, not both."
+		});
+	});
 });

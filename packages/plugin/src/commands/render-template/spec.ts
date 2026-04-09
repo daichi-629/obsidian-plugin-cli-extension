@@ -4,7 +4,8 @@ export const renderTemplateCommandSpec: CommandSpec = {
 	name: "excli-render-template",
 	summary: "Render a vault template file or template bundle into one or more notes.",
 	synopsis: [
-		"obsidian excli-render-template template=<path-or-id> [destination=<path-template-or-root>] [write=<apply|dry-run>] [stdout=<status/text|status/json|content/text|status+content/text|status+content/json>] [existing-file=<fail|replace|skip>] [duplicate-output=<fail|suffix|overwrite>] [data-file=<path>]... [data=<json-object>] [set=<key=value>]..."
+		"obsidian excli-render-template template=<path-or-id> [destination=<path-template-or-root>] [write=<apply|dry-run>] [stdout=<status/text|status/json|content/text|status+content/text|status+content/json>] [existing-file=<fail|replace|skip>] [duplicate-output=<fail|suffix|overwrite>] [data-file=<path>]... [data=<json-object>] [set=<key=value>]...",
+		"obsidian excli-render-template template=<path-or-id> [destination=<path-template-or-root>] [write=<apply|dry-run>] [output-format=<text|json>] [include-content] [existing-file=<fail|replace|skip>] [duplicate-output=<fail|suffix|overwrite>] [data-file=<path>]... [data=<json-object>] [set=<key=value>]..."
 	],
 	description: [
 		"Render a single template file or a template bundle from the vault.",
@@ -33,6 +34,15 @@ export const renderTemplateCommandSpec: CommandSpec = {
 			key: "stdout",
 			value: "<status/text|status/json|content/text|status+content/text|status+content/json>",
 			description: "Choose summary/content payload and output format."
+		},
+		{
+			key: "output-format",
+			value: "<text|json>",
+			description: "Alias for choosing plain-text vs JSON status output when stdout is omitted."
+		},
+		{
+			key: "include-content",
+			description: "Alias for including rendered content alongside status output when stdout is omitted."
 		},
 		{
 			key: "existing-file",
@@ -64,13 +74,16 @@ export const renderTemplateCommandSpec: CommandSpec = {
 	examples: [
 		"obsidian excli-render-template template=daily-template.md destination='daily/<%= it._system.date %>-<%= it.path.shortId() %>.md' set=title=Daily",
 		"obsidian excli-render-template template=project-scaffold destination='projects/atlas' existing-file=replace data='{\"title\":\"Atlas\"}'",
-		"obsidian excli-render-template template=meeting-template.md destination='meetings/<%= it.path.slug(it.data.title) %>.md' write=dry-run stdout=content/text data='{\"title\":\"Weekly Sync\"}'"
+		"obsidian excli-render-template template=meeting-template.md destination='meetings/<%= it.path.slug(it.data.title) %>.md' write=dry-run stdout=content/text data='{\"title\":\"Weekly Sync\"}'",
+		"obsidian excli-render-template template=meeting-template.md destination='meetings/<%= it.path.slug(it.data.title) %>.md' write=dry-run output-format=json include-content data='{\"title\":\"Weekly Sync\"}'"
 	],
 	notes: [
 		"Single-file mode requires `destination`; bundle mode can omit it and use manifest-relative output paths from the vault root.",
 		"Bundle mode uses `template.json` when present. Without it, markdown files are discovered by convention and `defaults.md` frontmatter becomes bundle defaults.",
 		"`data-file` and `set` are repeatable.",
-		"`duplicate-output` is only valid for bundle mode."
+		"`duplicate-output` is only valid for bundle mode.",
+		"`output-format` and `include-content` are convenience aliases for common `stdout` combinations.",
+		"Quote template, destination, and JSON values that contain spaces or shell-significant characters."
 	],
 	seeAlso: ["excli-apply-patch", "excli-grep"]
 };

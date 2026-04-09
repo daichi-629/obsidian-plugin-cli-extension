@@ -25,12 +25,12 @@ export function formatSearchResult(result: SearchResult, options: SearchOptions)
 			? "No matches found."
 			: result.matches
 					.map((match) => {
-						if (options.filesWithMatches) {
-							return match.path;
-						}
-
 						if (options.count) {
 							return `${match.path}:${match.text}`;
+						}
+
+						if (options.filesWithMatches) {
+							return match.path;
 						}
 
 						const separator = match.kind === "context" ? "-" : ":";

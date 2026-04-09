@@ -41,7 +41,9 @@ export const applyPatchCommandSpec: CommandSpec = {
 	],
 	notes: [
 		"Specify exactly one of `patch` or `patch-file`.",
-		"`allow-create` is required for Add File operations."
+		"`allow-create` is required for Add File operations that actually write to the vault.",
+		"`dry-run` can preview Add File operations without `allow-create` because no files are created.",
+		"Quote values that contain spaces or shell-significant characters, for example `patch-file='tmp/my patch.diff'`."
 	],
 	seeAlso: ["excli-grep"]
 };

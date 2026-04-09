@@ -85,6 +85,11 @@ function readList(params: CliData, hyphenated: string, camelCase: string): strin
 	return typeof value === "string" ? [value] : [];
 }
 
+function readFlag(params: CliData, hyphenated: string, camelCase: string): boolean {
+	const value = getParamValue(params, hyphenated, camelCase);
+	return value === true || value === "true" || value === "";
+}
+
 function parseSet(value: string): Record<string, unknown> | string {
 	const separatorIndex = value.indexOf("=");
 	if (separatorIndex <= 0) {
@@ -148,6 +153,8 @@ export function parseRenderTemplateCliArgs(
 	}
 
 	const stdout = readValue(params, "stdout", "stdout");
+	const outputFormat = readValue(params, "output-format", "outputFormat");
+	const includeContent = readFlag(params, "include-content", "includeContent");
 	if (
 		stdout !== undefined &&
 		stdout !== "status/text" &&
@@ -163,13 +170,38 @@ export function parseRenderTemplateCliArgs(
 		};
 	}
 
+	if (stdout !== undefined && (outputFormat !== undefined || includeContent)) {
+		return {
+			ok: false,
+			message:
+				"Use either --stdout or the --output-format/--include-content aliases, not both."
+		};
+	}
+
+	if (outputFormat !== undefined && outputFormat !== "text" && outputFormat !== "json") {
+		return {
+			ok: false,
+			message: "The --output-format option must be text or json."
+		};
+	}
+
+	const derivedStdout =
+		stdout ??
+		((outputFormat ?? "text") === "json"
+			? includeContent
+				? "status+content/json"
+				: "status/json"
+			: includeContent
+				? "status+content/text"
+				: "status/text");
+
 	return {
 		ok: true,
 		value: {
 			template: readValue(params, "template", "template"),
 			destination: readValue(params, "destination", "destination"),
 			write,
-			stdout,
+			stdout: derivedStdout,
 			existingFile,
 			duplicateOutput,
 			dataFile: readList(params, "data-file", "dataFile"),
