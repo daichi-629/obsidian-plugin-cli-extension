@@ -1,7 +1,7 @@
 ---
 reviewed_at: 2026-04-08
 impact: medium
-priority_rank: 15
+priority_rank: 19
 existing_overlap:
     - "grep: 時系列 reconstruction はできない"
     - "apply-patch: 無関係"

@@ -1,7 +1,7 @@
 ---
 reviewed_at: 2026-04-08
 impact: high
-priority_rank: 1
+priority_rank: 6
 source_proposals:
     - impact
 existing_overlap:
@@ -19,7 +19,7 @@ integration:
         - refactor
     rationale: "semantic impact は独立 CLI より mutation workflow に近い"
 builtin_diff_assessment: "妥当。現行の `dry-run` では semantic fallout が見えない。"
-recommendation: "impact を独立機能ではなく共通 preflight engine として再定義する。"
+recommendation: "高優先度。feedback を踏まえて context-engine 系と delta の直後に置き、impact を独立機能ではなく共通 preflight engine として再定義する。"
 ---
 
 # Integrated proposal: change-analysis

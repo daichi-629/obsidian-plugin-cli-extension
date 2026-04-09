@@ -5,7 +5,7 @@ origin:
     - tension.md
 reviewed_at: 2026-04-08
 impact: medium
-priority_rank: 12
+priority_rank: 16
 existing_overlap:
     repo:
         - "excli-grep (partial: lexical recall only)"
@@ -20,7 +20,7 @@ integration:
         - tension-style
     integrated_proposal: null
     rationale: "根拠収集と衝突検出は同じ claim/evidence 抽出基盤に乗るため、mode で束ねる価値が高い。"
-recommendation: "evidence と tension を別 surface のまま維持するより、共通 mode command としてまとめる価値が高い。"
+recommendation: "後半の canonical research surface として扱う。evidence と tension を別 surface のまま維持するより、共通 mode command としてまとめる価値が高い。"
 ---
 
 # Feature proposal: claims

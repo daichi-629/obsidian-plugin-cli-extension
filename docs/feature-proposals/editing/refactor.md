@@ -1,7 +1,7 @@
 ---
 reviewed_at: 2026-04-08
 impact: medium
-priority_rank: 10
+priority_rank: 15
 existing_overlap:
     - "excli-apply-patch: multi-file 更新はできるが、section extract / backlink relink のような graph-aware operation は持たない"
     - "move with automatic link update とは部分重複するが、graph restructuring までは扱えない"

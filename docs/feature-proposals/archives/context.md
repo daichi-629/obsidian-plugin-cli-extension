@@ -1,12 +1,21 @@
 ---
 reviewed_at: 2026-04-08
+archived_at: 2026-04-10
+status: archived
+archive_reason: |
+    excli-context の差別化は「1-shot の利便性」だけであり、excli-traverse:reach + excli-read:bulk
+    の 2 ステップで十分に代替できる。traverse:reach が返すのはパスとグラフ構造のみ（軽量メタデータ）
+    なので 2 回目のラウンドトリップコストは小さい。加えて、direction=both で返ってくる
+    BundleEntry.relation が一律 "linked" になり in/out の区別ができない情報損失と、
+    ハブノードを seed にした場合の候補爆発リスクもあった。
+    コマンド数を増やすコストに見合わないと判断し、単独コマンドとしての実装を取りやめた。
 impact: high
-priority_rank: 7
 existing_overlap:
     - "excli-grep: 候補ノート抽出には使えるが、リンク辿りや token budget 付き bundling はできない"
     - "excli-apply-patch: 読み取り用コンテキスト生成とは役割が別"
     - "manual search/read workflows とは部分重複する"
 proposal_overlap:
+    - "read-bulk: 明示対象の一括取得と token budget 制御を共有する"
     - "excli-traverse:*: 関連ノート収集の graph traversal を既存実装から再利用する"
     - "embed-resolve: 収集後コンテンツの flatten 処理を共有できる"
     - "workset: note bundle 収集部分を共有できる"
@@ -22,7 +31,7 @@ integration:
         - narrative
     integrated_proposal: docs/feature-proposals/integrated/context-engine.md
 builtin_diff_assessment: "妥当。read や search:context の延長ではなく、AI 向け bundle 生成という別目的になっている。"
-recommendation: "context-engine の第2段階候補。既存の `excli-traverse:*` を土台にし、`embed-resolve` を先行させる。"
+recommendation: "高優先度を維持する。既存の `excli-traverse:*` と `read-bulk` を土台にし、`embed-resolve` の直後に AI 向け bundle surface として載せる。"
 ---
 
 # Feature proposal: context
@@ -31,13 +40,13 @@ recommendation: "context-engine の第2段階候補。既存の `excli-traverse:
 
 AI に渡すためのコンテキストパケットを vault から自動組み立てするコマンド。シードノート周辺の関連ノートを収集し、必要なら `![[...]]` トランスクルージョンも再帰的に展開して、LLM にそのまま渡せる束として返す。
 
-この提案は旧 `context` と `embed-resolve` を統合し、「どのノートを読むか」と「ノートが実際に何を表示しているか」を 1 コマンドで扱う。
+この提案は旧 `context` と `embed-resolve` を統合し、「どのノートを読むか」と「ノートが実際に何を表示しているか」を 1 コマンドで扱う。明示 path / folder / tag による bulk fetch 自体は `read-bulk` に分離し、`context` はその上に載る graph-aware bundle surface とする。
 
 ## 動機
 
 AI が vault を参照するとき、現状は `read` を個別に繰り返すか、`grep` で候補を拾ってから手動で辿るしかない。しかし実際の Obsidian ノートはリンクとトランスクルージョンで意味的に構成されており、関連ノートの選定と埋め込み展開を別々にやるのは不自然である。
 
-`context` は「AI の入力を組み立てるコマンド」として、関連ノートの収集、トークン予算による打ち切り、埋め込み展開、出典注釈までまとめて担当する。
+`context` は「AI の入力を組み立てるコマンド」として、関連ノートの収集、トークン予算による打ち切り、埋め込み展開、出典注釈までまとめて担当する。`read-bulk` が「何をそのまま読むか」を扱うのに対し、`context` は「どの周辺ノートを束ねるべきか」を扱う。
 
 ## コマンド形状
 

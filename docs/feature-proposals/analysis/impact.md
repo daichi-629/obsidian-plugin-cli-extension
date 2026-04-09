@@ -1,7 +1,7 @@
 ---
 reviewed_at: 2026-04-08
 impact: high
-priority_rank: 2
+priority_rank: 21
 existing_overlap:
     - "excli-apply-patch --dry-run: patch 成立性と file-level preview までは見えるが、semantic preflight には届かない"
     - "move with automatic link update とは部分重複するが、孤立化や schema 退行までは見ない"
@@ -21,7 +21,7 @@ integration:
         - schema
     integrated_proposal: docs/feature-proposals/integrated/change-analysis.md
 builtin_diff_assessment: "妥当。現行 dry-run との差は明確で、semantic preflight という独自の価値がある。"
-recommendation: "高優先度。既存の `excli-apply-patch` dry-run と `excli-schema:*` の分析を共有する preflight layer として接続する。"
+recommendation: "source proposal として維持し、canonical 実装順は `integrated/change-analysis.md` を優先する。既存の `excli-apply-patch` dry-run と `excli-schema:*` の分析を共有する preflight layer へ統合する。"
 ---
 
 # Feature proposal: impact

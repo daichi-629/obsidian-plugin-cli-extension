@@ -1,7 +1,7 @@
 ---
 reviewed_at: 2026-04-08
 impact: medium
-priority_rank: 14
+priority_rank: 18
 existing_overlap:
     - "grep: 衝突候補の断片検索には使えるが、cluster 化と unresolved 判定はできない"
     - "manual conflict review workflows とは部分重複する"
@@ -20,7 +20,7 @@ integration:
         - audit
     integrated_proposal: docs/feature-proposals/research/claims.md
 builtin_diff_assessment: "概ね妥当。構造監査と意味的衝突検出は別問題。"
-recommendation: "後半フェーズ。誤検出コストが高く、まず evidence 系の基盤を安定させたい。"
+recommendation: "source proposal として維持し、canonical 実装順は `claims` を優先する。誤検出コストが高く、まず evidence 系の基盤を安定させたい。"
 ---
 
 # Feature proposal: tension

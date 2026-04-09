@@ -1,7 +1,7 @@
 ---
 reviewed_at: 2026-04-08
 impact: high
-priority_rank: 3
+priority_rank: 7
 existing_overlap:
     - "grep: 対象ブロック探索の補助にはなるが、block-id addressability や refs 解決はできない"
     - "excli-apply-patch: 狙ったブロック更新はできるが、位置特定と安全な置換を毎回手で組む必要がある"

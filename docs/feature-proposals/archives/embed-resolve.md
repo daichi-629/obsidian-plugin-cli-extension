@@ -1,11 +1,21 @@
 ---
 reviewed_at: 2026-04-08
+archived_at: 2026-04-10
+status: archived
+archive_reason: |
+    単独コマンド（excli-embed-resolve）としての実装を取りやめ、excli-read:bulk の
+    resolve-embeds / embed-depth / annotate-embeds フラグに統合した。
+    設計レビューで「AI エージェントが excli-read:bulk path=X resolve-embeds と
+    excli-embed-resolve path=X のどちらを使えばよいか不明確になる」と指摘され、
+    コマンド分離の価値が薄く、エージェントの選択コストを増やすだけと判断した。
+    embed 展開ロジック自体（parseEmbedRefs, resolveEmbeds 等）は core に残り、
+    read:bulk の実装から利用される。
 impact: high
-priority_rank: 4
 existing_overlap:
     - "grep: 埋め込み参照文字列の検索はできるが、再帰展開はできない"
     - "apply-patch: 内容変更はできても、表示相当の読み出しはできない"
 proposal_overlap:
+    - "read-bulk: 複数ノートの raw content 取得 backend と read mode を共有できる"
     - "context: context bundle の 1 オプションとしても使える"
     - "block: heading / block 抽出を共有する"
     - "workset: bundle 作成時の read mode として再利用できる"
@@ -19,7 +29,7 @@ integration:
         - workset
     integrated_proposal: docs/feature-proposals/integrated/context-engine.md
 builtin_diff_assessment: "概ね妥当。生 Markdown と表示相当テキストの差は実運用上大きい。"
-recommendation: "context-engine の初期段階で実装する。単独でも有用で、shared extractor としても価値が高い。"
+recommendation: "context-engine の初期 consumer として高優先度を維持する。`read-bulk` の直後に入れ、単独でも display-equivalent read として価値を出す。"
 ---
 
 # Feature proposal: embed-resolve

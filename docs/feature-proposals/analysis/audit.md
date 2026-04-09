@@ -1,13 +1,14 @@
 ---
 reviewed_at: 2026-04-08
 impact: high
-priority_rank: 8
+priority_rank: 13
 existing_overlap:
     - "excli-grep: 空ノートや期限語の一部は近似検索できるが、網羅監査や severity 付けはできない"
     - "excli-apply-patch: 修正はできるが監査機能はない"
     - "Obsidian の orphan/dead-end/unresolved 系チェックとは部分重複する"
 proposal_overlap:
     - "excli-schema:*: high-coverage property 欠落チェックをそのまま再利用できる"
+    - "tasks-query: task extraction と due/status filter を共有できる"
     - "impact: broken link / embed / schema 系チェック実装を共有できる"
     - "inbox: issue card の主要生成元になる"
 integration:
@@ -20,7 +21,7 @@ integration:
         - inbox
     integrated_proposal: docs/feature-proposals/integrated/analysis-foundation.md
 builtin_diff_assessment: "概ね妥当。個別コマンドの束を優先度付きレポートへ統合する価値はある。"
-recommendation: "既存の `excli-schema:*` を再利用しつつ、impact/change-analysis 系の analyzer を整えた後に段階導入する。"
+recommendation: "既存の `excli-schema:*` を再利用しつつ、delta と tasks-query と change-analysis 系の analyzer を整えた後に導入する。"
 ---
 
 # Feature proposal: audit

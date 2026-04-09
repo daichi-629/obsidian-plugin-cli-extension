@@ -1,7 +1,7 @@
 ---
 reviewed_at: 2026-04-08
 impact: medium
-priority_rank: 5
+priority_rank: 8
 existing_overlap:
     - "grep / apply-patch: persistent review queue や GUI inbox は提供していない"
 proposal_overlap:
@@ -22,7 +22,7 @@ integration:
         - delta
     integrated_proposal: null
 builtin_diff_assessment: "妥当。既存のその場限りの結果表示とは別に、非同期 review queue という明確な差がある。"
-recommendation: "優先度を上げる。分析コマンドが揃っていなくても、AI やユーザーが提案を蓄積・消化する単独 workflow として価値がある。"
+recommendation: "引き続き上位候補。analysis surface の直後に、AI やユーザーが提案を蓄積・消化する単独 workflow として載せる。"
 ---
 
 # Feature proposal: inbox

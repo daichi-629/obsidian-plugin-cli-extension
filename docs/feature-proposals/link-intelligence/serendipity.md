@@ -1,12 +1,13 @@
 ---
 reviewed_at: 2026-04-08
 impact: low
-priority_rank: 16
+priority_rank: 20
 existing_overlap:
     - "excli-grep: 候補調査の材料にはなるが、新しい接続提案や novelty scoring はできない"
     - "manual graph browsing workflows とは部分重複する"
 proposal_overlap:
     - "disambiguate: ranking / keyword / graph-distance signals を共有する"
+    - "graph-hubs: hubness や peripheral node 判定を novelty scoring に使える"
     - "excli-traverse:*: graph distance の計算を既存 graph primitive から共有する"
     - "inbox: suggestion card の有力な供給元"
 integration:

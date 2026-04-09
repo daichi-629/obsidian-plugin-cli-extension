@@ -1,13 +1,14 @@
 ---
 reviewed_at: 2026-04-08
 impact: high
-priority_rank: 6
+priority_rank: 9
 existing_overlap:
     - "excli-grep: lexical candidate recall はできるが、link target ranking と risk 付けはできない"
     - "excli-apply-patch: リンクを書き込めても、正しいリンク先の選定は支援しない"
     - "manual search and alias lookup workflows とは部分重複する"
 proposal_overlap:
     - "excli-traverse:*: context-path からの距離計算を既存 graph primitive から共有する"
+    - "graph-hubs: hub score を link target ranking signal に使える"
     - "block: heading / block target 候補の解決で共有する"
     - "serendipity: candidate scoring 基盤の一部を共有する"
 integration:

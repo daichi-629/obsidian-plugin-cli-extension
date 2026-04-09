@@ -1,7 +1,7 @@
 ---
 reviewed_at: 2026-04-08
 impact: medium
-priority_rank: 13
+priority_rank: 17
 existing_overlap:
     - "excli-grep: 候補断片の取得には使えるが、supports / contradicts / related の分類はない"
     - "apply-patch: 根拠収集とは無関係"
@@ -20,7 +20,7 @@ integration:
         - context
     integrated_proposal: docs/feature-proposals/research/claims.md
 builtin_diff_assessment: "概ね妥当。検索とグラウンディング束の生成は別レイヤである。"
-recommendation: "claim-analysis の前半フェーズ向け。block citation と retrieval 基盤の後に着手する。"
+recommendation: "source proposal として維持し、canonical 実装順は `claims` を優先する。block citation と retrieval 基盤の後に着手する。"
 ---
 
 # Feature proposal: evidence

@@ -1,11 +1,12 @@
 ---
 reviewed_at: 2026-04-08
 impact: medium
-priority_rank: 9
+priority_rank: 14
 existing_overlap:
     - "excli-apply-patch: multi-file 書き戻しは可能だが、single-bundle editing と conflict policy は持たない"
     - "excli-grep: bundle 作成前の対象探索にしか使えない"
 proposal_overlap:
+    - "read-bulk: 明示 path 群の create-side fetcher を共有できる"
     - "context: note bundle 収集を共有する"
     - "impact / change-analysis: apply 前の safety check を共有する"
     - "refactor: multi-file mutation backend を共有できる"
@@ -22,7 +23,7 @@ integration:
         - embed-resolve
     integrated_proposal: null
 builtin_diff_assessment: "概ね妥当。read-only bundle と low-level patch の間にある round-trip 編集面として独自性がある。"
-recommendation: "中盤候補。既存の `excli-apply-patch` を書き戻し backend に使い、context と change-analysis の基盤が整ってから着手する。"
+recommendation: "中盤候補。既存の `excli-apply-patch` を書き戻し backend に使い、read-bulk / context と change-analysis の基盤が整ってから着手する。"
 ---
 
 # Feature proposal: workset
