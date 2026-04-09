@@ -1,5 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
-set -eu
+set -euo pipefail
 
-exec docker compose exec -u abc obsidian "$@"
+quoted_args=""
+if (($# > 0)); then
+    printf -v quoted_args '%q ' "$@"
+fi
+
+status_file="$(mktemp)"
+trap 'rm -f "$status_file"' EXIT HUP INT TERM
+
+{
+    script -q -e -c "docker compose exec -u abc obsidian ${quoted_args}" /dev/null
+    printf '%s\n' "$?" >"$status_file"
+} | col -b | tr -d '\r' | sed 's/\^\@//g'
+
+exit "$(cat "$status_file")"
