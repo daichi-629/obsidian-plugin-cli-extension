@@ -38,11 +38,13 @@ export const renderTemplateCommandSpec: CommandSpec = {
 		{
 			key: "output-format",
 			value: "<text|json>",
-			description: "Alias for choosing plain-text vs JSON status output when stdout is omitted."
+			description:
+				"Alias for choosing plain-text vs JSON status output when stdout is omitted."
 		},
 		{
 			key: "include-content",
-			description: "Alias for including rendered content alongside status output when stdout is omitted."
+			description:
+				"Alias for including rendered content alongside status output when stdout is omitted."
 		},
 		{
 			key: "existing-file",

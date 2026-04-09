@@ -62,7 +62,11 @@ describe("collectVaultGraphSnapshot", () => {
 				vault: {
 					configDir: "config",
 					getMarkdownFiles() {
-						return [{ path: "notes/a.md" }, { path: "notes/b.md" }, { path: "notes/c.md" }];
+						return [
+							{ path: "notes/a.md" },
+							{ path: "notes/b.md" },
+							{ path: "notes/c.md" }
+						];
 					}
 				},
 				metadataCache: {

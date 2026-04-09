@@ -18,18 +18,18 @@ describe("parseApplyPatchCliArgs", () => {
 	});
 
 	it("treats empty-string bare flags as enabled", () => {
-		expect(parseApplyPatchCliArgs({ patch: "*** Begin Patch", dryRun: "", verbose: "" })).toEqual(
-			{
-				ok: true,
-				value: {
-					patch: "*** Begin Patch",
-					patchFile: undefined,
-					dryRun: true,
-					allowCreate: false,
-					verbose: true
-				}
+		expect(
+			parseApplyPatchCliArgs({ patch: "*** Begin Patch", dryRun: "", verbose: "" })
+		).toEqual({
+			ok: true,
+			value: {
+				patch: "*** Begin Patch",
+				patchFile: undefined,
+				dryRun: true,
+				allowCreate: false,
+				verbose: true
 			}
-		);
+		});
 	});
 
 	it("rejects missing patch sources", () => {

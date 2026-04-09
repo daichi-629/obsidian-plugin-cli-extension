@@ -65,7 +65,8 @@ describe("parseRenderTemplateCliArgs", () => {
 			})
 		).toEqual({
 			ok: false,
-			message: "Use either --stdout or the --output-format/--include-content aliases, not both."
+			message:
+				"Use either --stdout or the --output-format/--include-content aliases, not both."
 		});
 	});
 });

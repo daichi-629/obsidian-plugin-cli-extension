@@ -110,7 +110,10 @@ function readCacheLinkEntries(cache: CachedMetadata | null): string[] {
 		...((cache?.embeds ?? []).filter(isLinkEntry).map((entry) => entry.link) ?? [])
 	];
 
-	return entries.map((entry) => entry.trim()).filter(Boolean).sort(comparePaths);
+	return entries
+		.map((entry) => entry.trim())
+		.filter(Boolean)
+		.sort(comparePaths);
 }
 
 function readFallbackTargets(input: {
@@ -121,7 +124,10 @@ function readFallbackTargets(input: {
 }): Array<{ to: string; linkCount: number }> {
 	const resolver = (
 		input.plugin.app.metadataCache as {
-			getFirstLinkpathDest?: (linkpath: string, sourcePath: string) => { path?: string } | null;
+			getFirstLinkpathDest?: (
+				linkpath: string,
+				sourcePath: string
+			) => { path?: string } | null;
 		}
 	).getFirstLinkpathDest;
 	if (typeof resolver !== "function") {

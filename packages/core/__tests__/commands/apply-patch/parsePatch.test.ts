@@ -61,9 +61,9 @@ describe("planApplyPatchChanges", () => {
 +hello
 *** End Patch`);
 
-		expect(() => planApplyPatchChanges(plan, { allowCreate: false, dryRun: false })).toThrowError(
-			"Add File is not allowed without --allow-create: notes/new.md"
-		);
+		expect(() =>
+			planApplyPatchChanges(plan, { allowCreate: false, dryRun: false })
+		).toThrowError("Add File is not allowed without --allow-create: notes/new.md");
 	});
 
 	it("allows add operations during dry-run previews without allowCreate", () => {
