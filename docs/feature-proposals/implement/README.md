@@ -8,6 +8,8 @@
   `projects/release-checklist.md` に対する `dry-run verbose` と、scratch note への実適用を確認した。
 - `excli-render-template`:
   `templates/daily-template.md` の single-file apply と `templates/render-template-e2e` の bundle dry-run を確認した。
+- `excli-inbox:create`, `excli-inbox:list`, `excli-inbox:show`, `excli-inbox:update`, `excli-inbox:delete`:
+  CLI help から suggestion card の CRUD surface が利用可能であることを確認した。
 - `excli-schema:infer`, `excli-schema:missing`, `excli-schema:validate`:
   project scope の grouped infer、reference scope の missing property 列挙、release checklist の validate を確認した。
 - `excli-traverse:reach`, `excli-traverse:path`, `excli-traverse:clusters`:

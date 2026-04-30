@@ -228,6 +228,7 @@ Run \`pnpm run vault:generate\` from the repository root to refresh the generate
 - \`tasks/\` and \`queries/\` cover Tasks/Dataview-style content.
 - \`projects/\` keeps active and archived work with mixed note sizes.
 - \`reference/\` keeps grep-oriented fixtures and tricky formatting cases.
+- \`read-bulk-e2e/\` keeps multi-note read and embed-resolution fixtures.
 - \`meeting-notes/\` and \`people/\` add more realistic cross-linked notes.
 - \`collisions/\` and \`deep/\` cover path ambiguity and deep nesting.
 - \`stress/\` keeps larger files for traversal and output-limit checks.
@@ -249,6 +250,28 @@ Run \`pnpm run vault:generate\` from the repository root to refresh the generate
 - Search \`Japanese\` or \`検索\` to spot Unicode handling.
 - Open \`reference/code-fence-lab.md\` for explicit fenced code samples.
 - Open \`HOME.md\` in Obsidian to navigate the generated vault like a real workspace.
+`
+	),
+	writeVaultFile(
+		"read-bulk-e2e/root.md",
+		`---
+status: draft
+tags:
+  - project
+---
+
+# Root
+
+Alpha
+
+![[read-bulk-e2e/child#Section]]
+`
+	),
+	writeVaultFile(
+		"read-bulk-e2e/child.md",
+		`# Section
+
+Beta
 `
 	),
 	writeVaultFile(

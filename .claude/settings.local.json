@@ -4,7 +4,15 @@
 			"Bash(./bin/obsidian-dev obsidian:*)",
 			"Bash(pnpm run:*)",
 			"Bash(pnpm --filter plugin add react react-dom)",
-			"Bash(pnpm --filter plugin add -D @types/react @types/react-dom)"
+			"Bash(pnpm --filter plugin add -D @types/react @types/react-dom)",
+			"Bash(git add:*)",
+			"Bash(git commit:*)",
+			"Bash(git push:*)",
+			"Bash(mkdir -p implement archives)",
+			"Bash(mv foundations/schema.md foundations/traverse.md foundations/README.md implement/)",
+			"Bash(mv context/context.md context/embed-resolve.md archives/)",
+			"Bash(mv integrated/context-engine.md archives/)",
+			"Bash(rmdir foundations:*)"
 		]
 	}
 }

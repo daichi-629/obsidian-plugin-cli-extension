@@ -1,8 +1,17 @@
 ---
 reviewed_at: 2026-04-08
+archived_at: 2026-04-10
+status: archived
+archive_reason: |
+    テスト vault で built-in の `history` / `history:read` / `diff` を実測した結果、
+    ローカル履歴の一覧、特定版の読取、現在版との比較、履歴同士の比較がすでに成立していた。
+    当初の `delta` が担っていた「ファイル履歴を見る」「最近の差分を確認する」という主要価値は、
+    built-in command で十分にカバーされる。
+    残る `vault` 横断の recent-change summary や graph-impact 集約は別 proposal として再定義した方がよく、
+    現状の `delta` proposal はそのままでは独自性が弱いため archive する。
 impact: medium
-priority_rank: 5
 existing_overlap:
+    - "built-in history / diff: ローカル履歴の一覧、読取、比較をすでに提供する"
     - "grep: 差分ではなく現時点の文字列検索しかできない"
     - "apply-patch: patch 操作の結果は作れるが、vault 全体の時系列変化は追えない"
 proposal_overlap:
@@ -18,8 +27,8 @@ integration:
         - inbox
         - audit
     integrated_proposal: docs/feature-proposals/integrated/analysis-foundation.md
-builtin_diff_assessment: "modified file 列挙の差分は明確だが、delete 検出が session buffer 前提なので唯一の履歴源にはしない方がよい。"
-recommendation: "priority を引き上げる。継続セッションだけでなく、会話開始時の recent-change summary surface として早めに導入する。"
+builtin_diff_assessment: "archive。single-file history / diff は built-in が十分に強く、proposal の差別化が弱い。"
+recommendation: "archive。必要なら将来は vault-wide recent-change aggregation に限定した別 proposal として再定義する。"
 ---
 
 # Feature proposal: delta

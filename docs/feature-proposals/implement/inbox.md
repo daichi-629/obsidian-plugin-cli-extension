@@ -1,7 +1,8 @@
 ---
 reviewed_at: 2026-04-08
+implemented_at: 2026-04-10
+status: implemented
 impact: medium
-priority_rank: 8
 existing_overlap:
     - "grep / apply-patch: persistent review queue や GUI inbox は提供していない"
 proposal_overlap:
@@ -21,11 +22,21 @@ integration:
         - impact
         - delta
     integrated_proposal: null
-builtin_diff_assessment: "妥当。既存のその場限りの結果表示とは別に、非同期 review queue という明確な差がある。"
-recommendation: "引き続き上位候補。analysis surface の直後に、AI やユーザーが提案を蓄積・消化する単独 workflow として載せる。"
+builtin_diff_assessment: "実装済み。CLI help で `excli-inbox:create|list|show|update|delete` を確認済み。"
+recommendation: "implemented foundation として扱う。producer 連携や GUI 拡張は follow-up に切り出す。"
 ---
 
-# Feature proposal: inbox
+# Implemented foundation: inbox
+
+## 実装状況
+
+2026-04-10 時点で `./bin/obsidian-dev obsidian help` から、次の command surface を確認した。
+
+- `excli-inbox:create`
+- `excli-inbox:list`
+- `excli-inbox:show`
+- `excli-inbox:update`
+- `excli-inbox:delete`
 
 ## 概要
 

@@ -19,6 +19,7 @@ Run `pnpm run vault:generate` from the repository root to refresh the generated 
 - `tasks/` and `queries/` cover Tasks/Dataview-style content.
 - `projects/` keeps active and archived work with mixed note sizes.
 - `reference/` keeps grep-oriented fixtures and tricky formatting cases.
+- `read-bulk-e2e/` keeps multi-note read and embed-resolution fixtures.
 - `meeting-notes/` and `people/` add more realistic cross-linked notes.
 - `collisions/` and `deep/` cover path ambiguity and deep nesting.
 - `stress/` keeps larger files for traversal and output-limit checks.

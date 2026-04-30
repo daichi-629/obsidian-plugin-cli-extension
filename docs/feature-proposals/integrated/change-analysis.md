@@ -24,6 +24,8 @@ recommendation: "高優先度。feedback を踏まえて context-engine 系と d
 
 # Integrated proposal: change-analysis
 
+具体設計は [docs/design/change-analysis-design.md](../../design/change-analysis-design.md) を canonical とする。
+
 ## 概要
 
 `impact` を独立コマンドとして追加する代わりに、既存の `excli-apply-patch` と将来の `refactor` が共有する semantic preflight engine として実装する提案。変更を「実行できるか」ではなく「vault 的に安全か」を、mutation workflow の中でそのまま返す。
@@ -42,19 +44,21 @@ recommendation: "高優先度。feedback を踏まえて context-engine 系と d
 ### `excli-apply-patch`
 
 ```bash
-obsidian excli-apply-patch patch-file=tmp/change.patch dry-run analyze
-obsidian excli-apply-patch patch-file=tmp/change.patch dry-run analyze checks=links,embeds,schema
-obsidian excli-apply-patch patch-file=tmp/change.patch dry-run analyze paths-only
+obsidian excli-apply-patch patch-file=tmp/change.patch dry-run
+obsidian excli-apply-patch patch-file=tmp/change.patch dry-run checks=links,embeds,schema
+obsidian excli-apply-patch patch-file=tmp/change.patch dry-run paths-only
+obsidian excli-apply-patch patch-file=tmp/change.patch dry-run no-analyse
 ```
 
 ### 将来の `refactor`
 
 ```bash
-obsidian plugin-refactor extract path=notes/big.md heading="機械学習" to=notes/ml.md dry-run analyze
-obsidian plugin-refactor merge from=notes/old.md into=notes/main.md dry-run analyze
+obsidian plugin-refactor extract path=notes/big.md heading="機械学習" to=notes/ml.md dry-run
+obsidian plugin-refactor merge from=notes/old.md into=notes/main.md dry-run
+obsidian plugin-refactor extract path=notes/big.md heading="機械学習" to=notes/ml.md dry-run no-analyse
 ```
 
-CLI の細かな flag 名は実装時に `spec.ts` 側で調整すればよいが、重要なのは「変更系コマンドの dry-run に semantic analysis を同居させる」ことである。
+`dry-run` で semantic analysis を既定実行し、必要なときだけ `no-analyse` で無効化するのが重要である。
 
 ## 返すべき分析
 

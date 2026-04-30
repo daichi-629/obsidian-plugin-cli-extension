@@ -3,6 +3,7 @@ import type { InboxSettings } from "../inbox/inboxSettings";
 import { registerApplyPatchCommand } from "./apply-patch";
 import { registerGrepCommand } from "./grep";
 import { registerInboxCommand } from "./inbox";
+import { registerReadCommand } from "./read";
 import { registerRenderTemplateCommand } from "./render-template";
 import { registerSchemaCommand } from "./schema";
 import { registerTraverseCommand } from "./traverse";
@@ -13,6 +14,7 @@ export function registerCommands(
 ): ReturnType<typeof registerInboxCommand> {
 	registerApplyPatchCommand(plugin);
 	registerGrepCommand(plugin);
+	registerReadCommand(plugin);
 	registerRenderTemplateCommand(plugin);
 	registerSchemaCommand(plugin);
 	registerTraverseCommand(plugin);
