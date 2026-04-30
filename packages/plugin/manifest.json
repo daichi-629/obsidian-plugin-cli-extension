@@ -1,7 +1,7 @@
 {
   "id": "excli",
   "name": "excli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "minAppVersion": "1.5.0",
   "description": "excli Obsidian plugin in a monorepo with core logic package.",
   "author": "Your Name",

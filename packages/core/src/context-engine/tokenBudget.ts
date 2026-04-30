@@ -20,7 +20,7 @@ function formatYamlScalar(value: string | number | boolean | null): string {
 	}
 
 	if (typeof value === "string") {
-		if (value === "" || /[:#\-\[\]\{\}\n\r\t]/.test(value)) {
+		if (value === "" || /[:#[\]{}\n\r\t-]/.test(value)) {
 			return JSON.stringify(value);
 		}
 		return value;
