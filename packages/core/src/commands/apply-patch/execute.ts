@@ -20,6 +20,10 @@ function anchorsMatch(lines: string[], anchors: string[], beforeIndex: number): 
 	let searchStart = 0;
 
 	for (const anchor of anchors) {
+		if (anchor.length === 0) {
+			continue;
+		}
+
 		let matched = false;
 		for (let index = searchStart; index < lines.length && index <= beforeIndex; index += 1) {
 			if (lines[index] === anchor) {
